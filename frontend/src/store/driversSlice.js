@@ -1,10 +1,11 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import axios from "axios"
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from "axios";
+import Cookies from 'js-cookie';
 
 export const getDrivers = createAsyncThunk(
   'drivers/getDrivers',
   async (args) => {
-    const token = ""
+    const token = Cookies.get(`${process.env.REACT_APP_TOKEN_NAME}`)
     const res = await axios.get(`http://localhost:3000/api/Admin/Drivers/${args.page}`,{
       headers:{
         Authorization:`Bearer ${token}`
