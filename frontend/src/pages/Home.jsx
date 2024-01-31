@@ -33,7 +33,7 @@ const Home = () => {
       </Box>
       <Box className={`grid justify-start items-start gap-3`}>
         <Typography variant='h6'>Text Fields</Typography>
-        <Box className={`grid grid-cols-3 md:grid-cols-2 sm:grid-cols-1 items-end gap-4`}>
+        <Box className={`flex flex-wrap items-end gap-4`}>
           <PrimaryTextField
             type={"text"}
             placeholder={"Outlined"}
