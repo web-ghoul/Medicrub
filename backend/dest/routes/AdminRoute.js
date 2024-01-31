@@ -1,0 +1,22 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AdminRoute = void 0;
+const CommontAuth_1 = require("../middlewares/CommontAuth");
+const express_1 = __importDefault(require("express"));
+const controllers_1 = require("../controllers");
+const router = express_1.default.Router();
+exports.AdminRoute = router;
+router.post('/Login', controllers_1.AdminLogin);
+router.use(CommontAuth_1.Authenticate);
+router.get('/Drivers/:page', controllers_1.GetAllDrivers);
+router.post('/CreateAdmin', controllers_1.CreateAdmin);
+router.post('/CreateDriver', controllers_1.AdminCreateDriver);
+router.post('/AddDriverLicense', controllers_1.AdminAddDriverLicense);
+router.put('/UpdateDriver', controllers_1.AdminUpdateDriver);
+router.post('/CreateCar', controllers_1.AdminCreateCar);
+router.post('/CreateCarAlbum', controllers_1.AdminCreateCarAlbum);
+router.get('/DriverDetails', controllers_1.AdminGetDriver);
+router.get('/DriverCarDetails', controllers_1.AdminDriverCarDetails);

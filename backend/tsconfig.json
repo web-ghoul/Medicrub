@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+        
+    "target": "es2016",                                        
+    "module": "commonjs",                              
+    "lib": ["es2016" ,"DOM", "ESNext.AsyncIterable"],
+    "experimentalDecorators": true,                   
+    "emitDecoratorMetadata": true,                   
+      
+    "outDir": "./dest",
+    "rootDir": "./src",
+
+    "moduleResolution": "node",
+    "esModuleInterop": true,                                 
+    "forceConsistentCasingInFileNames": true,                
+    "strict": true,                                        
+    "exactOptionalPropertyTypes": false,               
+    "skipLibCheck": true                                 
+  }
+}
