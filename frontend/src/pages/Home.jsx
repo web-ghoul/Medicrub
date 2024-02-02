@@ -6,6 +6,7 @@ import { ConfirmButton } from '../mui/ConfirmButton'
 import { PrimaryButton } from '../mui/PrimaryButton'
 import { PrimaryContainer } from '../mui/PrimaryContainer'
 import { PrimaryTextField } from '../mui/PrimaryTextField'
+import { SecondaryButton } from "../mui/SecondaryButton"
 
 function fetchData() {
   return new Promise((resolve, reject) => {
@@ -29,6 +30,7 @@ const Home = () => {
         <Box className={`flex flex-wrap gap-4`}>
           <PrimaryButton>Primary</PrimaryButton>
           <ConfirmButton>Confirm</ConfirmButton>
+          <SecondaryButton>Cancel</SecondaryButton>
         </Box>
       </Box>
       <Box className={`grid justify-start items-start gap-3`}>

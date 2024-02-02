@@ -1,5 +1,5 @@
 import { ChevronLeft, Logout } from "@mui/icons-material";
-import { Box, Divider, IconButton, Link, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography, styled } from "@mui/material";
+import { Box, Divider, IconButton, Link, List, ListItem, ListItemIcon, ListItemText, Typography, styled } from "@mui/material";
 import MuiDrawer from '@mui/material/Drawer';
 import { useContext } from "react";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
@@ -33,8 +33,14 @@ const Sidebar = () => {
     }),
     overflowX: 'hidden',
     width: `calc(${theme.spacing(7)} + 1px)`,
+    [theme.breakpoints.up('lg')]: {
+      width: `calc(60px)`,
+    },
+    [theme.breakpoints.up('md')]: {
+      width: `calc(58px)`,
+    },
     [theme.breakpoints.up('sm')]: {
-      width: `calc(${theme.spacing(8)} + 1px)`,
+      width: `calc(55px)`,
     },
   });
 
@@ -48,7 +54,6 @@ const Sidebar = () => {
       width: "auto",
       height: "100%"
     },
-    // necessary for content to be below app bar
     ...theme.mixins.toolbar,
   }));
 
@@ -84,7 +89,7 @@ const Sidebar = () => {
 
   return (
     <Drawer variant="permanent" open={openDrawer}>
-      <DrawerHeader className="flex justify-between items-center p-1">
+      <DrawerHeader className="flex justify-between items-center p-1" sx={{ minHeight: { xs: '54px', sm: '57px', md: '59px', lg: '64px' } }}>
         <Box className={`flex justify-start items-center gap-1`}>
           <LazyLoadImage src={"./images/logo.png"} alt={"Logo"} />
           <Typography variant="h6" >Medicrub</Typography>
@@ -97,13 +102,11 @@ const Sidebar = () => {
       <List className="grid justify-stretch items-stretch gap-2 !pt-4 !pb-4" sx={{ height: "100%" }}>
         {DrawerMenu.map((list, index) => (
           <Link key={index} href={list.url} color={"inherit"} underline="none">
-            <ListItem disablePadding sx={{ display: 'block' }}>
-              <ListItemButton>
-                <ListItemIcon>
-                  {list.icon}
-                </ListItemIcon>
-                <ListItemText primary={list.text} sx={{ opacity: openDrawer ? 1 : 0 }} />
-              </ListItemButton>
+            <ListItem sx={{ display: 'block' }}>
+              <ListItemIcon>
+                {list.icon}
+              </ListItemIcon>
+              <ListItemText primary={list.text} sx={{ opacity: openDrawer ? 1 : 0 }} />
             </ListItem>
           </Link>
         ))}

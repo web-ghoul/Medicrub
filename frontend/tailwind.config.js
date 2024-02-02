@@ -15,11 +15,12 @@ module.exports = {
         white:"#fff"
       },
       screens: {
-        "sm":"520px",
-        "md":"768px",
-        "lg":"992px",
-        "xl":"1200px",
-        "2xl":"1440px",
+        "xs":{'max':"560px"},
+        "sm":{'max':"768px"},
+        "md":{'max':"992px"},
+        "lg":{'max':"1200px"},
+        "xl":{'max':"1440px"},
+        "2xl":{'max':"1560px"},
       }
     },
   },

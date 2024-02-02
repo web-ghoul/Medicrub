@@ -1,5 +1,5 @@
 import { MenuRounded } from "@mui/icons-material";
-import { IconButton, Toolbar, Typography, styled } from '@mui/material';
+import { Box, IconButton, Toolbar, Typography, styled } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import React, { useContext } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -33,22 +33,24 @@ const Header = () => {
 
   return (
     <AppBar position="fixed" open={openDrawer}>
-      <Toolbar>
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          onClick={handleDrawerOpen}
-          edge="start"
-          sx={{
-            marginRight: 5,
-            ...(openDrawer && { display: 'none' }),
-          }}
-        >
-          <MenuRounded />
-        </IconButton>
-        <Typography variant="h6" noWrap component="h6" className="font-[600]">
-          {headerData[pathname].title}
-        </Typography>
+      <Toolbar sx={{ minHeight: { xs: '55px', sm: '58px', md: '60px', lg: '65px' } }}>
+        <Box className={`flex justify-start items-center h-[100%]`}>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            sx={{
+              marginRight: 5,
+              ...(openDrawer && { display: 'none' }),
+            }}
+          >
+            <MenuRounded />
+          </IconButton>
+          <Typography variant="h6" noWrap component="h6" className="font-[600]">
+            {headerData[pathname].title}
+          </Typography>
+        </Box>
       </Toolbar>
     </AppBar>
   )

@@ -1,19 +1,13 @@
-import { Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { PrimaryButton } from './PrimaryButton';
 
-export const PrimaryButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.common.white,
-  backgroundColor:theme.palette.primary.main,
-  borderRadius:"8px",
-  display:"flex",
-  justifyContent:"center",
-  alignItems:"center",
-  gap:"5px",
-  padding:"8px 28px",
-  border:"2px solid transparent",
-  boxShadow:theme.shadows.button,
+export const SecondaryButton = styled(PrimaryButton)(({ theme }) => ({
+  color: theme.palette.primary.main,
+  backgroundColor:theme.palette.common.white,
+  borderColor:theme.palette.primary.main,
   "&:hover":{
-    backgroundColor:theme.palette.primary.dark,
+    backgroundColor: theme.palette.primary.main,
+    color:theme.palette.common.white,
   },
   [theme.breakpoints.down("lg")]: {
     borderRadius:"7px",
