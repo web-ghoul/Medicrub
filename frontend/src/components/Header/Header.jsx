@@ -1,7 +1,7 @@
 import { MenuRounded } from "@mui/icons-material";
 import { Box, Breadcrumbs, IconButton, Link, Toolbar, Typography, styled } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AppContext } from "../../context/AppContext";
 import { headerData } from "../../data/header";
@@ -10,6 +10,7 @@ import { PrimaryContainer } from "../../mui/PrimaryContainer";
 const Header = () => {
   const { handleDrawerOpen, drawerWidth, openDrawer } = useContext(AppContext)
   const { pathname } = useLocation()
+  const [headerUrl, setHeaderUrl] = useState([])
 
   const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
@@ -32,6 +33,14 @@ const Header = () => {
     }),
   }));
 
+  useEffect(() => {
+    const path = pathname.split("/")
+    const url = path[path.length - 1]
+    if (headerData.hasOwnProperty(url)) {
+      setHeaderUrl(headerData[url])
+    }
+  }, [pathname])
+
   return (
     <AppBar position="fixed" open={openDrawer}>
       <Toolbar sx={{ minHeight: { xs: '55px', sm: '58px', md: '60px', lg: '65px' } }}>
@@ -50,7 +59,7 @@ const Header = () => {
           <PrimaryContainer>
             <Breadcrumbs aria-label="breadcrumb">
               {
-                headerData[pathname.split("/")[pathname.split("/").length - 1]].map((link, i) => (
+                headerUrl.map((link, i) => (
                   <Link
                     key={i}
                     underline="hover"

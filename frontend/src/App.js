@@ -15,7 +15,7 @@ function App() {
   const {pathname} = useLocation()
   const navigate =useNavigate()
   const dispatch= useDispatch()
-
+  console.log(pathname)
   useEffect(()=>{
     try{
       const token = Cookies.get(`${process.env.REACT_APP_TOKEN_NAME}`)
