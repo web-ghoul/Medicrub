@@ -29,7 +29,7 @@ export const router = createBrowserRouter([
             index:true,
             element:<Drivers/>
           },{
-          path:"/add-driver",
+          path:"add-driver",
           element:<AddDriver/>
         }]
       },
