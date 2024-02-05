@@ -2,10 +2,12 @@ import {
   createBrowserRouter
 } from "react-router-dom";
 import App from "./App";
+import AddDriver from "./pages/AddDriver";
 import AllocateDriver from "./pages/AllocateDriver";
+import Components from "./pages/Components";
+import Dashboard from "./pages/Dashboard";
 import Drivers from "./pages/Drivers";
 import Error from "./pages/Error";
-import Home from "./pages/Home";
 import Login from "./pages/Login";
 import PendingDrivers from "./pages/PendingDrivers";
 import Reports from "./pages/Reports";
@@ -17,12 +19,19 @@ export const router = createBrowserRouter([
     element:<App/>,
     children:[
       {
-        index:true,
-        element:<Home/>
+        path:"/dashboard",
+        element:<Dashboard/>
       },
       {
         path:"drivers",
-        element:<Drivers/>
+        children:[
+          {
+            index:true,
+            element:<Drivers/>
+          },{
+          path:"add-driver",
+          element:<AddDriver/>
+        }]
       },
       {
         path:"trips",
@@ -39,6 +48,10 @@ export const router = createBrowserRouter([
       {
         path:"reports",
         element:<Reports/>
+      },
+      {
+        path:"components",
+        element:<Components/>
       },
       {
         path:"login",

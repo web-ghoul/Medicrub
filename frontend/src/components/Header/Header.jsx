@@ -1,10 +1,11 @@
 import { MenuRounded } from "@mui/icons-material";
-import { Box, IconButton, Toolbar, Typography, styled } from '@mui/material';
+import { Box, Breadcrumbs, IconButton, Link, Toolbar, Typography, styled } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import React, { useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AppContext } from "../../context/AppContext";
 import { headerData } from "../../data/header";
+import { PrimaryContainer } from "../../mui/PrimaryContainer";
 
 const Header = () => {
   const { handleDrawerOpen, drawerWidth, openDrawer } = useContext(AppContext)
@@ -41,15 +42,29 @@ const Header = () => {
             onClick={handleDrawerOpen}
             edge="start"
             sx={{
-              marginRight: 5,
               ...(openDrawer && { display: 'none' }),
             }}
           >
             <MenuRounded />
           </IconButton>
-          <Typography variant="h6" noWrap component="h6" className="font-[600]">
-            {headerData[pathname].title}
-          </Typography>
+          <PrimaryContainer>
+            <Breadcrumbs aria-label="breadcrumb">
+              {
+                headerData[pathname.split("/")[pathname.split("/").length - 1]].map((link, i) => (
+                  <Link
+                    key={i}
+                    underline="hover"
+                    href={link.url}
+                    className="flex gap-2 !text-black"
+                    sx={{ display: 'flex', alignItems: 'center', "& svg": { fontSize: { sm: "18px", md: "20px", lg: "22px" } } }}
+                  >
+                    {link.icon}
+                    <Typography variant="subtitle1">{link.title}</Typography>
+                  </Link>
+                ))
+              }
+            </Breadcrumbs>
+          </PrimaryContainer>
         </Box>
       </Toolbar>
     </AppBar>

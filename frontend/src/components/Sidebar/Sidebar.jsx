@@ -4,7 +4,7 @@ import MuiDrawer from '@mui/material/Drawer';
 import { useContext } from "react";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
 import { DrawerMenu } from "../../data/sidebar";
 import { PrimaryButton } from "../../mui/PrimaryButton";
@@ -14,6 +14,8 @@ const Sidebar = () => {
   const { openDrawer, drawerWidth, handleDrawerClose } = useContext(AppContext)
 
   const navigate = useNavigate()
+
+  const { pathname } = useLocation()
 
   const dispatch = useDispatch()
 
@@ -33,14 +35,14 @@ const Sidebar = () => {
     }),
     overflowX: 'hidden',
     width: `calc(${theme.spacing(7)} + 1px)`,
-    [theme.breakpoints.up('lg')]: {
-      width: `calc(60px)`,
+    [theme.breakpoints.down('lg')]: {
+      width: `60px`,
     },
-    [theme.breakpoints.up('md')]: {
-      width: `calc(58px)`,
+    [theme.breakpoints.down('md')]: {
+      width: `58px`,
     },
-    [theme.breakpoints.up('sm')]: {
-      width: `calc(55px)`,
+    [theme.breakpoints.down('sm')]: {
+      width: `55px`,
     },
   });
 
@@ -60,9 +62,6 @@ const Sidebar = () => {
   const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }) => ({
       width: drawerWidth,
-      flexShrink: 0,
-      whiteSpace: 'nowrap',
-      boxSizing: 'border-box',
       "&>div": {
         backgroundColor: theme.palette.secondary.main,
         color: theme.palette.common.white
@@ -99,30 +98,30 @@ const Sidebar = () => {
         </IconButton>
       </DrawerHeader>
       <Divider />
-      <List className="grid justify-stretch items-stretch gap-2 !pt-4 !pb-4" sx={{ height: "100%" }}>
+      <List className="grid justify-stretch items-center gap-2 !pt-4 !pb-4" sx={{ height: "100%" }}>
         {DrawerMenu.map((list, index) => (
-          <Link key={index} href={list.url} color={"inherit"} underline="none">
-            <ListItem sx={{ display: 'block' }}>
+          <Link key={index} href={list.url} color={"inherit"} underline="none" sx={{ backgroundColor: (theme) => list.url === `/${pathname.split("/")[1]}` && theme.palette.primary.main }}>
+            <ListItem sx={{ display: 'flex' }} className="transition-all duration-500 hover:bg-primary">
               <ListItemIcon>
                 {list.icon}
               </ListItemIcon>
-              <ListItemText primary={list.text} sx={{ opacity: openDrawer ? 1 : 0 }} />
+              <ListItemText primary={list.text} sx={{ display: openDrawer ? "block" : "none" }} />
             </ListItem>
           </Link>
         ))}
+        <ListItem sx={{ display: 'flex' }}>
+          {openDrawer ? (
+            <PrimaryButton onClick={handleLogout}>
+              <Logout />
+              <Typography variant="button">Logout</Typography>
+            </PrimaryButton>
+          ) : (
+            <ListItemIcon sx={{ cursor: "pointer" }} onClick={handleLogout}>
+              <Logout />
+            </ListItemIcon>
+          )}
+        </ListItem>
       </List>
-      <Box className={`flex justify-start items-center px-4 py-4 lg:py-3 lg:px-3 md:py-2 md:px-2 sm:py-1 sm:px-1`}>
-        {openDrawer ? (
-          <PrimaryButton onClick={handleLogout}>
-            <Logout />
-            <Typography variant="button">Logout</Typography>
-          </PrimaryButton>
-        ) : (
-          <IconButton onClick={handleLogout}>
-            <Logout />
-          </IconButton>
-        )}
-      </Box>
     </Drawer>
   )
 }

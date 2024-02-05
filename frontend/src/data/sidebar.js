@@ -1,9 +1,9 @@
-import { AssessmentRounded, CommuteRounded, DashboardRounded, PeopleAltRounded, PersonPinCircleRounded, RecentActorsRounded } from "@mui/icons-material";
+import { AssessmentRounded, CommuteRounded, GridViewRounded, Home, PeopleAltRounded, PersonPinCircleRounded, RecentActorsRounded } from "@mui/icons-material";
 
 export const DrawerMenu=[
   {
     text:"Dashboard",
-    icon: <DashboardRounded />,
+    icon: <Home />,
     url:`${process.env.REACT_APP_DASHBOARD_ROUTE}`
   },
   {
@@ -30,5 +30,10 @@ export const DrawerMenu=[
     text:"Reports",
     icon:<AssessmentRounded />,
     url:`${process.env.REACT_APP_REPORTS_ROUTE}`
+  },
+  {
+    text:"Components",
+    icon:<GridViewRounded />,
+    url:`${process.env.REACT_APP_COMPONENTS_ROUTE}`
   }
 ]

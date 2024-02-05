@@ -11,7 +11,6 @@ export const getDrivers = createAsyncThunk(
         Authorization:`Bearer ${token}`
       }
     })
-
     return res.data.data
   },
 )

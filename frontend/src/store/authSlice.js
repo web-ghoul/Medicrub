@@ -1,23 +1,32 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit';
+import Cookies from 'js-cookie';
+import { handleAlert } from '../functions/handleAlert';
 
 const initialState = {
   token: null,
-  userId:null,
-  Authed:false
+  authed:false
 }
 
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    login: (state) => {
-      state.value += 1
+    login: (state,{payload}) => {
+      const expirationDate = new Date();
+      expirationDate.setDate(expirationDate.getDate() + 30);
+      Cookies.set(`${process.env.REACT_APP_TOKEN_NAME}`,payload.token,{ expires: expirationDate })
+      state.token = payload.token
+      state.authed = true
     },
-    setAuth: (state) => {
-      state.value -= 1
+    setAuth: (state,{payload}) => {
+      state.token = payload.token
+      state.authed = true
     },
     logout: (state, action) => {
-      state.value += action.payload
+      state.token = null
+      state.authed = false
+      Cookies.remove(`${process.env.REACT_APP_TOKEN_NAME}`)
+      handleAlert({msg:"Logout Successfully",status:"success"})
     },
   },
 })
