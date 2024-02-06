@@ -25,7 +25,7 @@ const LoginSection = () => {
       </PrimaryContainer>
 
       <PrimaryContainer className='flex justify-stretch items-stretch'>
-        <PrimaryBox className='grid justify-stretch items-center  h-[100%]'>
+        <PrimaryBox className='grid justify-stretch items-center gap-4 h-[100%]'>
           <Box className={`text-black hidden justify-center items-center top-[40px] left-[40px] sm:grid`}>
             <LazyLoadImage src={"./images/logo.png"} alt={"login"} className='z-10 w-[50px]' />
             <Typography variant='h6'>Medicrub</Typography>

@@ -19,7 +19,7 @@ export const PrimaryContainer = styled(Container)(({ theme }) => ({
     paddingLeft: "30px !important",
     paddingRight: "30px !important",
   },
-  [theme.breakpoints.down("sx")]: {
+  [theme.breakpoints.down("xs")]: {
     paddingLeft: "15px !important",
     paddingRight: "15px !important",
   },

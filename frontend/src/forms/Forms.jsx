@@ -210,7 +210,7 @@ const Forms = ({ type }) => {
 
   return (
     <form className={`${(type === "personal_data" || type ===
-      "search_for_driver") && "w-[100%]"}`} onSubmit={type === "login" ? loginFormik.handleSubmit : type === "forgot_password" ? forgotPasswordFormik.handleSubmit : type === "personal_data" ? personalDataFormik.handleSubmit : type === "license" ? licenseFormik.handleSubmit : type === "car_info" ? carInfoFormik.handleSubmit : type === "search_for_driver" && handleSearchForDriver}>
+      "search_for_driver") && "w-full"}`} onSubmit={type === "login" ? loginFormik.handleSubmit : type === "forgot_password" ? forgotPasswordFormik.handleSubmit : type === "personal_data" ? personalDataFormik.handleSubmit : type === "license" ? licenseFormik.handleSubmit : type === "car_info" ? carInfoFormik.handleSubmit : type === "search_for_driver" && handleSearchForDriver}>
       {type === "login" ? <LoginForm loading={loading} formik={loginFormik} /> : type === "forgot_password" ? <ForgotPasswordForm formik={forgotPasswordFormik} loading={loading} /> : type === "personal_data" ? <PersonalDataForm formik={personalDataFormik} loading={loading} /> : type === "license" ? <LicenseForm formik={licenseFormik} loading={loading} /> : type === "car_info" ? <CarInfoForm formik={carInfoFormik} loading={loading} /> : type === "search_for_driver" && <SearchForDriverForm searchForDriver={searchForDriver} setSearchForDriver={setSearchForDriver} />}
     </form>
   )

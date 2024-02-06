@@ -9,7 +9,7 @@ import { PrimaryContainer } from '../../mui/PrimaryContainer'
 import { getDrivers } from '../../store/driversSlice'
 import DriversTable from '../../tables/DriversTable/DriversTable'
 
-const DriversSection = () => {
+const PendingDriversSection = () => {
   const { drivers } = useSelector((state) => state.drivers)
   const dispatch = useDispatch()
 
@@ -37,4 +37,4 @@ const DriversSection = () => {
   )
 }
 
-export default DriversSection
+export default PendingDriversSection

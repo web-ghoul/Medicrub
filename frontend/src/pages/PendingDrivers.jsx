@@ -1,8 +1,9 @@
 import React from 'react'
+import PendingDriversSection from '../sections/PendingDriversSection/PendingDriversSection'
 
 const PendingDrivers = () => {
   return (
-    <div>PendingDrivers</div>
+    <PendingDriversSection />
   )
 }
 

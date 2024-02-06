@@ -12,10 +12,10 @@ const UploadImage = ({ formik, title, name, img, icon }) => {
     }
   }, [formik, file, name])
   return (
-    <Box className={`grid justify-center items-center gap-4`}>
-      {title && <Typography variant={'subtitle1'} className='text-[#666]'>{title}</Typography>}
+    <Box className={`grid justify-center items-center gap-4 md:gap-3 sm:gap-2`}>
+      {title && <Typography variant={'subtitle1'} className='text-[#666] text-center'>{title}</Typography>}
       <Box className={`flex justify-center items-center`}>
-        <Box component={"label"} htmlFor={name} className={`relative p-8 bg-white flex justify-center items-center rounded-full w-[150px] h-[150px] cursor-pointer overflow-hidden`}>
+        <Box component={"label"} htmlFor={name} className={`relative p-8 bg-white flex justify-center items-center rounded-full w-[200px] h-[200px] cursor-pointer overflow-hidden lg:w-[175px] lg:h-[175px] md:!h-[150px] md:!w-[150px]`}>
           {formik.values[name] ?
             <LazyLoadImage src={URL.createObjectURL(formik.values[name])} alt={name} />
             : <>

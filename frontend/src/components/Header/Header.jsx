@@ -1,5 +1,5 @@
 import { MenuRounded } from "@mui/icons-material";
-import { Box, Breadcrumbs, IconButton, Link, Toolbar, Typography, styled } from '@mui/material';
+import { Box, Breadcrumbs, IconButton, Link, Toolbar, Typography, styled, useMediaQuery } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import React, { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -11,6 +11,7 @@ const Header = () => {
   const { handleDrawerOpen, drawerWidth, openDrawer } = useContext(AppContext)
   const { pathname } = useLocation()
   const [headerUrl, setHeaderUrl] = useState([])
+  const mdScreen = useMediaQuery("(max-width:992px)")
 
   const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
@@ -23,7 +24,7 @@ const Header = () => {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    ...(open && {
+    ...(open && !mdScreen && {
       marginLeft: drawerWidth,
       width: `calc(100% - ${drawerWidth}px)`,
       transition: theme.transitions.create(['width', 'margin'], {
@@ -51,20 +52,20 @@ const Header = () => {
             onClick={handleDrawerOpen}
             edge="start"
             sx={{
-              ...(openDrawer && { display: 'none' }),
+              ...(openDrawer && !mdScreen && { display: 'none' }),
             }}
           >
             <MenuRounded />
           </IconButton>
           <PrimaryContainer>
-            <Breadcrumbs aria-label="breadcrumb">
+            <Breadcrumbs aria-label="breadcrumb" className="flex gap-1">
               {
                 headerUrl.map((link, i) => (
                   <Link
                     key={i}
                     underline="hover"
                     href={link.url}
-                    className="flex gap-2 !text-black"
+                    className="flex gap-2 !text-black sm:gap-1"
                     sx={{ display: 'flex', alignItems: 'center', "& svg": { fontSize: { sm: "18px", md: "20px", lg: "22px" } } }}
                   >
                     {link.icon}

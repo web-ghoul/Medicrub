@@ -1,5 +1,5 @@
 import { DeleteRounded, EditRounded, FiberManualRecordRounded, FirstPage, KeyboardArrowLeft, KeyboardArrowRight, LastPage } from "@mui/icons-material";
-import { Box, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, Typography, styled, tableCellClasses, useTheme } from '@mui/material';
+import { Box, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, Typography, styled, tableCellClasses, useMediaQuery, useTheme } from '@mui/material';
 import { useState } from "react";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -21,6 +21,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:last-child td, &:last-child th': {
     border: 0,
   },
+  [theme.breakpoints.down('md')]: {
+    gridTemplateColumns: "20% 25% 15% 20% 20%",
+  },
+  [theme.breakpoints.down('sm')]: {
+    gridTemplateColumns: "none",
+    display: "table-row"
+  }
 }));
 
 function TablePaginationActions(props) {
@@ -78,10 +85,14 @@ function TablePaginationActions(props) {
 }
 
 const DriversTable = ({ data }) => {
+  const mdScreen = useMediaQuery("(max-width:992px)")
+  const smScreen = useMediaQuery("(max-width:768px)")
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -95,29 +106,26 @@ const DriversTable = ({ data }) => {
     <TableContainer component={Paper}>
       <Table sx={{ maxWidth: "100%" }} aria-label="custom pagination table">
         <TableHead>
-          <TableRow sx={{
-            display: "grid",
-            gridTemplateColumns: "20% 30% 15% 10% 10% 15%",
-          }}>
+          <StyledTableRow>
             <StyledTableCell>
               <Typography variant='h6'>Name</Typography>
             </StyledTableCell>
-            <StyledTableCell align="center">
+            {!smScreen && <StyledTableCell align="center">
               <Typography variant='h6'>Address</Typography>
-            </StyledTableCell>
-            <StyledTableCell align="center">
+            </StyledTableCell>}
+            {!mdScreen && <StyledTableCell align="center">
               <Typography variant='h6'>Phone Number</Typography>
-            </StyledTableCell>
+            </StyledTableCell>}
             <StyledTableCell align="center">
               <Typography variant='h6'>Active</Typography>
             </StyledTableCell>
-            <StyledTableCell align="center">
+            {!smScreen && <StyledTableCell align="center">
               <Typography variant='h6'>Status</Typography>
-            </StyledTableCell>
+            </StyledTableCell>}
             <StyledTableCell align="right">
               <Typography variant='h6'>Actions</Typography>
             </StyledTableCell>
-          </TableRow>
+          </StyledTableRow>
         </TableHead>
         <TableBody>
           {data && (rowsPerPage > 0
@@ -129,29 +137,29 @@ const DriversTable = ({ data }) => {
                 <StyledTableCell>
                   <Typography variant="subtitle2">{`${row.user.firstName} ${row.user.lastName}`}</Typography>
                 </StyledTableCell>
-                <StyledTableCell align="center">
+                {!smScreen && <StyledTableCell align="center">
                   <Typography variant="subtitle2">{row.location.address}</Typography>
-                </StyledTableCell>
-                <StyledTableCell align="center">
+                </StyledTableCell>}
+                {!mdScreen && <StyledTableCell align="center">
                   <Typography variant="subtitle2">{row.user.phone}</Typography>
-                </StyledTableCell>
+                </StyledTableCell>}
                 <StyledTableCell align="center">
                   <Box className={`flex flex-wrap justify-center items-center gap-1`}>
                     <FiberManualRecordRounded sx={{ fontSize: "18px", color: (theme) => theme.palette.common.whatsapp }} />
                     <Typography variant="subtitle2">Online</Typography>
                   </Box>
                 </StyledTableCell>
-                <StyledTableCell align="center">
+                {!smScreen && <StyledTableCell align="center">
                   <Typography variant="subtitle2" >Unavailable</Typography>
-                </StyledTableCell>
+                </StyledTableCell>}
                 <StyledTableCell align="right">
                   <Box className={`flex flex-wrap justify-end items-center gap-1`}>
                     <IconButton>
                       <EditRounded className="text-secondary" />
                     </IconButton>
-                    <IconButton>
+                    {!smScreen && <IconButton>
                       <DeleteRounded className="text-primary" />
-                    </IconButton>
+                    </IconButton>}
                   </Box>
                 </StyledTableCell>
               </StyledTableRow>
@@ -166,12 +174,6 @@ const DriversTable = ({ data }) => {
               count={data.length}
               rowsPerPage={rowsPerPage}
               page={page}
-              SelectProps={{
-                inputProps: {
-                  'aria-label': 'rows per page',
-                },
-                native: true,
-              }}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
               ActionsComponent={TablePaginationActions}

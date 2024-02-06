@@ -13,7 +13,8 @@ module.exports = {
         primary:"#FF0000",
         secondary:"#0B2533",
         white:"#fff",
-        gray:"#F3F3F3"
+        gray:"#F3F3F3",
+        outlay:"#0000004d"
       },
       screens: {
         "xs":{'max':"560px"},

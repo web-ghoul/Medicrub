@@ -6,7 +6,7 @@ import { PrimaryTextField } from '../../mui/PrimaryTextField'
 
 const ForgotPasswordForm = ({ formik, loading }) => {
   return (
-    <Box className={`grid justify-stretch items-stretch content-stretch self-stretch gap-10 h-[100%]`}>
+    <Box className={`grid justify-stretch items-stretch content-stretch self-stretch gap-10 h-full`}>
       <Box className={`flex justify-center items-center w-auto h-[100%]`}>
         <LazyLoadImage src={"/images/reset_password.svg"} alt={"forgot Password"} width={"100%"} height={"100%"} />
       </Box>

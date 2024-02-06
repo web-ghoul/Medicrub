@@ -172,7 +172,7 @@ const PersonalDataForm = ({ formik, loading }) => {
           />
         </Box>
 
-        <Box className={`flex justify-between items-center gap-6 md:grid md:justify-stretch`} >
+        <Box className={`flex justify-between items-center gap-6 flex-wrap sm:!justify-center`} >
           <UploadImage formik={formik} title={"National Id (Front)"} img={"/images/nationa_id_front.png"} name={"nationalFront"} />
           <UploadImage formik={formik} title={"National Id (Back)"} img={"/images/nationa_id_back.png"} name={"nationalBack"} />
         </Box>

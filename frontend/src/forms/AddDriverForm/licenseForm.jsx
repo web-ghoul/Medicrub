@@ -9,7 +9,7 @@ const LicenseForm = ({ formik, loading }) => {
         <Typography variant={"h3"}>Add License</Typography>
       </Box>
       <Box className={`grid justify-stretch items-center gap-10`}>
-        <Box className={`flex justify-between items-center gap-6 md:grid md:justify-stretch`} >
+        <Box className={`flex justify-between items-center gap-6 flex-wrap sm:!justify-center`} >
           <UploadImage formik={formik} title={"License (Front)"} img={"/images/nationa_id_front.png"} name={"front"} />
           <UploadImage formik={formik} title={"License (Back)"} img={"/images/nationa_id_back.png"} name={"back"} />
         </Box>

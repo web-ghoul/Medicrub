@@ -1,5 +1,5 @@
 import { LocationOnRounded } from "@mui/icons-material";
-import { Box, IconButton, Tooltip } from "@mui/material";
+import { Box, CircularProgress, IconButton, Tooltip, useMediaQuery } from "@mui/material";
 import {
   Combobox,
   ComboboxInput,
@@ -29,6 +29,9 @@ export default function SelectPosition({ formik }) {
 function Map({ formik }) {
   const [selected, setSelected] = useState(null);
   const [address, setAddress] = useState(null);
+  const [loading, setLoading] = useState(false)
+  const mdScreen = useMediaQuery("(max-width:992px)")
+  const smScreen = useMediaQuery("(max-width:768px)")
   const {
     ready,
     value,
@@ -38,14 +41,15 @@ function Map({ formik }) {
   } = usePlacesAutocomplete();
 
   const determineLocation = () => {
+    setLoading(true)
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        async (position) => {
           const { latitude, longitude } = position.coords;
           formik.values.latitude = latitude
           formik.values.longitude = longitude
           const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.REACT_APP_GOOGLE_MAP_API}`;
-          fetch(url)
+          await fetch(url)
             .then(response => response.json())
             .then(data => {
               const address = data.results[0].formatted_address;
@@ -64,6 +68,7 @@ function Map({ formik }) {
     } else {
       handleAlert({ msg: 'Geolocation is not supported by this browser.', status: "error" })
     }
+    setLoading(false)
   };
 
   useEffect(() => {
@@ -75,30 +80,30 @@ function Map({ formik }) {
   }, [selected, formik, address])
 
   return (
-    <>
-      <Box className="grid justify-stretch items-center gap-2" sx={{ gridTemplateColumns: "1fr auto" }}>
+    <Box className={`grid justify-stretch items-center gap-4 md:!gap-2`}>
+      <Box className="grid justify-stretch items-center gap-2 md:gap-1" sx={{ gridTemplateColumns: "1fr auto" }}>
         <PlacesAutocomplete ready={ready}
           value={value}
           setValue={setValue}
           status={suggestions.status}
           data={suggestions.data}
           clearSuggestions={clearSuggestions} setAddress={setAddress} setSelected={setSelected} />
-        <Tooltip title={"Determine Your Location"}>
+        {loading ? <CircularProgress /> : <Tooltip title={"Determine Your Location"}>
           <IconButton onClick={determineLocation} variant="contained" className='w-fit' color="primary">
-            <LocationOnRounded sx={{ fontSize: { lg: "30px", md: "26px", sm: "22px" } }} />
+            <LocationOnRounded className="!text-[32px] lg:!text-[30px] md:!text-[28px]" />
           </IconButton>
-        </Tooltip>
+        </Tooltip>}
       </Box>
 
       <GoogleMap
         id="map"
         center={selected}
         zoom={selected ? 18 : 2}
-        mapContainerStyle={{ width: '100%', height: selected ? "400px" : "0px" }}
+        mapContainerStyle={{ width: '100%', height: selected ? mdScreen ? smScreen ? "300px" : "350px" : "400px" : "0px" }}
       >
         {selected && <Marker position={selected} />}
       </GoogleMap>
-    </>
+    </Box>
   );
 }
 
@@ -123,7 +128,7 @@ const PlacesAutocomplete = ({ ready,
         value={value}
         onChange={(e) => setValue(e.target.value)}
         disabled={!ready}
-        className="px-4 py-4 w-[100%] rounded-md "
+        className="p-4 w-[100%] rounded-md md:p-3 sm:!p-2"
         placeholder="Search an address"
       />
       <ComboboxPopover>

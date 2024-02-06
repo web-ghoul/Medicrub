@@ -1,26 +1,30 @@
 import { Box, CssBaseline, ThemeProvider } from "@mui/material";
 import Cookies from "js-cookie";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Theme from "./Theme";
 import Header from "./components/Header/Header";
+import Outlay from "./components/Outlay/Outlay";
 import Sidebar from "./components/Sidebar/Sidebar";
-import AppProvider from "./context/AppContext";
+import { AppContext } from "./context/AppContext";
 import ForgotPasswordModal from "./modals/ForgotPasswordModal";
 import { setAuth } from "./store/authSlice";
 
+const urls =["/","/components","/allocate-driver","/trips","/pending-drivers","/dashboard","/drivers","/drivers/add-driver","/reports"]
+
 function App() {
   const {pathname} = useLocation()
-  const navigate =useNavigate()
-  const dispatch= useDispatch()
-  console.log(pathname)
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const {openDrawer,handleDrawerClose} = useContext(AppContext)
+  
   useEffect(()=>{
     try{
       const token = Cookies.get(`${process.env.REACT_APP_TOKEN_NAME}`)
       if(!token){
-        if(pathname !== `${process.env.REACT_APP_LOGIN_ROUTE}` || pathname !== `${process.env.REACT_APP_FORGOT_PASSWORD_ROUTE}`){
+        if(pathname !== `${process.env.REACT_APP_LOGIN_ROUTE}`){
           navigate(`${process.env.REACT_APP_LOGIN_ROUTE}`)
         }
       } else{
@@ -33,13 +37,13 @@ function App() {
 
   return (
     <ThemeProvider theme={Theme("light")}>
-      <AppProvider>
-        <Box className="flex min-h-[100vh] min-w-[100vw]">
-          {pathname !== "/login" ? 
+        <Box className="flex min-h-[100vh] min-w-[100vw] relative">
+          {urls.includes(pathname) ? 
             (
                 <>
                   <Header/>
                   <Sidebar/>
+                  <Outlay clicked={handleDrawerClose} toggle={openDrawer}/>
                   <Box component={"main"} className="pt-[65px] lg:pt-[60px] md:pt-[58px] sm:pt-[55px] w-[100%] min-h-[100vh]">
                     <Outlet/>
                   </Box>
@@ -54,7 +58,6 @@ function App() {
           <ForgotPasswordModal/>
         </Box>
         <Toaster/>
-      </AppProvider>
     </ThemeProvider>
   );
 }

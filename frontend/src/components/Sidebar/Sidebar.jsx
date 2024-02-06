@@ -1,5 +1,5 @@
 import { ChevronLeft, Logout } from "@mui/icons-material";
-import { Box, Divider, IconButton, Link, List, ListItem, ListItemIcon, ListItemText, Typography, styled } from "@mui/material";
+import { Box, Divider, IconButton, Link, List, ListItem, ListItemIcon, ListItemText, Typography, styled, useMediaQuery } from "@mui/material";
 import MuiDrawer from '@mui/material/Drawer';
 import { useContext } from "react";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
@@ -12,12 +12,51 @@ import { logout } from "../../store/authSlice";
 
 const Sidebar = () => {
   const { openDrawer, drawerWidth, handleDrawerClose } = useContext(AppContext)
+  const mdScreen = useMediaQuery("(max-width:992px)")
+  const smScreen = useMediaQuery("(max-width:768px)")
 
   const navigate = useNavigate()
 
   const { pathname } = useLocation()
 
   const dispatch = useDispatch()
+
+  const lgDrawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+    ({ theme, open }) => ({
+      width: drawerWidth,
+      "&>div": {
+        backgroundColor: theme.palette.secondary.main,
+        color: theme.palette.common.white
+      },
+      "& svg": {
+        color: theme.palette.common.white
+      },
+      boxShadow: theme.shadows["0"],
+      ...(open && {
+        ...openedMixin(theme),
+        '& .MuiDrawer-paper': openedMixin(theme),
+      }),
+      ...(!open && {
+        ...closedMixin(theme),
+        '& .MuiDrawer-paper': closedMixin(theme),
+      }),
+    }),
+  );
+
+  const mdDrawer = styled(MuiDrawer)(
+    ({ theme, open }) => ({
+      zIndex: open && "1300",
+      "& > div": {
+        backgroundColor: theme.palette.secondary.main,
+        color: theme.palette.common.white,
+        width: smScreen ? "100%" : "50vw",
+        transition: "ease-in-out all .3s"
+      },
+      "& svg": {
+        color: theme.palette.common.white
+      },
+    }),
+  );
 
   const openedMixin = (theme) => ({
     width: drawerWidth,
@@ -57,29 +96,26 @@ const Sidebar = () => {
       height: "100%"
     },
     ...theme.mixins.toolbar,
+    [theme.breakpoints.down('lg')]: {
+      minHeight: '60px',
+      height: "60px",
+    },
+    [theme.breakpoints.down('md')]: {
+      minHeight: '58px',
+      height: "58px",
+    },
+    [theme.breakpoints.down('sm')]: {
+      minHeight: '54px',
+      height: "54px",
+    }
+    ,
+    [theme.breakpoints.down('xs')]: {
+      minHeight: '55px',
+      height: "55px",
+    }
   }));
 
-  const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-    ({ theme, open }) => ({
-      width: drawerWidth,
-      "&>div": {
-        backgroundColor: theme.palette.secondary.main,
-        color: theme.palette.common.white
-      },
-      "& svg": {
-        color: theme.palette.common.white
-      },
-      boxShadow: theme.shadows["0"],
-      ...(open && {
-        ...openedMixin(theme),
-        '& .MuiDrawer-paper': openedMixin(theme),
-      }),
-      ...(!open && {
-        ...closedMixin(theme),
-        '& .MuiDrawer-paper': closedMixin(theme),
-      }),
-    }),
-  );
+  const Drawer = mdScreen ? mdDrawer : lgDrawer
 
   const handleLogout = () => {
     dispatch(logout())
@@ -87,10 +123,11 @@ const Sidebar = () => {
   }
 
   return (
-    <Drawer variant="permanent" open={openDrawer}>
-      <DrawerHeader className="flex justify-between items-center p-1" sx={{ minHeight: { xs: '54px', sm: '57px', md: '59px', lg: '64px' } }}>
+    <Drawer variant={mdScreen ? "persistent" : "permanent"} anchor={"left"} open={openDrawer}
+      onClose={handleDrawerClose} >
+      <DrawerHeader className="flex justify-between items-center p-1" >
         <Box className={`flex justify-start items-center gap-1`}>
-          <LazyLoadImage src={"./images/logo.png"} alt={"Logo"} />
+          <LazyLoadImage src={"/images/logo.png"} alt={"Logo"} />
           <Typography variant="h6" >Medicrub</Typography>
         </Box>
         <IconButton onClick={handleDrawerClose}>

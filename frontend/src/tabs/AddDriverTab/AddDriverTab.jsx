@@ -1,4 +1,4 @@
-import { Tab, Tabs } from '@mui/material';
+import { Tab, Tabs, useMediaQuery } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useContext } from 'react';
 import { AppContext } from '../../context/AppContext';
@@ -15,7 +15,7 @@ function TabPanel(props) {
       id={`vertical-tabpanel-${index}`}
       aria-labelledby={`vertical-tab-${index}`}
       {...other}
-      className='w-[100%] bg-gray p-6 rounded-lg'
+      className='w-[100%] bg-gray p-6 rounded-lg md:p-4'
     >
       {value === index && (
         <>
@@ -41,6 +41,8 @@ function a11yProps(index) {
 
 const AddDriverTab = () => {
   const { addDriverTab, setAddDriverTab } = useContext(AppContext);
+  const mdScreen = useMediaQuery("(max-width:992px)")
+  const smScreen = useMediaQuery("(max-width:768px)")
 
   const handleChange = (event, newValue) => {
     setAddDriverTab(newValue);
@@ -49,21 +51,21 @@ const AddDriverTab = () => {
   const tabStart = { textAlign: "start", alignItems: "flex-start", justifyContent: "flex-start" }
   return (
     <PrimaryBox
-      className={`!h-[100%] !w-[100%] !grid justify-between items-start gap-40`}
-      sx={{ bgcolor: 'background.paper', display: 'flex', "& span.css-1wynwom-MuiTabs-indicator": { left: '0', width: "6px", borderRadius: "10px", }, gridTemplateColumns: "auto 1fr" }}
+      className={`!h-[100%] !w-[100%] !grid justify-between items-start gap-40 grid-cols-[auto,1fr] lg:gap-20  md:grid-cols-1 md:!gap-10`}
+      sx={{ bgcolor: 'background.paper', display: 'flex', "& span.css-1wynwom-MuiTabs-indicator": { left: '0', width: "6px", borderRadius: "10px", } }}
     >
       <Tabs
-        orientation="vertical"
+        orientation={mdScreen ? "horizontal" : "vertical"}
         variant="scrollable"
         value={addDriverTab}
         onChange={handleChange}
         aria-label="Vertical tabs example"
-        sx={{ "& div": { gap: "30px" } }}
-        className='sticky top-[100px]'
+        sx={{ "& div": { gap: { "xl": "30px", "md": "10px" }, flexWrap: "wrap" } }}
+        className='sticky top-[100px] md:relative md:top-auto md:m-auto '
       >
-        <Tab sx={tabStart} label="Personal Data" {...a11yProps(0)} />
-        <Tab sx={tabStart} label="Add License" {...a11yProps(1)} />
-        <Tab sx={tabStart} label="Add Car Information" {...a11yProps(2)} />
+        {smScreen ? <Tab sx={tabStart} label="Personal" {...a11yProps(0)} /> : <Tab sx={tabStart} label="Personal Data" {...a11yProps(0)} />}
+        {smScreen ? <Tab sx={tabStart} label="License" {...a11yProps(1)} /> : <Tab sx={tabStart} label="Add License" {...a11yProps(1)} />}
+        {smScreen ? <Tab sx={tabStart} label="Add Car" {...a11yProps(2)} /> : <Tab sx={tabStart} label="Add Car Information" {...a11yProps(2)} />}
       </Tabs>
       <TabPanel value={addDriverTab} index={0}>
         <Forms type={"personal_data"} />

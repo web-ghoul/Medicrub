@@ -1,8 +1,8 @@
+import DriversChart from "../charts/DriversChart"
 
 const Dashboard = () => {
-
   return (
-    <></>
+    <DriversChart />
   )
 }
 
