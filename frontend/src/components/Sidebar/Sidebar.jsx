@@ -122,6 +122,12 @@ const Sidebar = () => {
     navigate(`${process.env.REACT_APP_LOGIN_ROUTE}`)
   }
 
+  const handleRouting = () => {
+    if (mdScreen) {
+      handleDrawerClose()
+    }
+  }
+
   return (
     <Drawer variant={mdScreen ? "persistent" : "permanent"} anchor={"left"} open={openDrawer}
       onClose={handleDrawerClose} >
@@ -138,7 +144,7 @@ const Sidebar = () => {
       <List className="grid justify-stretch items-center gap-2 !pt-4 !pb-4" sx={{ height: "100%" }}>
         {DrawerMenu.map((list, index) => (
           <Link key={index} to={list.url} color={"inherit"} underline="none" sx={{ backgroundColor: (theme) => list.url === `/${pathname.split("/")[1]}` && theme.palette.primary.main }}>
-            <ListItem sx={{ display: 'flex' }} className="transition-all duration-500 hover:bg-primary">
+            <ListItem sx={{ display: 'flex' }} className="transition-all duration-500 hover:bg-primary" onClick={handleRouting}>
               <ListItemIcon>
                 {list.icon}
               </ListItemIcon>
