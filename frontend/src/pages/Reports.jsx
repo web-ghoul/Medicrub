@@ -1,8 +1,9 @@
 import React from 'react'
+import UnderDevelopment from '../components/UnderDevelopment/UnderDevelopment'
 
 const Reports = () => {
   return (
-    <div>Reports</div>
+    <UnderDevelopment />
   )
 }
 

@@ -177,8 +177,6 @@ const PersonalDataForm = ({ formik, loading }) => {
           <UploadImage formik={formik} title={"National Id (Back)"} img={"/images/nationa_id_back.png"} name={"nationalBack"} />
         </Box>
 
-        <SelectLocation formik={formik.values} label={"Enter Driver Location"} />
-
         <PrimaryTextField
           fullWidth
           type={"password"}
@@ -199,6 +197,8 @@ const PersonalDataForm = ({ formik, loading }) => {
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
         />
+
+        <SelectLocation formik={formik.values} label={"Enter Driver Location"} />
       </Box>
       <PrimaryButton loadingPosition={"center"}
         loading={loading} loadingIndicator={

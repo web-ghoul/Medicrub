@@ -1,22 +1,16 @@
 import { AddRounded } from '@mui/icons-material'
 import { Box, Typography } from '@mui/material'
-import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useContext } from 'react'
 import { Link } from 'react-router-dom'
+import { AppContext } from '../../context/AppContext'
 import Forms from '../../forms/Forms'
 import { PrimaryBox } from '../../mui/PrimaryBox'
 import { PrimaryButton } from '../../mui/PrimaryButton'
 import { PrimaryContainer } from '../../mui/PrimaryContainer'
-import { getDrivers } from '../../store/driversSlice'
 import DriversTable from '../../tables/DriversTable/DriversTable'
 
 const DriversSection = () => {
-  const { drivers } = useSelector((state) => state.drivers)
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(getDrivers({ page: 0 }))
-  }, [dispatch])
+  const { setAddDriverTab } = useContext(AppContext)
 
   return (
     <PrimaryBox>
@@ -25,14 +19,14 @@ const DriversSection = () => {
           <Forms type={"search_for_driver"} />
           <Box className={`flex justify-end items-center sm:order-[-1]`}>
             <Link to={`${process.env.REACT_APP_ADD_DRIVER_ROUTE}`} className='flex justify-stretch items-center w-fit !no-underline'>
-              <PrimaryButton>
+              <PrimaryButton onClick={() => setAddDriverTab(0)}>
                 <AddRounded />
                 <Typography variant='button'>Add Driver</Typography>
               </PrimaryButton>
             </Link>
           </Box>
         </Box>
-        {drivers && <DriversTable data={drivers} />}
+        <DriversTable />
       </PrimaryContainer>
     </PrimaryBox>
   )

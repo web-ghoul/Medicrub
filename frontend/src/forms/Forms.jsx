@@ -223,7 +223,6 @@ const Forms = ({ type }) => {
         handleAlert({ msg: "Enter Destination Location", status: "error" })
         return
       }
-
       setLoading(true)
       await axios.post(`${server_url}/CreateTrip`, values, {
         headers: {

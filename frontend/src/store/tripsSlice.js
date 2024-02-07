@@ -2,11 +2,11 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from "axios";
 import Cookies from 'js-cookie';
 
-export const getDrivers = createAsyncThunk(
-  'drivers/getDrivers',
+export const getTrips = createAsyncThunk(
+  'trips/getTrips',
   async (args) => {
     const token = Cookies.get(`${process.env.REACT_APP_TOKEN_NAME}`)
-    const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/Drivers/${args.page}`,{
+    const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/Trips/${args.page}?date=${"2024-02-07"}`,{
       headers:{
         Authorization:`Bearer ${token}`
       }
@@ -16,21 +16,21 @@ export const getDrivers = createAsyncThunk(
 )
 
 const initialState = {
-  drivers: null,
+  trips: null,
   isLoading:true
 }
 
-export const driversSlice = createSlice({
-  name: 'drivers',
+export const tripsSlice = createSlice({
+  name: 'trips',
   initialState,
   reducers: {
   },
   extraReducers: (builder) => {
-    builder.addCase(getDrivers.fulfilled, (state, { payload }) => {
-      state.drivers = payload
+    builder.addCase(getTrips.fulfilled, (state, { payload }) => {
+      state.trips = payload
       state.isLoading = false
     })
-    builder.addCase(getDrivers.rejected, (state, action) => {
+    builder.addCase(getTrips.rejected, (state, action) => {
       state.isLoading = false
       if (action.payload) {
         console.log(action.payload.errorMessage)
@@ -42,4 +42,4 @@ export const driversSlice = createSlice({
 })
 
 
-export default driversSlice.reducer
+export default tripsSlice.reducer

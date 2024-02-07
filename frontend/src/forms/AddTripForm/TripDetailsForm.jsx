@@ -1,4 +1,4 @@
-import { AssignmentIndRounded, CodeRounded, DateRangeRounded, EmergencyShareRounded, MedicalServicesRounded, MoneyRounded, PhoneAndroidRounded, TimerRounded } from '@mui/icons-material'
+import { AssignmentIndRounded, DateRangeRounded, MedicalServicesRounded, MoneyRounded, NumbersRounded, PhoneAndroidRounded, TimerRounded, VaccinesRounded } from '@mui/icons-material'
 import { Box, CircularProgress, InputAdornment, Typography } from '@mui/material'
 import React from 'react'
 import SelectLocation from '../../components/SelectLocation/SelectLocation'
@@ -128,7 +128,7 @@ const TripDetailsForm = ({ formik, loading }) => {
           error={formik.touched.type && Boolean(formik.errors.type)}
           helperText={formik.touched.type && formik.errors.type}
         >
-          <option value={""}>Enter Trip Type</option>
+          <option value={""}>Trip Type</option>
           <option value={"Medical"}>Medical</option>
         </PrimaryTextField>
 
@@ -179,10 +179,6 @@ const TripDetailsForm = ({ formik, loading }) => {
           </Box>
         </Box>
 
-        <SelectLocation formik={formik.values.pickup} label={"Pick Up Location"} />
-
-        <SelectLocation formik={formik.values.destination} label={"Destination Location"} />
-
         <Box className={`flex justify-between items-center gap-6 md:grid md:justify-stretch`} >
           <PrimaryTextField
             fullWidth
@@ -190,13 +186,14 @@ const TripDetailsForm = ({ formik, loading }) => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <CodeRounded />
+                  <NumbersRounded />
                 </InputAdornment>
               ),
             }}
             variant={"outlined"}
             id="number"
             name="number"
+            placeholder={"Trip Number"}
             value={formik.values.number}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -210,13 +207,14 @@ const TripDetailsForm = ({ formik, loading }) => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <EmergencyShareRounded />
+                  <VaccinesRounded />
                 </InputAdornment>
               ),
             }}
             variant={"outlined"}
             id="specialNeeds"
             name="specialNeeds"
+            placeholder={"Special Needs"}
             value={formik.values.specialNeeds}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -245,6 +243,10 @@ const TripDetailsForm = ({ formik, loading }) => {
           error={formik.touched.cost && Boolean(formik.errors.cost)}
           helperText={formik.touched.cost && formik.errors.cost}
         />
+
+        <SelectLocation formik={formik.values.pickup} label={"Pick Up Location"} />
+
+        <SelectLocation formik={formik.values.destination} label={"Destination Location"} />
       </Box>
 
       <PrimaryButton loadingPosition={"center"}

@@ -1,4 +1,4 @@
-import { Box, CssBaseline, ThemeProvider } from "@mui/material";
+import { Box, CssBaseline, ThemeProvider, useMediaQuery } from "@mui/material";
 import Cookies from "js-cookie";
 import { useContext, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
@@ -19,7 +19,8 @@ function App() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const {openDrawer,handleDrawerClose} = useContext(AppContext)
-  
+  const mdScreen = useMediaQuery("(max-width:992px)")
+
   useEffect(()=>{
     try{
       const token = Cookies.get(`${process.env.REACT_APP_TOKEN_NAME}`)
@@ -43,7 +44,7 @@ function App() {
                 <>
                   <Header/>
                   <Sidebar/>
-                  <Outlay clicked={handleDrawerClose} toggle={openDrawer}/>
+                  {mdScreen && <Outlay clicked={handleDrawerClose} toggle={openDrawer}/>}
                   <Box component={"main"} className="pt-[65px] lg:pt-[60px] md:pt-[58px] sm:pt-[55px] w-[100%] min-h-[100vh]">
                     <Outlet/>
                   </Box>

@@ -3,18 +3,18 @@ import { Authenticate } from '../middlewares/CommontAuth';
 import express from 'express';
 
 
-import { 
-    GetAllDrivers, 
-    CreateAdmin, 
-    AdminLogin,
-    AdminCreateDriver,
+import {
     AdminAddDriverLicense,
     AdminCreateCar,
     AdminCreateCarAlbum,
-    AdminGetDriver,
+    AdminCreateDriver,
     AdminDriverCarDetails,
+    AdminGetDriver,
+    AdminLogin,
     AdminUpdateDriver,
- } from '../controllers';
+    CreateAdmin,
+    GetAllDrivers,
+} from '../controllers';
 
 const router = express.Router();
 

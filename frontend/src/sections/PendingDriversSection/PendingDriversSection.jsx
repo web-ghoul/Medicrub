@@ -1,22 +1,12 @@
 import { AddRounded } from '@mui/icons-material'
 import { Box, Link, Typography } from '@mui/material'
-import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import Forms from '../../forms/Forms'
 import { PrimaryBox } from '../../mui/PrimaryBox'
 import { PrimaryButton } from '../../mui/PrimaryButton'
 import { PrimaryContainer } from '../../mui/PrimaryContainer'
-import { getDrivers } from '../../store/driversSlice'
-import DriversTable from '../../tables/DriversTable/DriversTable'
+import PendingDriversTable from '../../tables/PendingDriversTable/PendingDriversTable'
 
 const PendingDriversSection = () => {
-  const { drivers } = useSelector((state) => state.drivers)
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(getDrivers({ page: 0 }))
-  }, [dispatch])
-
   return (
     <PrimaryBox>
       <PrimaryContainer className='!flex flex-col justify-stretch items-stretch gap-6 md:gap-4 sm:gap-2'>
@@ -31,7 +21,7 @@ const PendingDriversSection = () => {
             </Link>
           </Box>
         </Box>
-        {drivers && <DriversTable data={drivers} />}
+        <PendingDriversTable />
       </PrimaryContainer>
     </PrimaryBox>
   )

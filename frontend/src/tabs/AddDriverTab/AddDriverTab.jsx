@@ -63,9 +63,9 @@ const AddDriverTab = () => {
         sx={{ "& div": { gap: { "xl": "30px", "md": "10px" }, flexWrap: "wrap" } }}
         className='sticky top-[100px] md:relative md:top-auto md:m-auto '
       >
-        {smScreen ? <Tab sx={tabStart} label="Personal" {...a11yProps(0)} /> : <Tab sx={tabStart} label="Personal Data" {...a11yProps(0)} />}
-        {smScreen ? <Tab sx={tabStart} label="License" {...a11yProps(1)} /> : <Tab sx={tabStart} label="Add License" {...a11yProps(1)} />}
-        {smScreen ? <Tab sx={tabStart} label="Add Car" {...a11yProps(2)} /> : <Tab sx={tabStart} label="Add Car Information" {...a11yProps(2)} />}
+        {smScreen ? <Tab sx={tabStart} label="Personal" {...a11yProps(0)} /> : <Tab disabled sx={tabStart} label="Personal Data" {...a11yProps(0)} />}
+        {smScreen ? <Tab sx={tabStart} label="License" {...a11yProps(1)} /> : <Tab disabled sx={tabStart} label="Add Driver License" {...a11yProps(1)} />}
+        {smScreen ? <Tab sx={tabStart} label="Add Car" {...a11yProps(2)} /> : <Tab disabled sx={tabStart} label="Add Car Information" {...a11yProps(2)} />}
       </Tabs>
       <TabPanel value={addDriverTab} index={0}>
         <Forms type={"personal_data"} />

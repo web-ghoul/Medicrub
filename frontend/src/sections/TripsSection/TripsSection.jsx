@@ -1,19 +1,17 @@
 import { AddRounded } from '@mui/icons-material'
 import { Box, Typography } from '@mui/material'
-import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useContext } from 'react'
 import { Link } from 'react-router-dom'
+import UploadExcel from '../../components/UploadExcel/UploadExcel'
+import { AppContext } from '../../context/AppContext'
 import Forms from '../../forms/Forms'
 import { PrimaryBox } from '../../mui/PrimaryBox'
 import { PrimaryButton } from '../../mui/PrimaryButton'
 import { PrimaryContainer } from '../../mui/PrimaryContainer'
+import TripsTable from '../../tables/TripsTable/TripsTable'
 
 const TripsSection = () => {
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    // dispatch(getTrips({ page: 0 }))
-  }, [dispatch])
+  const { setAddTripTab } = useContext(AppContext)
 
   return (
     <PrimaryBox>
@@ -22,14 +20,15 @@ const TripsSection = () => {
           <Forms type={"search_for_trip"} />
           <Box className={`flex justify-end items-center sm:order-[-1]`}>
             <Link to={`${process.env.REACT_APP_ADD_TRIP_ROUTE}`} className='flex justify-stretch items-center w-fit !no-underline'>
-              <PrimaryButton>
+              <PrimaryButton onClick={() => setAddTripTab(0)}>
                 <AddRounded />
                 <Typography variant='button'>Add Trip</Typography>
               </PrimaryButton>
             </Link>
           </Box>
         </Box>
-        {/* {trips && <TripsTable data={trips} />} */}
+        <UploadExcel />
+        <TripsTable />
       </PrimaryContainer>
     </PrimaryBox>
   )

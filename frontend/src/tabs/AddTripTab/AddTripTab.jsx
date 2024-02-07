@@ -62,8 +62,8 @@ const AddTripTab = () => {
         sx={{ "& div": { gap: { "xl": "30px", "md": "10px" }, flexWrap: "wrap" } }}
         className='sticky top-[100px] md:relative md:top-auto md:m-auto '
       >
-        <Tab sx={tabStart} label="Trip Details" {...a11yProps(0)} />
-        <Tab sx={tabStart} label="Assign Driver" {...a11yProps(1)} />
+        <Tab sx={tabStart} disabled label="Trip Details" {...a11yProps(0)} />
+        <Tab sx={tabStart} disabled label="Assign Driver" {...a11yProps(1)} />
       </Tabs>
       <TabPanel value={addTripTab} index={0}>
         <Forms type={"trip_details"} />
