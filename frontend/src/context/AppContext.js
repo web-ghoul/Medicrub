@@ -30,6 +30,10 @@ const AppProvider = ({children}) => {
 
   //Add Driver Tabs
   const [addDriverTab, setAddDriverTab] = useState(0)
+
+
+  //Add Trip Tabs
+  const [addTripTab, setAddTripTab] = useState(0)
   
 
   const values= {
@@ -41,6 +45,8 @@ const AppProvider = ({children}) => {
     handleDrawerClose,
     addDriverTab,
     setAddDriverTab,
+    addTripTab,
+    setAddTripTab
   }
   return (
     <AppContext.Provider value={values}>

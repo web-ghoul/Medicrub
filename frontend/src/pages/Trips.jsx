@@ -1,8 +1,9 @@
 import React from 'react'
+import TripsSection from '../sections/TripsSection/TripsSection'
 
 const Trips = () => {
   return (
-    <div>Trips</div>
+    <TripsSection />
   )
 }
 

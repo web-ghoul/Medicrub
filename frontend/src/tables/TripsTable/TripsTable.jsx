@@ -84,7 +84,7 @@ function TablePaginationActions(props) {
   );
 }
 
-const DriversTable = ({ data }) => {
+const TripsTable = ({ data }) => {
   const mdScreen = useMediaQuery("(max-width:992px)")
   const smScreen = useMediaQuery("(max-width:768px)")
   const [page, setPage] = useState(0);
@@ -182,4 +182,4 @@ const DriversTable = ({ data }) => {
   )
 }
 
-export default DriversTable
+export default TripsTable

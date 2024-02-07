@@ -1,5 +1,5 @@
 import { LocationOnRounded } from "@mui/icons-material";
-import { Box, CircularProgress, IconButton, Tooltip, useMediaQuery } from "@mui/material";
+import { Box, CircularProgress, IconButton, Tooltip, Typography, useMediaQuery } from "@mui/material";
 import {
   Combobox,
   ComboboxInput,
@@ -16,17 +16,16 @@ import usePlacesAutocomplete, {
 } from "use-places-autocomplete";
 import { handleAlert } from "../../functions/handleAlert";
 
-export default function SelectPosition({ formik }) {
+export default function SelectLocation({ formik, label }) {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API,
     libraries: ['places'],
   });
-
-  if (!isLoaded) return <div>Loading...</div>;
-  return <Map formik={formik} />;
+  if (!isLoaded) return <Typography variant="h6">Loading...</Typography>;
+  return <Map formik={formik} label={label} />;
 }
 
-function Map({ formik }) {
+function Map({ formik, label }) {
   const [selected, setSelected] = useState(null);
   const [address, setAddress] = useState(null);
   const [loading, setLoading] = useState(false)
@@ -46,15 +45,15 @@ function Map({ formik }) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
-          formik.values.latitude = latitude
-          formik.values.longitude = longitude
+          formik.latitude = latitude
+          formik.longitude = longitude
           const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.REACT_APP_GOOGLE_MAP_API}`;
           await fetch(url)
             .then(response => response.json())
             .then(data => {
               const address = data.results[0].formatted_address;
               setValue(address, false)
-              formik.values.address = address
+              formik.address = address
             })
             .catch(error => {
               console.error('Error fetching address:', error);
@@ -73,21 +72,27 @@ function Map({ formik }) {
 
   useEffect(() => {
     if (selected) {
-      formik.values.latitude = selected.lat
-      formik.values.longitude = selected.lng
-      formik.values.address = address
+      formik.latitude = selected.lat
+      formik.longitude = selected.lng
+      if (address) {
+        formik.address = address
+      }
     }
   }, [selected, formik, address])
 
   return (
     <Box className={`grid justify-stretch items-center gap-4 md:!gap-2`}>
-      <Box className="grid justify-stretch items-center gap-2 md:gap-1" sx={{ gridTemplateColumns: "1fr auto" }}>
-        <PlacesAutocomplete ready={ready}
-          value={value}
-          setValue={setValue}
-          status={suggestions.status}
-          data={suggestions.data}
-          clearSuggestions={clearSuggestions} setAddress={setAddress} setSelected={setSelected} />
+      <Box className="grid justify-stretch items-end gap-2 md:gap-1" sx={{ gridTemplateColumns: "1fr auto" }}>
+        <Box className={"grid justify-stretch items-center gap-1"}>
+          <Typography variant="h6">{label}</Typography>
+          <PlacesAutocomplete ready={ready}
+            value={value}
+            setValue={setValue}
+            status={suggestions.status}
+            data={suggestions.data}
+            label={label}
+            clearSuggestions={clearSuggestions} setAddress={setAddress} setSelected={setSelected} />
+        </Box>
         {loading ? <CircularProgress /> : <Tooltip title={"Determine Your Location"}>
           <IconButton onClick={determineLocation} variant="contained" className='w-fit' color="primary">
             <LocationOnRounded className="!text-[32px] lg:!text-[30px] md:!text-[28px]" />
@@ -111,7 +116,7 @@ const PlacesAutocomplete = ({ ready,
   value,
   setValue,
   status, data,
-  clearSuggestions, setAddress, setSelected }) => {
+  clearSuggestions, setAddress, setSelected, label }) => {
 
   const handleSelect = async (address) => {
     setValue(address, false);
@@ -122,14 +127,23 @@ const PlacesAutocomplete = ({ ready,
     setSelected({ lat, lng });
   };
 
+  const handleChange = (e) => {
+    const val = e.target.value
+    setValue(val);
+    if (val === "") {
+      setAddress("")
+      setSelected(null)
+    }
+  };
+
   return (
     <Combobox onSelect={handleSelect}>
       <ComboboxInput
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={handleChange}
         disabled={!ready}
         className="p-4 w-[100%] rounded-md md:p-3 sm:!p-2"
-        placeholder="Search an address"
+        placeholder={label}
       />
       <ComboboxPopover>
         <ComboboxList>

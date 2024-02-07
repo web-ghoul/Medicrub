@@ -1,8 +1,8 @@
 import { MenuRounded } from "@mui/icons-material";
-import { Box, Breadcrumbs, IconButton, Link, Toolbar, Typography, styled, useMediaQuery } from '@mui/material';
+import { Box, Breadcrumbs, IconButton, Toolbar, Typography, styled, useMediaQuery } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import React, { useContext, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { AppContext } from "../../context/AppContext";
 import { headerData } from "../../data/header";
 import { PrimaryContainer } from "../../mui/PrimaryContainer";
@@ -63,15 +63,15 @@ const Header = () => {
                 headerUrl.map((link, i) => (
                   <Link
                     key={i}
-                    underline="hover"
-                    href={link.url}
-                    className="flex gap-2 !text-black sm:gap-1"
+                    to={link.url}
+                    className="w-fit flex gap-2 !text-black sm:gap-1"
                     sx={{ display: 'flex', alignItems: 'center', "& svg": { fontSize: { sm: "18px", md: "20px", lg: "22px" } } }}
                   >
                     {link.icon}
                     <Typography variant="subtitle1">{link.title}</Typography>
                   </Link>
-                ))
+                )
+                )
               }
             </Breadcrumbs>
           </PrimaryContainer>

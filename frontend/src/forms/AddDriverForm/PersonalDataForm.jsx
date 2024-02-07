@@ -1,7 +1,7 @@
 import { AssignmentIndRounded, ContactsRounded, DateRangeRounded, EmailRounded, MedicalServicesRounded, PasswordRounded, PhoneAndroidRounded } from '@mui/icons-material'
 import { Box, CircularProgress, InputAdornment, Typography } from '@mui/material'
 import React from 'react'
-import SelectPosition from '../../components/SelectPosition/SelectPosition'
+import SelectLocation from '../../components/SelectLocation/SelectLocation'
 import UploadImage from '../../components/UploadImage/UploadImage'
 import { PrimaryButton } from '../../mui/PrimaryButton'
 import { PrimaryTextField } from '../../mui/PrimaryTextField'
@@ -177,7 +177,7 @@ const PersonalDataForm = ({ formik, loading }) => {
           <UploadImage formik={formik} title={"National Id (Back)"} img={"/images/nationa_id_back.png"} name={"nationalBack"} />
         </Box>
 
-        <SelectPosition formik={formik} />
+        <SelectLocation formik={formik.values} label={"Enter Driver Location"} />
 
         <PrimaryTextField
           fullWidth

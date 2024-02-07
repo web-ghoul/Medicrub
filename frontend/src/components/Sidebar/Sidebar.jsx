@@ -1,10 +1,10 @@
 import { ChevronLeft, Logout } from "@mui/icons-material";
-import { Box, Divider, IconButton, Link, List, ListItem, ListItemIcon, ListItemText, Typography, styled, useMediaQuery } from "@mui/material";
+import { Box, Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, Typography, styled, useMediaQuery } from "@mui/material";
 import MuiDrawer from '@mui/material/Drawer';
 import { useContext } from "react";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useDispatch } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
 import { DrawerMenu } from "../../data/sidebar";
 import { PrimaryButton } from "../../mui/PrimaryButton";
@@ -137,7 +137,7 @@ const Sidebar = () => {
       <Divider />
       <List className="grid justify-stretch items-center gap-2 !pt-4 !pb-4" sx={{ height: "100%" }}>
         {DrawerMenu.map((list, index) => (
-          <Link key={index} href={list.url} color={"inherit"} underline="none" sx={{ backgroundColor: (theme) => list.url === `/${pathname.split("/")[1]}` && theme.palette.primary.main }}>
+          <Link key={index} to={list.url} color={"inherit"} underline="none" sx={{ backgroundColor: (theme) => list.url === `/${pathname.split("/")[1]}` && theme.palette.primary.main }}>
             <ListItem sx={{ display: 'flex' }} className="transition-all duration-500 hover:bg-primary">
               <ListItemIcon>
                 {list.icon}

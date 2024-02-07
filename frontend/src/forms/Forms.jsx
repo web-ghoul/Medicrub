@@ -10,11 +10,15 @@ import { carInfoInitialValues, carInfoSchema, licenseInitialValues, licenseSchem
 import CarInfoForm from "./AddDriverForm/CarInfoForm";
 import PersonalDataForm from "./AddDriverForm/PersonalDataForm";
 import LicenseForm from "./AddDriverForm/licenseForm";
+import { tripDetailsInitialValues, tripDetailsSchema } from "./AddTripForm/AddTripValidations";
+import AssignDriverForm from "./AddTripForm/AssignDriverForm";
+import TripDetailsForm from "./AddTripForm/TripDetailsForm";
 import ForgotPasswordForm from "./ForgotPasswordForm/ForgotPasswordForm";
 import { forgotPasswordInitialValues, forgotPasswordSchema } from "./ForgotPasswordForm/ForgotPasswordFormValidations";
 import LoginForm from './LoginForm/LoginForm';
 import { loginInitialValues, loginSchema } from "./LoginForm/LoginValidations";
 import SearchForDriverForm from "./SearchForDriverForm/SearchForDriverForm";
+import SearchForTripForm from "./SearchForTripForm/SearchForTripForm";
 
 const server_url = process.env.REACT_APP_SERVER_URL
 
@@ -24,7 +28,8 @@ const Forms = ({ type }) => {
   const { token } = useSelector((state) => state.auth)
   const [loading, setLoading] = useState(false)
   const [searchForDriver, setSearchForDriver] = useState("")
-  const { setAddDriverTab } = useContext(AppContext)
+  const [searchForTrip, setSearchForTrip] = useState("")
+  const { setAddDriverTab, setAddTripTab } = useContext(AppContext)
 
   const handleCatchError = (err) => {
     try {
@@ -60,15 +65,6 @@ const Forms = ({ type }) => {
     validationSchema: forgotPasswordSchema,
     onSubmit: async (values, { resetForm }) => {
       handleAlert({ msg: "Still Working on it", status: "error" })
-      return
-      setLoading(true)
-      await axios.put(`${server_url}/ForgotPassword`, values).then((res) => {
-        resetForm()
-        handleAlert({ msg: "Ckeck your Email to follow the instructions ", status: "success" })
-      }).catch((err) => {
-        handleCatchError(err)
-      })
-      setLoading(false)
     }
   })
 
@@ -203,15 +199,94 @@ const Forms = ({ type }) => {
     }
   })
 
+  //Add Trip's Details
+  const tripDetailsFormik = useFormik({
+    initialValues: tripDetailsInitialValues,
+    validationSchema: tripDetailsSchema,
+    onSubmit: async (values, { resetForm }) => {
+      if (values.pickup) {
+        if (!values.pickup.address) {
+          handleAlert({ msg: "Choose Pick up Address", status: "error" })
+          return
+        }
+      } else {
+        handleAlert({ msg: "Enter Pickup Location", status: "error" })
+        return
+      }
+
+      if (values.destination) {
+        if (!values.destination.address) {
+          handleAlert({ msg: "Choose Destination Address", status: "error" })
+          return
+        }
+      } else {
+        handleAlert({ msg: "Enter Destination Location", status: "error" })
+        return
+      }
+
+      setLoading(true)
+      await axios.post(`${server_url}/CreateTrip`, values, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }).then((res) => {
+        resetForm()
+        setAddTripTab(1)
+        localStorage.setItem(`${process.env.REACT_APP_CURRENT_TRIP_ID}`, res.data.data._id)
+        handleAlert({ msg: "Trip is Created Successfully", status: "success" })
+      }).catch((err) => {
+        handleCatchError(err)
+      })
+      setLoading(false)
+    }
+  })
+
+  //Add Trip's Assign Driver
+  const assignDriverFormik = useFormik({
+    initialValues: licenseInitialValues,
+    validationSchema: licenseSchema,
+    onSubmit: async (values, { resetForm }) => {
+      if (!localStorage.getItem(`${process.env.REACT_APP_CURRENT_DRIVER_ID}`)) {
+        handleAlert({ msg: "Choose Driver First", status: "error" })
+        navigate(`${process.env.REACT_APP_PENDING_DRIVERS_ROUTE}`)
+        return
+      }
+      setLoading(true)
+      const formData = new FormData()
+      formData.append("front", values.front)
+      formData.append("back", values.back)
+      await axios.post(`${server_url}/AddDriverLicense?id=${localStorage.getItem(`${process.env.REACT_APP_CURRENT_DRIVER_ID}`)}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }).then((res) => {
+        resetForm()
+        values.front = null
+        values.back = null
+        setAddDriverTab(2)
+        handleAlert({ msg: "Driver's License is Added Successfully", status: "success" })
+      }).catch((err) => {
+        handleCatchError(err)
+      })
+      setLoading(false)
+    }
+  })
+
   //Search For Driver
   const handleSearchForDriver = (e) => {
     e.preventDefault()
   }
 
+  //Search For Trip
+  const handleSearchForTrip = (e) => {
+    e.preventDefault()
+  }
+
+
   return (
     <form className={`${(type === "personal_data" || type ===
-      "search_for_driver") && "w-full"}`} onSubmit={type === "login" ? loginFormik.handleSubmit : type === "forgot_password" ? forgotPasswordFormik.handleSubmit : type === "personal_data" ? personalDataFormik.handleSubmit : type === "license" ? licenseFormik.handleSubmit : type === "car_info" ? carInfoFormik.handleSubmit : type === "search_for_driver" && handleSearchForDriver}>
-      {type === "login" ? <LoginForm loading={loading} formik={loginFormik} /> : type === "forgot_password" ? <ForgotPasswordForm formik={forgotPasswordFormik} loading={loading} /> : type === "personal_data" ? <PersonalDataForm formik={personalDataFormik} loading={loading} /> : type === "license" ? <LicenseForm formik={licenseFormik} loading={loading} /> : type === "car_info" ? <CarInfoForm formik={carInfoFormik} loading={loading} /> : type === "search_for_driver" && <SearchForDriverForm searchForDriver={searchForDriver} setSearchForDriver={setSearchForDriver} />}
+      "search_for_driver") && "w-full"}`} onSubmit={type === "login" ? loginFormik.handleSubmit : type === "forgot_password" ? forgotPasswordFormik.handleSubmit : type === "personal_data" ? personalDataFormik.handleSubmit : type === "license" ? licenseFormik.handleSubmit : type === "trip_details" ? tripDetailsFormik.handleSubmit : type === "assign_driver" ? assignDriverFormik.handleSubmit : type === "car_info" ? carInfoFormik.handleSubmit : type === "search_for_trip" ? handleSearchForTrip : type === "search_for_driver" && handleSearchForDriver}>
+      {type === "login" ? <LoginForm loading={loading} formik={loginFormik} /> : type === "forgot_password" ? <ForgotPasswordForm formik={forgotPasswordFormik} loading={loading} /> : type === "personal_data" ? <PersonalDataForm formik={personalDataFormik} loading={loading} /> : type === "license" ? <LicenseForm formik={licenseFormik} loading={loading} /> : type === "trip_details" ? <TripDetailsForm formik={tripDetailsFormik} loading={loading} /> : type === "assign_driver" ? <AssignDriverForm formik={tripDetailsFormik} loading={loading} /> : type === "car_info" ? <CarInfoForm formik={carInfoFormik} loading={loading} /> : type === "search_for_trip" ? <SearchForTripForm searchForTrip={searchForTrip} setSearchForTrip={setSearchForTrip} /> : type === "search_for_driver" && <SearchForDriverForm searchForDriver={searchForDriver} setSearchForDriver={setSearchForDriver} />}
     </form>
   )
 }

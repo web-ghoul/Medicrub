@@ -12,7 +12,7 @@ import { AppContext } from "./context/AppContext";
 import ForgotPasswordModal from "./modals/ForgotPasswordModal";
 import { setAuth } from "./store/authSlice";
 
-const urls =["/","/components","/allocate-driver","/trips","/pending-drivers","/dashboard","/drivers","/drivers/add-driver","/reports"]
+const urls =["/","/components","/allocate-driver","/trips","/trips/add-trip","/pending-drivers","/dashboard","/drivers","/drivers/add-driver","/reports"]
 
 function App() {
   const {pathname} = useLocation()

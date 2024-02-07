@@ -3,6 +3,7 @@ import {
 } from "react-router-dom";
 import App from "./App";
 import AddDriver from "./pages/AddDriver";
+import AddTrip from "./pages/AddTrip";
 import AllocateDriver from "./pages/AllocateDriver";
 import Components from "./pages/Components";
 import Dashboard from "./pages/Dashboard";
@@ -35,7 +36,14 @@ export const router = createBrowserRouter([
       },
       {
         path:process.env.REACT_APP_TRIPS_ROUTE,
-        element:<Trips/>
+        children:[
+          {
+            index:true,
+            element:<Trips/>
+          },{
+          path:"add-trip",
+          element:<AddTrip/>
+        }]
       },
       {
         path:process.env.REACT_APP_ALLOCATE_DRIVER_ROUTE,
