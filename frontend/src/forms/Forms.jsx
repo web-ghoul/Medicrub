@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { AppContext } from "../context/AppContext";
 import { handleAlert } from "../functions/handleAlert";
 import { login } from "../store/authSlice";
+import { getTrips } from "../store/tripsSlice";
 import { carInfoInitialValues, carInfoSchema, licenseInitialValues, licenseSchema, personalDataInitialValues, personalDataSchema } from "./AddDriverForm/AddDriverValidations";
 import CarInfoForm from "./AddDriverForm/CarInfoForm";
 import PersonalDataForm from "./AddDriverForm/PersonalDataForm";
@@ -13,6 +14,7 @@ import LicenseForm from "./AddDriverForm/licenseForm";
 import { tripDetailsInitialValues, tripDetailsSchema } from "./AddTripForm/AddTripValidations";
 import AssignDriverForm from "./AddTripForm/AssignDriverForm";
 import TripDetailsForm from "./AddTripForm/TripDetailsForm";
+import FilterTripsByDateForm from "./FilterTripsByDateForm/FilterTripsByDateForm";
 import ForgotPasswordForm from "./ForgotPasswordForm/ForgotPasswordForm";
 import { forgotPasswordInitialValues, forgotPasswordSchema } from "./ForgotPasswordForm/ForgotPasswordFormValidations";
 import LoginForm from './LoginForm/LoginForm';
@@ -29,7 +31,8 @@ const Forms = ({ type }) => {
   const [loading, setLoading] = useState(false)
   const [searchForDriver, setSearchForDriver] = useState("")
   const [searchForTrip, setSearchForTrip] = useState("")
-  const { setAddDriverTab, setAddTripTab } = useContext(AppContext)
+  const [tripsDate, setTripsDate] = useState("")
+  const { setAddDriverTab, setAddTripTab, currentTripsPage } = useContext(AppContext)
 
   const handleCatchError = (err) => {
     try {
@@ -223,6 +226,10 @@ const Forms = ({ type }) => {
         handleAlert({ msg: "Enter Destination Location", status: "error" })
         return
       }
+      values.destination.latitude = values.destination.latitude.toString()
+      values.destination.longitude = values.destination.longitude.toString()
+      values.pickup.latitude = values.pickup.latitude.toString()
+      values.pickup.longitude = values.pickup.longitude.toString()
       setLoading(true)
       await axios.post(`${server_url}/CreateTrip`, values, {
         headers: {
@@ -281,11 +288,17 @@ const Forms = ({ type }) => {
     e.preventDefault()
   }
 
+  //Filter Trips By Date
+  const handlFilterTripsByDate = (e) => {
+    e.preventDefault()
+    dispatch(getTrips({ page: currentTripsPage, date: tripsDate }))
+  }
+
 
   return (
     <form className={`${(type === "personal_data" || type ===
-      "search_for_driver") && "w-full"}`} onSubmit={type === "login" ? loginFormik.handleSubmit : type === "forgot_password" ? forgotPasswordFormik.handleSubmit : type === "personal_data" ? personalDataFormik.handleSubmit : type === "license" ? licenseFormik.handleSubmit : type === "trip_details" ? tripDetailsFormik.handleSubmit : type === "assign_driver" ? assignDriverFormik.handleSubmit : type === "car_info" ? carInfoFormik.handleSubmit : type === "search_for_trip" ? handleSearchForTrip : type === "search_for_driver" && handleSearchForDriver}>
-      {type === "login" ? <LoginForm loading={loading} formik={loginFormik} /> : type === "forgot_password" ? <ForgotPasswordForm formik={forgotPasswordFormik} loading={loading} /> : type === "personal_data" ? <PersonalDataForm formik={personalDataFormik} loading={loading} /> : type === "license" ? <LicenseForm formik={licenseFormik} loading={loading} /> : type === "trip_details" ? <TripDetailsForm formik={tripDetailsFormik} loading={loading} /> : type === "assign_driver" ? <AssignDriverForm formik={tripDetailsFormik} loading={loading} /> : type === "car_info" ? <CarInfoForm formik={carInfoFormik} loading={loading} /> : type === "search_for_trip" ? <SearchForTripForm searchForTrip={searchForTrip} setSearchForTrip={setSearchForTrip} /> : type === "search_for_driver" && <SearchForDriverForm searchForDriver={searchForDriver} setSearchForDriver={setSearchForDriver} />}
+      "search_for_driver") && "w-full"}`} onSubmit={type === "login" ? loginFormik.handleSubmit : type === "forgot_password" ? forgotPasswordFormik.handleSubmit : type === "personal_data" ? personalDataFormik.handleSubmit : type === "license" ? licenseFormik.handleSubmit : type === "trip_details" ? tripDetailsFormik.handleSubmit : type === "assign_driver" ? assignDriverFormik.handleSubmit : type === "car_info" ? carInfoFormik.handleSubmit : type === "search_for_trip" ? handleSearchForTrip : type === "filter_trips_by_date" ? handlFilterTripsByDate : type === "search_for_driver" && handleSearchForDriver}>
+      {type === "login" ? <LoginForm loading={loading} formik={loginFormik} /> : type === "forgot_password" ? <ForgotPasswordForm formik={forgotPasswordFormik} loading={loading} /> : type === "personal_data" ? <PersonalDataForm formik={personalDataFormik} loading={loading} /> : type === "license" ? <LicenseForm formik={licenseFormik} loading={loading} /> : type === "trip_details" ? <TripDetailsForm formik={tripDetailsFormik} loading={loading} /> : type === "assign_driver" ? <AssignDriverForm formik={tripDetailsFormik} loading={loading} /> : type === "car_info" ? <CarInfoForm formik={carInfoFormik} loading={loading} /> : type === "search_for_trip" ? <SearchForTripForm searchForTrip={searchForTrip} setSearchForTrip={setSearchForTrip} /> : type === "filter_trips_by_date" ? <FilterTripsByDateForm tripsDate={tripsDate} setTripsDate={setTripsDate} /> : type === "search_for_driver" && <SearchForDriverForm searchForDriver={searchForDriver} setSearchForDriver={setSearchForDriver} />}
     </form>
   )
 }

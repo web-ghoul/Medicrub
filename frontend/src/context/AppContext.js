@@ -14,6 +14,17 @@ const AppProvider = ({children}) => {
     setOpenForgotPasswordModal(false)
   }
 
+  //Upload Sheet
+  const [openUploadSheetModal , setOpenUploadSheetModal] = useState(false)
+  
+  const handleOpenUploadSheetModal =()=>{
+    setOpenUploadSheetModal(true)
+  }
+
+  const handleCloseUploadSheetModal =()=>{
+    setOpenUploadSheetModal(false)
+  }
+
 
   //Drawer
   const [openDrawer, setOpenDrawer]= useState(false)
@@ -36,9 +47,16 @@ const AppProvider = ({children}) => {
   const [addTripTab, setAddTripTab] = useState(0)
   
 
+  //Trips Page
+  const [currentTripsPage , setCurrentTripsPage] = useState(0)
+
   const values= {
     openForgotPasswordModal,
-    handleOpenForgotPasswordModal,handleCloseForgotPasswordModal,
+    handleOpenForgotPasswordModal,
+    handleCloseForgotPasswordModal,
+    openUploadSheetModal,
+    handleOpenUploadSheetModal,
+    handleCloseUploadSheetModal,
     openDrawer,
     drawerWidth,
     handleDrawerOpen,
@@ -46,7 +64,9 @@ const AppProvider = ({children}) => {
     addDriverTab,
     setAddDriverTab,
     addTripTab,
-    setAddTripTab
+    setAddTripTab,
+    currentTripsPage ,
+    setCurrentTripsPage
   }
   return (
     <AppContext.Provider value={values}>

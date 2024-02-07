@@ -6,7 +6,7 @@ import { LazyLoadImage } from 'react-lazy-load-image-component'
 import { handleAlert } from '../../functions/handleAlert'
 import { PrimaryTextField } from '../../mui/PrimaryTextField'
 
-const UploadExcel = () => {
+const UploadSheet = () => {
   const handleChange = (e) => {
     const file = e.target.files[0]
     ExcelRenderer(file, (err, res) => {
@@ -40,4 +40,4 @@ const UploadExcel = () => {
   )
 }
 
-export default UploadExcel
+export default UploadSheet

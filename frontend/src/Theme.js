@@ -26,6 +26,7 @@ const Theme=(mode)=>{
         twitter:"#1da1f2",
         whatsapp:"#25d366",
         linkedin:"#25d366",
+        excel:"#1D6F42"
       },
       primary:{
         main:"#FF0000",

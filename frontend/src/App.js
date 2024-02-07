@@ -10,6 +10,7 @@ import Outlay from "./components/Outlay/Outlay";
 import Sidebar from "./components/Sidebar/Sidebar";
 import { AppContext } from "./context/AppContext";
 import ForgotPasswordModal from "./modals/ForgotPasswordModal";
+import UploadSheetModal from "./modals/UploadSheetModal";
 import { setAuth } from "./store/authSlice";
 
 const urls =["/","/components","/allocate-driver","/trips","/trips/add-trip","/pending-drivers","/dashboard","/drivers","/drivers/add-driver","/reports"]
@@ -57,6 +58,7 @@ function App() {
           }
           <CssBaseline />
           <ForgotPasswordModal/>
+          <UploadSheetModal/>
         </Box>
         <Toaster/>
     </ThemeProvider>
