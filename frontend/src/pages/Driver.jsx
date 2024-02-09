@@ -1,9 +1,10 @@
 import UnderDevelopment from '../components/UnderDevelopment/UnderDevelopment'
 
-const AllocateDriver = () => {
+const Driver = () => {
   return (
     <UnderDevelopment />
+
   )
 }
 
-export default AllocateDriver
+export default Driver

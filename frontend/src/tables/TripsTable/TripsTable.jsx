@@ -25,7 +25,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
   '&:last-child td, &:last-child th': {
     border: 0,
-    wordBreak: "break-all"
   },
   [theme.breakpoints.down('md')]: {
     gridTemplateColumns: "none",
@@ -88,10 +87,10 @@ const TripsTable = () => {
                 <Typography variant="subtitle2">{row.patient.phone}</Typography>
               </StyledTableCell>}
               {!smScreen && <StyledTableCell align="center">
-                <Typography variant="subtitle2">{row.pickup}</Typography>
+                <Typography variant="subtitle2">{row.pickup.address}</Typography>
               </StyledTableCell>}
               {!mdScreen && <StyledTableCell align="center">
-                <Typography variant="subtitle2">{row.destination}</Typography>
+                <Typography variant="subtitle2">{row.destination.address}</Typography>
               </StyledTableCell>}
               {!row.driver ? <StyledTableCell align="center">
                 <Typography variant="subtitle2">webGhoul</Typography>

@@ -1,8 +1,9 @@
-import { DeleteRounded, EditRounded, FiberManualRecordRounded } from "@mui/icons-material";
+import { DeleteRounded, EditRounded, VisibilityRounded } from "@mui/icons-material";
 import { Box, IconButton, TableBody, TableCell, TableHead, TableRow, Typography, styled, tableCellClasses, useMediaQuery } from '@mui/material';
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getPendingDrivers } from "../../store/pendingDriversSlice";
+import AvatarTableBox from "../AvatarTableBox";
 import PrimaryLoadingTable from "../PrimaryLoadingTable";
 import PrimaryTable from "../PrimaryTable";
 
@@ -18,7 +19,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "20% 30% 15% 10% 10% 15%",
+  gridTemplateColumns: "25% 35% 15% 25%",
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.action.hover,
   },
@@ -26,11 +27,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
   [theme.breakpoints.down('md')]: {
-    gridTemplateColumns: "20% 25% 15% 20% 20%",
+    gridTemplateColumns: "30% 40% 30%",
   },
   [theme.breakpoints.down('sm')]: {
-    gridTemplateColumns: "none",
-    display: "table-row"
+    gridTemplateColumns: "30% 45% 25%",
   }
 }));
 
@@ -53,17 +53,11 @@ const PendingDriversTable = () => {
           <StyledTableCell>
             <Typography variant='h6'>Name</Typography>
           </StyledTableCell>
-          {!smScreen && <StyledTableCell align="center">
+          <StyledTableCell align="center">
             <Typography variant='h6'>Address</Typography>
-          </StyledTableCell>}
+          </StyledTableCell>
           {!mdScreen && <StyledTableCell align="center">
             <Typography variant='h6'>Phone</Typography>
-          </StyledTableCell>}
-          <StyledTableCell align="center">
-            <Typography variant='h6'>Active</Typography>
-          </StyledTableCell>
-          {!smScreen && <StyledTableCell align="center">
-            <Typography variant='h6'>Status</Typography>
           </StyledTableCell>}
           <StyledTableCell align="right">
             <Typography variant='h6'>Actions</Typography>
@@ -78,27 +72,21 @@ const PendingDriversTable = () => {
           <TableBody key={i}>
             <StyledTableRow>
               {mdScreen ? <StyledTableCell>
-                <Typography variant="subtitle2">${row.user.firstName}</Typography>
+                <AvatarTableBox avatar={row.user.profileImage} name={`${row.user.firstName}`} url={`${process.env.REACT_APP_PENDING_DRIVERS_ROUTE}/${row._id}`} />
               </StyledTableCell> : <StyledTableCell>
-                <Typography variant="subtitle2">{`${row.user.firstName} ${row.user.lastName}`}</Typography>
+                <AvatarTableBox avatar={row.user.profileImage} name={`${row.user.firstName} ${row.user.lastName}`} url={`${process.env.REACT_APP_PENDING_DRIVERS_ROUTE}/${row._id}`} />
               </StyledTableCell>}
-              {!smScreen && <StyledTableCell align="center">
+              <StyledTableCell align="center">
                 <Typography variant="subtitle2">{row.location.address}</Typography>
-              </StyledTableCell>}
+              </StyledTableCell>
               {!mdScreen && <StyledTableCell align="center">
                 <Typography variant="subtitle2">{row.user.phone}</Typography>
               </StyledTableCell>}
-              <StyledTableCell align="center">
-                <Box className={`flex flex-wrap justify-center items-center gap-1`}>
-                  <FiberManualRecordRounded sx={{ fontSize: "18px", color: (theme) => theme.palette.common.whatsapp }} />
-                  <Typography variant="subtitle2">Online</Typography>
-                </Box>
-              </StyledTableCell>
-              {!smScreen && <StyledTableCell align="center">
-                <Typography variant="subtitle2" >Unavailable</Typography>
-              </StyledTableCell>}
               <StyledTableCell align="right">
-                <Box className={`flex flex-wrap justify-end items-center gap-1`}>
+                <Box className={`flex flex-wrap justify-end items-center gap-1 sm:!gap-0`}>
+                  <IconButton>
+                    <VisibilityRounded className="text-green" />
+                  </IconButton>
                   <IconButton>
                     <EditRounded className="text-secondary" />
                   </IconButton>

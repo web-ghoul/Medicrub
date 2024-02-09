@@ -3,6 +3,7 @@ import { Box, IconButton, TableBody, TableCell, TableHead, TableRow, Typography,
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getDrivers } from "../../store/driversSlice";
+import AvatarTableBox from "../AvatarTableBox";
 import PrimaryLoadingTable from "../PrimaryLoadingTable";
 import PrimaryTable from "../PrimaryTable";
 
@@ -79,9 +80,9 @@ const DriversTable = () => {
           <TableBody key={row._id}>
             <StyledTableRow >
               {mdScreen ? <StyledTableCell>
-                <Typography variant="subtitle2">${row.user.firstName}</Typography>
+                <AvatarTableBox avatar={row.user.profileImage} name={`${row.user.firstName}`} url={`${process.env.REACT_APP_DRIVERS_ROUTE}/${row._id}`} />
               </StyledTableCell> : <StyledTableCell>
-                <Typography variant="subtitle2">{`${row.user.firstName} ${row.user.lastName}`}</Typography>
+                <AvatarTableBox avatar={row.user.profileImage} name={`${row.user.firstName} ${row.user.lastName}`} url={`${process.env.REACT_APP_DRIVERS_ROUTE}/${row._id}`} />
               </StyledTableCell>}
               {!smScreen && <StyledTableCell align="center">
                 <Typography variant="subtitle2">{row.location.address}</Typography>

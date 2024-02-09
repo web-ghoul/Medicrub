@@ -7,6 +7,7 @@ import AddTrip from "./pages/AddTrip";
 import AllocateDriver from "./pages/AllocateDriver";
 import Components from "./pages/Components";
 import Dashboard from "./pages/Dashboard";
+import Driver from "./pages/Driver";
 import Drivers from "./pages/Drivers";
 import Error from "./pages/Error";
 import Login from "./pages/Login";
@@ -32,6 +33,9 @@ export const router = createBrowserRouter([
           },{
           path:"add-driver",
           element:<AddDriver/>
+        },{
+          path:":id",
+          element:<Driver/>
         }]
       },
       {
@@ -51,7 +55,14 @@ export const router = createBrowserRouter([
       },
       {
         path:process.env.REACT_APP_PENDING_DRIVERS_ROUTE,
-        element:<PendingDrivers/>
+        children:[
+          {index:true,
+          element:<PendingDrivers/>}
+          ,{
+            path:":id",
+            element:<Driver/>
+          }
+        ]
       },
       {
         path:process.env.REACT_APP_REPORTS_ROUTE,
