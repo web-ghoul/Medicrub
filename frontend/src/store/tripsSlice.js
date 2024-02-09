@@ -6,7 +6,7 @@ export const getTrips = createAsyncThunk(
   'trips/getTrips',
   async (args) => {
     const token = Cookies.get(`${process.env.REACT_APP_TOKEN_NAME}`)
-    const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/Trips/${args.page}?date=${"2024-02-07"}`,{
+    const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/Trips/${args.page}?date=${args.date}`,{
       headers:{
         Authorization:`Bearer ${token}`
       }
@@ -26,6 +26,9 @@ export const tripsSlice = createSlice({
   reducers: {
   },
   extraReducers: (builder) => {
+    builder.addCase(getTrips.pending, (state) => {
+      state.isLoading = true
+    })
     builder.addCase(getTrips.fulfilled, (state, { payload }) => {
       state.trips = payload
       state.isLoading = false

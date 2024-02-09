@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material'
 import React from 'react'
 import { PrimaryTextField } from '../../mui/PrimaryTextField'
 
-const FilterTripsByDateForm = ({ tripsDate, setTripsDate }) => {
+const FilterTripsByDateForm = ({ tripsDate, handlFilterTripsByDate }) => {
   return (
     <Box className={`grid justify-stretch items-center gap-2`}>
       <Typography variant='h6'>Filter By Date</Typography>
@@ -13,7 +13,7 @@ const FilterTripsByDateForm = ({ tripsDate, setTripsDate }) => {
         id="filter_trips_by_date"
         name="filter_trips_by_date"
         value={tripsDate}
-        onChange={(e) => setTripsDate(e.target.value)}
+        onChange={handlFilterTripsByDate}
       />
     </Box>
   )

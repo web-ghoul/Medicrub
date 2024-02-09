@@ -50,6 +50,15 @@ const AppProvider = ({children}) => {
   //Trips Page
   const [currentTripsPage , setCurrentTripsPage] = useState(0)
 
+
+
+  //Get Today Day
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  const todayDate = `${year}-${month}-${day}`;
+
   const values= {
     openForgotPasswordModal,
     handleOpenForgotPasswordModal,
@@ -66,7 +75,8 @@ const AppProvider = ({children}) => {
     addTripTab,
     setAddTripTab,
     currentTripsPage ,
-    setCurrentTripsPage
+    setCurrentTripsPage,
+    todayDate
   }
   return (
     <AppContext.Provider value={values}>

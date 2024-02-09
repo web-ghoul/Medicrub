@@ -1,7 +1,8 @@
 import { DeleteRounded, EditRounded } from "@mui/icons-material";
 import { Box, IconButton, TableBody, TableCell, TableHead, TableRow, Typography, styled, tableCellClasses, useMediaQuery } from '@mui/material';
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { AppContext } from "../../context/AppContext";
 import { getTrips } from "../../store/tripsSlice";
 import PrimaryLoadingTable from "../PrimaryLoadingTable";
 import PrimaryTable from "../PrimaryTable";
@@ -38,11 +39,13 @@ const TripsTable = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const dispatch = useDispatch()
+  const { todayDate } = useContext(AppContext)
   const { trips, isLoading } = useSelector((state) => state.trips)
 
   useEffect(() => {
-    dispatch(getTrips({ page: 0, date: new Date() }))
-  }, [dispatch])
+    dispatch(getTrips({ page: 0, date: todayDate }))
+  }, [dispatch, todayDate])
+
   return (
     <PrimaryTable page={page} setPage={setPage} setRowsPerPage={setRowsPerPage} rowsPerPage={rowsPerPage} data={trips} loading={isLoading} title={"No Trips Yet..."}>
       <TableHead>
@@ -67,13 +70,13 @@ const TripsTable = () => {
           </StyledTableCell>
         </StyledTableRow>
       </TableHead>
-      <TableBody>
-        {isLoading ? <PrimaryLoadingTable /> : trips && (rowsPerPage > 0
-          ? trips.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-          : trips
-        ).map((row, i) => {
-          return (
-            <StyledTableRow key={row._id}>
+      {isLoading ? <PrimaryLoadingTable /> : trips && (rowsPerPage > 0
+        ? trips.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+        : trips
+      ).map((row) => {
+        return (
+          <TableBody key={row._id}>
+            <StyledTableRow >
               {
                 mdScreen ? <StyledTableCell>
                   <Typography variant="subtitle2">${row.patient.firstName}</Typography>
@@ -106,9 +109,9 @@ const TripsTable = () => {
                 </Box>
               </StyledTableCell>
             </StyledTableRow>
-          )
-        })}
-      </TableBody>
+          </TableBody>
+        )
+      })}
     </PrimaryTable>
   )
 }

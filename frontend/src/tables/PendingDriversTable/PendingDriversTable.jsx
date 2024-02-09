@@ -70,13 +70,13 @@ const PendingDriversTable = () => {
           </StyledTableCell>
         </StyledTableRow>
       </TableHead>
-      <TableBody>
-        {isLoading ? <PrimaryLoadingTable /> : pendingDrivers && (rowsPerPage > 0
-          ? pendingDrivers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-          : pendingDrivers
-        ).map((row) => {
-          return row.user && (
-            <StyledTableRow key={row._id}>
+      {isLoading ? <PrimaryLoadingTable /> : pendingDrivers && (rowsPerPage > 0
+        ? pendingDrivers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+        : pendingDrivers
+      ).map((row, i) => {
+        return row.user && (
+          <TableBody key={i}>
+            <StyledTableRow>
               {mdScreen ? <StyledTableCell>
                 <Typography variant="subtitle2">${row.user.firstName}</Typography>
               </StyledTableCell> : <StyledTableCell>
@@ -108,9 +108,9 @@ const PendingDriversTable = () => {
                 </Box>
               </StyledTableCell>
             </StyledTableRow>
-          )
-        })}
-      </TableBody>
+          </TableBody>
+        )
+      })}
     </PrimaryTable>
   )
 }

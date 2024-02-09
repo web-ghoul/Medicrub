@@ -71,13 +71,13 @@ const DriversTable = () => {
           </StyledTableCell>
         </StyledTableRow>
       </TableHead>
-      <TableBody>
-        {isLoading ? <PrimaryLoadingTable /> : drivers && (rowsPerPage > 0
-          ? drivers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-          : drivers
-        ).map((row) => {
-          return row.user && (
-            <StyledTableRow key={row._id}>
+      {isLoading ? <PrimaryLoadingTable /> : drivers && (rowsPerPage > 0
+        ? drivers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+        : drivers
+      ).map((row) => {
+        return row.user && (
+          <TableBody key={row._id}>
+            <StyledTableRow >
               {mdScreen ? <StyledTableCell>
                 <Typography variant="subtitle2">${row.user.firstName}</Typography>
               </StyledTableCell> : <StyledTableCell>
@@ -109,9 +109,9 @@ const DriversTable = () => {
                 </Box>
               </StyledTableCell>
             </StyledTableRow>
-          )
-        })}
-      </TableBody>
+          </TableBody>
+        )
+      })}
     </PrimaryTable>
   )
 }

@@ -8,6 +8,7 @@ import { PrimaryButton } from '../../mui/PrimaryButton'
 import { PrimaryContainer } from '../../mui/PrimaryContainer'
 import { PrimaryTextField } from '../../mui/PrimaryTextField'
 import { SecondaryButton } from "../../mui/SecondaryButton"
+import { UploadSheetButton } from "../../mui/UploadSheetButton"
 
 function fetchData() {
   return new Promise((resolve, reject) => {
@@ -33,6 +34,7 @@ const ComponentsSection = () => {
             <ConfirmButton>Confirm</ConfirmButton>
             <SecondaryButton>Cancel</SecondaryButton>
             <DarkButton>Dark</DarkButton>
+            <UploadSheetButton>Upload Sheet</UploadSheetButton>
           </Box>
         </Box>
         <Box className={`grid justify-start items-start gap-3`}>

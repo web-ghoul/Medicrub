@@ -73,7 +73,7 @@ const PrimaryTable = ({ setRowsPerPage, rowsPerPage, page, setPage, children, da
         {children}
         <TableFooter>
           <TableRow>
-            {!loading && ((data && data.length > 0) ? <TablePagination
+            {!loading && ((data && data.length > 0) ? (data.length > 5 && <TablePagination
               rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
               colSpan={3}
               count={data.length}
@@ -82,7 +82,7 @@ const PrimaryTable = ({ setRowsPerPage, rowsPerPage, page, setPage, children, da
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
               ActionsComponent={TablePaginationActions}
-            /> : <NoData title={title} />)}
+            />) : <NoData title={title} />)}
           </TableRow>
         </TableFooter>
       </Table>

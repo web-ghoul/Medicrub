@@ -4,9 +4,9 @@ import React from 'react'
 
 const PrimaryLoadingTable = () => {
   return (
-    <Box className={`p-4 md!p-2 grid justify-stretch items-center`}>
+    <Box component={"tbody"} className={`p-4 md!p-2 grid justify-stretch items-center`}>
       {Array(Math.floor(Math.random() * 10)).fill(0).map((_, i) => (
-        <Skeleton key={i} className={`!h-[100px] md:!h-[80px]`} />
+        <Skeleton component={"tr"} key={i} className={`!h-[100px] md:!h-[80px]`} />
       ))}
     </Box>
   )
