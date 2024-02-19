@@ -1,5 +1,5 @@
-import { MenuRounded } from "@mui/icons-material";
-import { Box, Breadcrumbs, IconButton, Toolbar, Typography, styled, useMediaQuery } from '@mui/material';
+import { MenuRounded, NotificationsRounded } from "@mui/icons-material";
+import { Badge, Box, Breadcrumbs, IconButton, Toolbar, Typography, styled, useMediaQuery } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
@@ -45,7 +45,7 @@ const Header = () => {
   return (
     <AppBar position="fixed" open={openDrawer}>
       <Toolbar sx={{ minHeight: { xs: '55px', sm: '58px', md: '60px', lg: '65px' } }}>
-        <Box className={`flex justify-start items-center h-[100%]`}>
+        <Box className={`flex justify-stretch items-center w-[100%]`}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -57,7 +57,7 @@ const Header = () => {
           >
             <MenuRounded />
           </IconButton>
-          <PrimaryContainer>
+          <PrimaryContainer className="!flex justify-between items-center">
             <Breadcrumbs aria-label="breadcrumb" className="flex gap-1">
               {
                 headerUrl.map((link, i) => (
@@ -74,6 +74,11 @@ const Header = () => {
                 )
               }
             </Breadcrumbs>
+            <IconButton>
+              <Badge badgeContent={4} color="primary">
+                <NotificationsRounded />
+              </Badge>
+            </IconButton>
           </PrimaryContainer>
         </Box>
       </Toolbar>

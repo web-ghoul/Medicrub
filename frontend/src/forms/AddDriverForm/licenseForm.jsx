@@ -11,8 +11,8 @@ const LicenseForm = ({ formik, loading }) => {
 
       <Box className={`grid justify-stretch items-center gap-10`}>
         <Box className={`flex justify-between items-center gap-6 flex-wrap sm:!justify-center`} >
-          <UploadImage formik={formik} title={"Driver License (Front)"} img={"/images/nationa_id_front.png"} name={"front"} />
-          <UploadImage formik={formik} title={"Driver License (Back)"} img={"/images/nationa_id_back.png"} name={"back"} />
+          <UploadImage formik={formik} title={"Driver License (Front)"} name={"front"} />
+          <UploadImage formik={formik} title={"Driver License (Back)"} name={"back"} />
         </Box>
       </Box>
 

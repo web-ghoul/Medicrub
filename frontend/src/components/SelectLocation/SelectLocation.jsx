@@ -26,7 +26,7 @@ export default function SelectLocation({ formik, label }) {
 }
 
 function Map({ formik, label }) {
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState(() => formik.address ? { lat: formik.latitude, lng: formik.longitude } : null);
   const [address, setAddress] = useState(null);
   const [loading, setLoading] = useState(false)
   const mdScreen = useMediaQuery("(max-width:992px)")
@@ -39,7 +39,7 @@ function Map({ formik, label }) {
     clearSuggestions,
   } = usePlacesAutocomplete();
 
-  const determineLocation = () => {
+  const determineLocation = async () => {
     setLoading(true)
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -52,22 +52,23 @@ function Map({ formik, label }) {
             .then(response => response.json())
             .then(data => {
               const address = data.results[0].formatted_address;
-              setValue(address, false)
               formik.address = address
             })
             .catch(error => {
               console.error('Error fetching address:', error);
             });
           setSelected({ lat: latitude, lng: longitude });
+          setValue(formik.address, false)
+          setLoading(false)
         },
         (error) => {
           console.error('Error getting user location:', error);
+          setLoading(false)
         }
       );
     } else {
       handleAlert({ msg: 'Geolocation is not supported by this browser.', status: "error" })
     }
-    setLoading(false)
   };
 
   useEffect(() => {
@@ -80,11 +81,17 @@ function Map({ formik, label }) {
     }
   }, [selected, formik, address])
 
+  useEffect(() => {
+    if (formik.address) {
+      setValue(formik.address, false)
+    }
+  }, [formik, setValue])
+
   return (
     <Box className={`grid justify-stretch items-center gap-4 md:!gap-2`}>
-      <Box className="grid justify-stretch items-end gap-2 md:gap-1" sx={{ gridTemplateColumns: "1fr auto" }}>
+      <Box className="grid justify-stretch items-start gap-2 md:gap-1" sx={{ gridTemplateColumns: "1fr auto" }}>
         <Box className={"grid justify-stretch items-center gap-1"}>
-          <Typography variant="h6">{label}</Typography>
+          {/* <Typography variant="h6">{label}</Typography> */}
           <PlacesAutocomplete ready={ready}
             value={value}
             setValue={setValue}

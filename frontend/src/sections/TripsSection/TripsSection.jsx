@@ -1,6 +1,7 @@
 import { AddRounded, UploadFileRounded } from '@mui/icons-material'
 import { Box, Typography, useMediaQuery } from '@mui/material'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
+import { useDispatch, useSelector } from "react-redux"
 import { Link } from 'react-router-dom'
 import { AppContext } from '../../context/AppContext'
 import Forms from '../../forms/Forms'
@@ -8,11 +9,19 @@ import { PrimaryBox } from '../../mui/PrimaryBox'
 import { PrimaryButton } from '../../mui/PrimaryButton'
 import { PrimaryContainer } from '../../mui/PrimaryContainer'
 import { UploadSheetButton } from '../../mui/UploadSheetButton'
+import { getTrips } from '../../store/tripsSlice'
 import TripsTable from '../../tables/TripsTable/TripsTable'
 
 const TripsSection = () => {
-  const { setAddTripTab, handleOpenUploadSheetModal } = useContext(AppContext)
+  const { setAddTripTab } = useContext(AppContext)
   const smScreen = useMediaQuery("(max-width:768px)")
+  const dispatch = useDispatch()
+  const { todayDate } = useContext(AppContext)
+  const { trips, isLoading } = useSelector((state) => state.trips)
+
+  useEffect(() => {
+    dispatch(getTrips({ page: 0, date: todayDate }))
+  }, [dispatch, todayDate])
 
   return (
     <PrimaryBox>
@@ -26,14 +35,16 @@ const TripsSection = () => {
                 {!smScreen && <Typography variant='button'>Add Trip</Typography>}
               </PrimaryButton>
             </Link>
-            <UploadSheetButton onClick={handleOpenUploadSheetModal}>
-              <UploadFileRounded />
-              {!smScreen && <Typography variant='button'>Upload Sheet</Typography>}
-            </UploadSheetButton>
+            <Link to={`${process.env.REACT_APP_TRIP_SHEET_ROUTE}`}>
+              <UploadSheetButton >
+                <UploadFileRounded />
+                {!smScreen && <Typography variant='button'>Upload Sheet</Typography>}
+              </UploadSheetButton>
+            </Link>
           </Box>
         </Box>
         <Forms type={"filter_trips_by_date"} />
-        <TripsTable />
+        <TripsTable data={trips} isLoading={isLoading} />
       </PrimaryContainer>
     </PrimaryBox>
   )

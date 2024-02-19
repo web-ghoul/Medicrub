@@ -1,8 +1,8 @@
-import DriversChart from "../charts/DriversChart"
+import UnderDevelopment from '../components/UnderDevelopment/UnderDevelopment'
 
 const Dashboard = () => {
   return (
-    <DriversChart />
+    <UnderDevelopment />
   )
 }
 

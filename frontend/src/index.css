@@ -26,4 +26,8 @@ body {
   min-width: 100vw;
 }
 
+[data-reach-combobox-popover] {
+  z-index: 5000;
+}
+
 @layer utilities {}

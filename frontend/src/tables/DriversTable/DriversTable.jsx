@@ -1,7 +1,9 @@
-import { DeleteRounded, EditRounded, FiberManualRecordRounded } from "@mui/icons-material";
+import { DeleteRounded, EditRounded, FiberManualRecordRounded, VisibilityRounded } from "@mui/icons-material";
 import { Box, IconButton, TableBody, TableCell, TableHead, TableRow, Typography, styled, tableCellClasses, useMediaQuery } from '@mui/material';
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { AppContext } from "../../context/AppContext";
+import { getDriver } from "../../store/driverSlice";
 import { getDrivers } from "../../store/driversSlice";
 import AvatarTableBox from "../AvatarTableBox";
 import PrimaryLoadingTable from "../PrimaryLoadingTable";
@@ -38,18 +40,27 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const DriversTable = () => {
   const { drivers, isLoading } = useSelector((state) => state.drivers)
   const dispatch = useDispatch()
-
   const mdScreen = useMediaQuery("(max-width:992px)")
   const smScreen = useMediaQuery("(max-width:768px)")
+  const { handleOpenDriverDrawer, handleOpenEditDriverDrawer } = useContext(AppContext)
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const handleViewDriver = (index) => {
+    dispatch(getDriver({ id: drivers[index]._id }))
+    handleOpenDriverDrawer()
+  }
+
+  const handleEditDriver = (index) => {
+    dispatch(getDriver({ id: drivers[index]._id }))
+    handleOpenEditDriverDrawer()
+  }
 
   useEffect(() => {
     dispatch(getDrivers({ page: 0 }))
   }, [dispatch])
 
   return (
-    <PrimaryTable page={page} setPage={setPage} setRowsPerPage={setRowsPerPage} loading={isLoading} rowsPerPage={rowsPerPage} data={drivers} title={"No Drivers Yet..."}>
+    <PrimaryTable page={page} setPage={setPage} loading={isLoading} data={drivers} title={"No Drivers Yet..."} name={"drivers"}>
       <TableHead>
         <StyledTableRow>
           <StyledTableCell>
@@ -72,17 +83,14 @@ const DriversTable = () => {
           </StyledTableCell>
         </StyledTableRow>
       </TableHead>
-      {isLoading ? <PrimaryLoadingTable /> : drivers && (rowsPerPage > 0
-        ? drivers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-        : drivers
-      ).map((row) => {
+      {isLoading ? <PrimaryLoadingTable /> : drivers && drivers.map((row, i) => {
         return row.user && (
-          <TableBody key={row._id}>
+          <TableBody key={i}>
             <StyledTableRow >
               {mdScreen ? <StyledTableCell>
-                <AvatarTableBox avatar={row.user.profileImage} name={`${row.user.firstName}`} url={`${process.env.REACT_APP_DRIVERS_ROUTE}/${row._id}`} />
+                <AvatarTableBox avatar={row.user.profileImage} name={`${row.user.firstName}`} handleViewDriver={handleViewDriver} />
               </StyledTableCell> : <StyledTableCell>
-                <AvatarTableBox avatar={row.user.profileImage} name={`${row.user.firstName} ${row.user.lastName}`} url={`${process.env.REACT_APP_DRIVERS_ROUTE}/${row._id}`} />
+                <AvatarTableBox avatar={row.user.profileImage} name={`${row.user.firstName} ${row.user.lastName}`} handleViewDriver={handleViewDriver} />
               </StyledTableCell>}
               {!smScreen && <StyledTableCell align="center">
                 <Typography variant="subtitle2">{row.location.address}</Typography>
@@ -101,7 +109,10 @@ const DriversTable = () => {
               </StyledTableCell>}
               <StyledTableCell align="right">
                 <Box className={`flex flex-wrap justify-end items-center gap-1`}>
-                  <IconButton>
+                  {!mdScreen && <IconButton onClick={() => handleViewDriver(i)}>
+                    <VisibilityRounded className="text-green" />
+                  </IconButton>}
+                  <IconButton onClick={() => handleEditDriver(i)}>
                     <EditRounded className="text-secondary" />
                   </IconButton>
                   {!smScreen && <IconButton>

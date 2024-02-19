@@ -27,6 +27,9 @@ export const driverSlice = createSlice({
   reducers: {
   },
   extraReducers: (builder) => {
+    builder.addCase(getDriver.pending, (state, { payload }) => {
+      state.isLoading = true
+    })
     builder.addCase(getDriver.fulfilled, (state, { payload }) => {
       state.driver = payload
       state.isLoading = false

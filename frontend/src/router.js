@@ -13,6 +13,7 @@ import Error from "./pages/Error";
 import Login from "./pages/Login";
 import PendingDrivers from "./pages/PendingDrivers";
 import Reports from "./pages/Reports";
+import TripSheets from "./pages/TripSheets";
 import Trips from "./pages/Trips";
 
 export const router = createBrowserRouter([
@@ -45,9 +46,13 @@ export const router = createBrowserRouter([
             index:true,
             element:<Trips/>
           },{
-          path:"add-trip",
-          element:<AddTrip/>
-        }]
+            path:"add-trip",
+            element:<AddTrip/>
+          },{
+            path:"sheets",
+            element:<TripSheets/>
+          }
+        ]
       },
       {
         path:process.env.REACT_APP_ALLOCATE_DRIVER_ROUTE,

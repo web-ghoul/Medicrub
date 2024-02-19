@@ -7,10 +7,12 @@ import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import Theme from "./Theme";
 import Header from "./components/Header/Header";
 import Outlay from "./components/Outlay/Outlay";
-import Sidebar from "./components/Sidebar/Sidebar";
 import { AppContext } from "./context/AppContext";
 import ForgotPasswordModal from "./modals/ForgotPasswordModal";
 import UploadSheetModal from "./modals/UploadSheetModal";
+import DriverSidebar from "./sidebars/DriverSidebar/DriverSidebar";
+import EditDriverSidebar from "./sidebars/EditDriverSidebar/EditDriverSidebar";
+import Sidebar from "./sidebars/Sidebar/Sidebar";
 import { setAuth } from "./store/authSlice";
 
 
@@ -22,7 +24,9 @@ function App() {
   const params = useParams()
   const {openDrawer,handleDrawerClose} = useContext(AppContext)
   const mdScreen = useMediaQuery("(max-width:992px)")
-  const urls =["/","/components","/allocate-driver","/trips","/trips/add-trip","/pending-drivers",`/pending-drivers/${params.id}`,"/dashboard","/drivers",`/drivers/${params.id}`,"/drivers/add-driver","/reports"]
+
+  const urls =["/","/components","/allocate-driver","/trips","/trips/add-trip","/pending-drivers",`/pending-drivers/${params.id}`,"/dashboard","/drivers",`/drivers/${params.id}`,"/drivers/add-driver","/reports","/trips/sheets"]
+  
   useEffect(()=>{
     try{
       const token = Cookies.get(`${process.env.REACT_APP_TOKEN_NAME}`)
@@ -46,6 +50,8 @@ function App() {
                 <>
                   <Header/>
                   <Sidebar/>
+                  <DriverSidebar/>
+                  <EditDriverSidebar/>
                   {mdScreen && <Outlay clicked={handleDrawerClose} toggle={openDrawer}/>}
                   <Box component={"main"} className="pt-[65px] lg:pt-[60px] md:pt-[58px] sm:pt-[55px] w-[100%] min-h-[100vh]">
                     <Outlet/>

@@ -103,8 +103,8 @@ const CarInfoForm = ({ formik, loading }) => {
         </Box>
 
         <Box className={`flex justify-between items-center gap-6 flex-wrap sm:!justify-center`} >
-          <UploadImage formik={formik} title={"Car License (Front)"} img={"/images/nationa_id_front.png"} name={"registration"} />
-          <UploadImage formik={formik} title={"Car License (Back)"} img={"/images/nationa_id_back.png"} name={"insurance"} />
+          <UploadImage formik={formik} title={"Car License (Front)"} name={"registration"} />
+          <UploadImage formik={formik} title={"Car License (Back)"} name={"insurance"} />
         </Box>
       </Box>
       <PrimaryButton loadingPosition={"center"}

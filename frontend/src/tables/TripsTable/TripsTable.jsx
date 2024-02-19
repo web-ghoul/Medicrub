@@ -1,9 +1,6 @@
 import { DeleteRounded, EditRounded } from "@mui/icons-material";
 import { Box, IconButton, TableBody, TableCell, TableHead, TableRow, Typography, styled, tableCellClasses, useMediaQuery } from '@mui/material';
-import { useContext, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppContext } from "../../context/AppContext";
-import { getTrips } from "../../store/tripsSlice";
+import { useState } from "react";
 import PrimaryLoadingTable from "../PrimaryLoadingTable";
 import PrimaryTable from "../PrimaryTable";
 
@@ -17,36 +14,32 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  display: "grid",
-  gridTemplateColumns: "15% 15% 20% 20% 15% 15%",
-  '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.action.hover,
-  },
-  '&:last-child td, &:last-child th': {
-    border: 0,
-  },
-  [theme.breakpoints.down('md')]: {
-    gridTemplateColumns: "none",
-    display: "table-row"
-  }
-}));
 
-const TripsTable = () => {
+
+const TripsTable = ({ data, isLoading, readOnly, name }) => {
   const mdScreen = useMediaQuery("(max-width:992px)")
   const smScreen = useMediaQuery("(max-width:768px)")
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const dispatch = useDispatch()
-  const { todayDate } = useContext(AppContext)
-  const { trips, isLoading } = useSelector((state) => state.trips)
 
-  useEffect(() => {
-    dispatch(getTrips({ page: 0, date: todayDate }))
-  }, [dispatch, todayDate])
+  const StyledTableRow = styled(TableRow)(({ theme }) => {
+    return !readOnly && ({
+      display: "grid",
+      gridTemplateColumns: "15% 15% 20% 20% 15% 15%",
+      '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover,
+      },
+      '&:last-child td, &:last-child th': {
+        border: 0,
+      },
+      [theme.breakpoints.down('md')]: {
+        gridTemplateColumns: "none",
+        display: "table-row"
+      }
+    })
+  });
 
   return (
-    <PrimaryTable page={page} setPage={setPage} setRowsPerPage={setRowsPerPage} rowsPerPage={rowsPerPage} data={trips} loading={isLoading} title={"No Trips Yet..."}>
+    <PrimaryTable page={page} setPage={setPage} data={data} loading={isLoading} title={"No Trips Yet..."} total={data.length} name={name || "trips"}>
       <TableHead>
         <StyledTableRow>
           <StyledTableCell>
@@ -64,15 +57,12 @@ const TripsTable = () => {
           <StyledTableCell align="center">
             <Typography variant='h6'>Driver</Typography>
           </StyledTableCell>
-          <StyledTableCell align="right">
+          {!readOnly && <StyledTableCell align="right">
             <Typography variant='h6'>Action</Typography>
-          </StyledTableCell>
+          </StyledTableCell>}
         </StyledTableRow>
       </TableHead>
-      {isLoading ? <PrimaryLoadingTable /> : trips && (rowsPerPage > 0
-        ? trips.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-        : trips
-      ).map((row) => {
+      {isLoading ? <PrimaryLoadingTable /> : data && data.map((row) => {
         return (
           <TableBody key={row._id}>
             <StyledTableRow >
@@ -93,11 +83,11 @@ const TripsTable = () => {
                 <Typography variant="subtitle2">{row.destination.address}</Typography>
               </StyledTableCell>}
               {!row.driver ? <StyledTableCell align="center">
-                <Typography variant="subtitle2">webGhoul</Typography>
+                <Typography variant="subtitle1">webGhoul</Typography>
               </StyledTableCell> : <StyledTableCell align="center">
                 <Typography variant="subtitle2">{row.driver}</Typography>
               </StyledTableCell>}
-              <StyledTableCell align="right">
+              {!readOnly && <StyledTableCell align="right">
                 <Box className={`flex flex-wrap justify-end items-center gap-1`}>
                   <IconButton>
                     <EditRounded className="text-secondary" />
@@ -106,7 +96,7 @@ const TripsTable = () => {
                     <DeleteRounded className="text-primary" />
                   </IconButton>}
                 </Box>
-              </StyledTableCell>
+              </StyledTableCell>}
             </StyledTableRow>
           </TableBody>
         )

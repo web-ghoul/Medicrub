@@ -142,16 +142,18 @@ const Sidebar = () => {
       </DrawerHeader>
       <Divider />
       <List className="grid justify-stretch items-center gap-2 !pt-4 !pb-4" sx={{ height: "100%" }}>
-        {DrawerMenu.map((list, index) => (
-          <Link key={index} to={list.url} color={"inherit"} underline="none" sx={{ backgroundColor: (theme) => list.url === `/${pathname.split("/")[1]}` && theme.palette.primary.main }}>
-            <ListItem sx={{ display: 'flex' }} className="transition-all duration-500 hover:bg-primary" onClick={handleRouting}>
-              <ListItemIcon>
-                {list.icon}
-              </ListItemIcon>
-              <ListItemText primary={list.text} sx={{ display: openDrawer ? "block" : "none" }} />
-            </ListItem>
-          </Link>
-        ))}
+        {DrawerMenu.map((list, index) => {
+          return (
+            <Link key={index} to={list.url} color={"inherit"} underline="none">
+              <ListItem sx={{ display: 'flex', backgroundColor: (theme) => list.url === `/${pathname.split("/")[1]}` && theme.palette.primary.main }} className="transition-all duration-500 hover:bg-primary" onClick={handleRouting}>
+                <ListItemIcon>
+                  {list.icon}
+                </ListItemIcon>
+                <ListItemText primary={list.text} sx={{ display: openDrawer ? "block" : "none" }} />
+              </ListItem>
+            </Link>
+          )
+        })}
         <ListItem sx={{ display: 'flex' }}>
           {openDrawer ? (
             <PrimaryButton onClick={handleLogout}>

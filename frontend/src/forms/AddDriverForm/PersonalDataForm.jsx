@@ -13,7 +13,7 @@ const PersonalDataForm = ({ formik, loading }) => {
         <Typography variant={"h3"}>Personal Data</Typography>
       </Box>
       <Box className={`grid justify-stretch items-center gap-10`}>
-        <UploadImage formik={formik} title={"The Profile photo will make you more reliable to other users of the application"} img={"/images/upload_profile.svg"} name={"profile"} />
+        <UploadImage formik={formik} title={"The Profile photo will make you more reliable to other users of the application"} name={"profile"} />
 
         <Box className={`flex justify-between items-center gap-6 md:grid md:justify-stretch`} >
           <PrimaryTextField
@@ -173,8 +173,8 @@ const PersonalDataForm = ({ formik, loading }) => {
         </Box>
 
         <Box className={`flex justify-between items-center gap-6 flex-wrap sm:!justify-center`} >
-          <UploadImage formik={formik} title={"National Id (Front)"} img={"/images/nationa_id_front.png"} name={"nationalFront"} />
-          <UploadImage formik={formik} title={"National Id (Back)"} img={"/images/nationa_id_back.png"} name={"nationalBack"} />
+          <UploadImage formik={formik} title={"National Id (Front)"} name={"nationalFront"} />
+          <UploadImage formik={formik} title={"National Id (Back)"} name={"nationalBack"} />
         </Box>
 
         <PrimaryTextField
