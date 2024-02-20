@@ -98,7 +98,7 @@ const TripsTable = ({ data, isLoading, readOnly, name }) => {
             </StyledTableRow>
           </TableBody>
         )
-      }) : data.map((row, i) => {
+      }) : data && data.map((row, i) => {
         return (
           <TableBody key={i}>
             <StyledTableRow >
