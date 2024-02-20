@@ -32,7 +32,7 @@ export const editDriverSchema = yup.object({
   ssn: yup.string("Enter your SSN").required("SSN is Required"),
   address: yup.string("Enter your address"),
   password: yup.string("Enter your password")
-    .required("Password is Required").min(8,"Password must be at least 8 characters"),
+    .min(8,"Password must be at least 8 characters"),
   // licenseFront: yup.mixed("Enter License Image Front").required("License Image Front is Required"),
   // licenseBack: yup.mixed("Enter License Image Back")
   //   .required("License Image Back is Required")
