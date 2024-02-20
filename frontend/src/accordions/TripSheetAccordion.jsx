@@ -13,7 +13,7 @@ const TripsSheetsAccordion = ({ data }) => {
         <Typography variant='h6' className='font-[600]'>{data.fileName}</Typography>
       </AccordionSummary>
       <AccordionDetails>
-        <TripsTable readOnly={true} data={data.trips} />
+        <TripsTable readOnly={true} data={data.trips} name={"trips_sheet"} />
       </AccordionDetails>
     </Accordion>
   )

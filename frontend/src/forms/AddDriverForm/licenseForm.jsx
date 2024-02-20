@@ -6,7 +6,7 @@ const LicenseForm = ({ formik, loading }) => {
   return (
     <Box className={`grid justify-stretch items-stretch content-stretch self-stretch gap-10 h-[100%]`}>
       <Box className={`flex justify-start items-start`}>
-        <Typography variant={"h3"}>Add Driver License</Typography>
+        <Typography variant={"h3"} className='font-[600] text-primary'>Add Driver License</Typography>
       </Box>
 
       <Box className={`grid justify-stretch items-center gap-10`}>

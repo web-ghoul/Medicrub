@@ -9,7 +9,8 @@ import { login } from "../store/authSlice";
 import { getDrivers } from "../store/driversSlice";
 import { getPendingDrivers } from "../store/pendingDriversSlice";
 import { getTrips } from "../store/tripsSlice";
-import { carInfoInitialValues, carInfoSchema, licenseInitialValues, licenseSchema, personalDataInitialValues, personalDataSchema } from "./AddDriverForm/AddDriverValidations";
+import { carAlbumInitialValues, carAlbumSchema, carInfoInitialValues, carInfoSchema, licenseInitialValues, licenseSchema, personalDataInitialValues, personalDataSchema } from "./AddDriverForm/AddDriverValidations";
+import CarAlbumForm from "./AddDriverForm/CarAlbumForm";
 import CarInfoForm from "./AddDriverForm/CarInfoForm";
 import PersonalDataForm from "./AddDriverForm/PersonalDataForm";
 import LicenseForm from "./AddDriverForm/licenseForm";
@@ -182,6 +183,7 @@ const Forms = ({ type }) => {
         navigate(`${process.env.REACT_APP_PENDING_DRIVERS_ROUTE}`)
         return
       }
+      values.color = values.color.slice(1)
       setLoading(true)
       const formData = new FormData()
       formData.append("carType", values.carType)
@@ -200,6 +202,56 @@ const Forms = ({ type }) => {
         values.back = null
         setAddDriverTab(2)
         handleAlert({ msg: "Car is Created Successfully", status: "success" })
+      }).catch((err) => {
+        handleCatchError(err)
+      })
+      setLoading(false)
+    }
+  })
+
+  //Add Car's Album
+  const carAlbumFormik = useFormik({
+    initialValues: carAlbumInitialValues,
+    validationSchema: carAlbumSchema,
+    onSubmit: async (values, { resetForm }) => {
+      if (!values.front) {
+        handleAlert({ msg: "Enter Car (Front)", status: "error" })
+        return
+      }
+      if (!values.back) {
+        handleAlert({ msg: "Enter Car (Back)", status: "error" })
+        return
+      }
+      if (!values.right) {
+        handleAlert({ msg: "Enter Car (Right)", status: "error" })
+        return
+      }
+      if (!values.left) {
+        handleAlert({ msg: "Enter Car (Left)", status: "error" })
+        return
+      }
+      if (!localStorage.getItem(`${process.env.REACT_APP_CURRENT_DRIVER_ID}`)) {
+        handleAlert({ msg: "Choose Driver First", status: "error" })
+        navigate(`${process.env.REACT_APP_PENDING_DRIVERS_ROUTE}`)
+        return
+      }
+      setLoading(true)
+      const formData = new FormData()
+      formData.append("front", values.front)
+      formData.append("back", values.back)
+      formData.append("right", values.right)
+      formData.append("left", values.left)
+      await axios.post(`${server_url}/CreateCarAlbum?id=${localStorage.getItem(`${process.env.REACT_APP_CURRENT_DRIVER_ID}`)}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }).then(() => {
+        resetForm()
+        values.front = null
+        values.back = null
+        values.right = null
+        values.left = null
+        handleAlert({ msg: "Car Album is Created Successfully", status: "success" })
         navigate(`${process.env.REACT_APP_DRIVERS_ROUTE}`)
       }).catch((err) => {
         handleCatchError(err)
@@ -230,18 +282,19 @@ const Forms = ({ type }) => {
       formDate.append("profile", values.profile)
       formDate.append("nationalFront", values.nationalFront)
       formDate.append("nationalBack", values.nationalBack)
-      formDate.append("licenseFront", values.licenseFront)
-      formDate.append("licenseBack", values.licenseBack)
+      // formDate.append("licenseFront", values.licenseFront)
+      // formDate.append("licenseBack", values.licenseBack)
       await axios.put(`${server_url}/UpdateDriver?id=${driver._id}`, formDate, {
         headers: {
           Authorization: `Bearer ${token}`
         }
-      }).then((res) => {
+      }).then(() => {
         handleAlert({ msg: "Driver is Updated Successfully", status: "success" })
         if (pathname === `${process.env.REACT_APP_PENDING_DRIVERS_ROUTE}`) {
           dispatch(getPendingDrivers({ page: 0 }))
-        } else {
-          dispatch(getDrivers())
+        }
+        if (pathname === `${process.env.REACT_APP_DRIVERS_ROUTE}`) {
+          dispatch(getDrivers({ page: 0 }))
         }
         handleCloseEditDriverDrawer()
       }).catch((err) => {
@@ -340,12 +393,11 @@ const Forms = ({ type }) => {
     dispatch(getTrips({ page: 0, date: e.target.value }))
   }
 
-
   return (
     <form className={`${(type === "personal_data" || type ===
-      "search_for_driver") && "w-full"}`} onSubmit={type === "login" ? loginFormik.handleSubmit : type === "forgot_password" ? forgotPasswordFormik.handleSubmit : type === "personal_data" ? personalDataFormik.handleSubmit : type === "license" ? licenseFormik.handleSubmit : type === "trip_details" ? tripDetailsFormik.handleSubmit : type === "assign_driver" ? assignDriverFormik.handleSubmit : type === "car_info" ? carInfoFormik.handleSubmit : type === "edit_driver" ? editDriverFormik.handleSubmit : type === "search_for_trip" ? handleSearchForTrip : type === "filter_trips_by_date" ? handlFilterTripsByDate : type === "search_for_driver" && handleSearchForDriver}>
+      "search_for_driver") && "w-full"}`} onSubmit={type === "login" ? loginFormik.handleSubmit : type === "forgot_password" ? forgotPasswordFormik.handleSubmit : type === "personal_data" ? personalDataFormik.handleSubmit : type === "license" ? licenseFormik.handleSubmit : type === "car_album" ? carAlbumFormik.handleSubmit : type === "trip_details" ? tripDetailsFormik.handleSubmit : type === "assign_driver" ? assignDriverFormik.handleSubmit : type === "car_info" ? carInfoFormik.handleSubmit : type === "edit_driver" ? editDriverFormik.handleSubmit : type === "search_for_trip" ? handleSearchForTrip : type === "filter_trips_by_date" ? handlFilterTripsByDate : type === "search_for_driver" && handleSearchForDriver}>
 
-      {type === "login" ? <LoginForm loading={loading} formik={loginFormik} /> : type === "forgot_password" ? <ForgotPasswordForm formik={forgotPasswordFormik} loading={loading} /> : type === "personal_data" ? <PersonalDataForm formik={personalDataFormik} loading={loading} /> : type === "license" ? <LicenseForm formik={licenseFormik} loading={loading} /> : type === "trip_details" ? <TripDetailsForm formik={tripDetailsFormik} loading={loading} /> : type === "assign_driver" ? <AssignDriverForm formik={tripDetailsFormik} loading={loading} /> : type === "car_info" ? <CarInfoForm formik={carInfoFormik} loading={loading} /> : type === "edit_driver" ? <EditDriverForm formik={editDriverFormik} loading={loading} /> : type === "search_for_trip" ? <SearchForTripForm searchForTrip={searchForTrip} setSearchForTrip={setSearchForTrip} /> : type === "filter_trips_by_date" ? <FilterTripsByDateForm tripsDate={tripsDate} handlFilterTripsByDate={handlFilterTripsByDate} /> : type === "search_for_driver" && <SearchForDriverForm searchForDriver={searchForDriver} setSearchForDriver={setSearchForDriver} />}
+      {type === "login" ? <LoginForm loading={loading} formik={loginFormik} /> : type === "forgot_password" ? <ForgotPasswordForm formik={forgotPasswordFormik} loading={loading} /> : type === "personal_data" ? <PersonalDataForm formik={personalDataFormik} loading={loading} /> : type === "license" ? <LicenseForm formik={licenseFormik} loading={loading} /> : type === "trip_details" ? <TripDetailsForm formik={tripDetailsFormik} loading={loading} /> : type === "assign_driver" ? <AssignDriverForm formik={tripDetailsFormik} loading={loading} /> : type === "car_info" ? <CarInfoForm formik={carInfoFormik} loading={loading} /> : type === "car_album" ? <CarAlbumForm formik={carAlbumFormik} loading={loading} /> : type === "edit_driver" ? <EditDriverForm formik={editDriverFormik} loading={loading} /> : type === "search_for_trip" ? <SearchForTripForm searchForTrip={searchForTrip} setSearchForTrip={setSearchForTrip} /> : type === "filter_trips_by_date" ? <FilterTripsByDateForm tripsDate={tripsDate} handlFilterTripsByDate={handlFilterTripsByDate} /> : type === "search_for_driver" && <SearchForDriverForm searchForDriver={searchForDriver} setSearchForDriver={setSearchForDriver} />}
 
     </form>
   )

@@ -9,7 +9,7 @@ const CarInfoForm = ({ formik, loading }) => {
   return (
     <Box className={`grid justify-stretch items-stretch content-stretch self-stretch gap-10 h-[100%]`}>
       <Box className={`flex justify-start items-start`}>
-        <Typography variant={"h3"}>Car Information</Typography>
+        <Typography variant={"h3"} className='font-[600] text-primary'>Car Information</Typography>
       </Box>
       <Box className={`grid justify-stretch items-center gap-10`}>
         <Box className={`flex justify-between items-center gap-6 md:grid md:justify-stretch`} >

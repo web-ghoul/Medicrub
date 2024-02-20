@@ -1,4 +1,4 @@
-import { AssessmentRounded, CommuteRounded, GridViewRounded, Home, PeopleAltRounded, PersonPinCircleRounded, RecentActorsRounded } from "@mui/icons-material";
+import { AssessmentRounded, CommuteRounded, Home, PeopleAltRounded, RecentActorsRounded } from "@mui/icons-material";
 
 export const DrawerMenu=[
   {
@@ -11,11 +11,11 @@ export const DrawerMenu=[
     icon:<PeopleAltRounded />,
     url:`${process.env.REACT_APP_DRIVERS_ROUTE}`
   },
-  {
-    text:"Allocate Driver",
-    icon:<PersonPinCircleRounded />,
-    url:`${process.env.REACT_APP_ALLOCATE_DRIVER_ROUTE}`
-  },
+  // {
+  //   text:"Allocate Driver",
+  //   icon:<PersonPinCircleRounded />,
+  //   url:`${process.env.REACT_APP_ALLOCATE_DRIVER_ROUTE}`
+  // },
   {
     text:"Trips",
     icon: <CommuteRounded />,
@@ -31,9 +31,9 @@ export const DrawerMenu=[
     icon:<AssessmentRounded />,
     url:`${process.env.REACT_APP_REPORTS_ROUTE}`
   },
-  {
-    text:"Components",
-    icon:<GridViewRounded />,
-    url:`${process.env.REACT_APP_COMPONENTS_ROUTE}`
-  }
+  // {
+  //   text:"Components",
+  //   icon:<GridViewRounded />,
+  //   url:`${process.env.REACT_APP_COMPONENTS_ROUTE}`
+  // }
 ]

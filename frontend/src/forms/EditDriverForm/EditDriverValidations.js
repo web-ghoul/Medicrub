@@ -15,8 +15,8 @@ export const editDriverInitialValues = {
   nationalBack:"",
   latitude: 0,
   longitude: 0,
-  licenseFront: "",
-  licenseBack: ""
+  // licenseFront: "",
+  // licenseBack: ""
 }
 
 export const editDriverSchema = yup.object({
@@ -33,7 +33,7 @@ export const editDriverSchema = yup.object({
   address: yup.string("Enter your address"),
   password: yup.string("Enter your password")
     .required("Password is Required").min(8,"Password must be at least 8 characters"),
-  licenseFront: yup.mixed("Enter License Image Front").required("License Image Front is Required"),
-  licenseBack: yup.mixed("Enter License Image Back")
-    .required("License Image Back is Required")
+  // licenseFront: yup.mixed("Enter License Image Front").required("License Image Front is Required"),
+  // licenseBack: yup.mixed("Enter License Image Back")
+  //   .required("License Image Back is Required")
 })

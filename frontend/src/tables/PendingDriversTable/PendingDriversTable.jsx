@@ -42,15 +42,23 @@ const PendingDriversTable = () => {
   const [page, setPage] = useState(1);
   const { handleOpenDriverDrawer, handleOpenEditDriverDrawer } = useContext(AppContext)
   const { pendingDrivers, isLoading } = useSelector((state) => state.pendingDrivers)
+  const { driver } = useSelector((state) => state.driver)
+
   const dispatch = useDispatch()
 
   const handleViewDriver = (index) => {
-    dispatch(getDriver({ id: pendingDrivers[index]._id }))
+    const driverId = pendingDrivers[index]._id
+    if (!driver || driver._id !== driverId) {
+      dispatch(getDriver({ id: driverId }))
+    }
     handleOpenDriverDrawer()
   }
 
   const handleEditDriver = (index) => {
-    dispatch(getDriver({ id: pendingDrivers[index]._id }))
+    const driverId = pendingDrivers[index]._id
+    if (!driver || driver._id !== driverId) {
+      dispatch(getDriver({ id: driverId }))
+    }
     handleOpenEditDriverDrawer()
   }
 
@@ -59,7 +67,7 @@ const PendingDriversTable = () => {
   }, [dispatch])
 
   return (
-    <PrimaryTable page={page} setPage={setPage} data={pendingDrivers} loading={isLoading} title={"No Drivers Yet..."} name={"pending-drivers"}>
+    <PrimaryTable page={page} setPage={setPage} data={pendingDrivers} loading={isLoading} title={"No Drivers Yet..."} name={"pending-drivers"} total={pendingDrivers && pendingDrivers.length}>
       <TableHead>
         <StyledTableRow>
           <StyledTableCell>

@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 
 export const AppContext = createContext()
 
@@ -85,15 +85,15 @@ const AppProvider = ({children}) => {
 
 
   //Trips Sheet From Local Storage
-  const [tripsSheets , setTripsSheets] = useState(null)
+  const [tripsSheets , setTripsSheets] = useState([])
 
   
-  useEffect(() => {
-    const tripsSheetsData = localStorage.getItem(`${process.env.REACT_APP_TRIPS_SHEETS_STORAGE_NAME}`)
-    if (tripsSheetsData) {
-      setTripsSheets(JSON.parse(tripsSheetsData))
-    }
-  }, [tripsSheets])
+  // useEffect(() => {
+  //   const tripsSheetsData = localStorage.getItem(`${process.env.REACT_APP_TRIPS_SHEETS_STORAGE_NAME}`)
+  //   if (tripsSheetsData) {
+  //     setTripsSheets(JSON.parse(tripsSheetsData))
+  //   }
+  // }, [tripsSheets])
 
 
   const values= {

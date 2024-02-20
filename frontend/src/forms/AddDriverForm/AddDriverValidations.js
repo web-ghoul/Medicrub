@@ -63,3 +63,19 @@ export const carInfoSchema = yup.object({
   color: yup.string("Enter car color")
   .required("Car Color is Required"),
 })
+
+
+
+export const carAlbumInitialValues={
+  front:"",
+  back:"",
+  right:"",
+  left:"",
+}
+
+export const carAlbumSchema = yup.object({
+  front: yup.mixed("Enter Car Image Front"),
+  back: yup.mixed("Enter Car Image Back"),
+  right: yup.mixed("Enter Car Image Right"),
+  left: yup.mixed("Enter Car Image Left")
+})

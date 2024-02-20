@@ -14,8 +14,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
-
-
 const TripsTable = ({ data, isLoading, readOnly, name }) => {
   const mdScreen = useMediaQuery("(max-width:992px)")
   const smScreen = useMediaQuery("(max-width:768px)")
@@ -39,7 +37,7 @@ const TripsTable = ({ data, isLoading, readOnly, name }) => {
   });
 
   return (
-    <PrimaryTable page={page} setPage={setPage} data={data} loading={isLoading} title={"No Trips Yet..."} total={data.length} name={name || "trips"}>
+    <PrimaryTable page={page} setPage={setPage} data={data} loading={isLoading} title={"No Trips Yet..."} total={data && data?.length} name={name || "trips"}>
       <TableHead>
         <StyledTableRow>
           <StyledTableCell>
@@ -62,9 +60,47 @@ const TripsTable = ({ data, isLoading, readOnly, name }) => {
           </StyledTableCell>}
         </StyledTableRow>
       </TableHead>
-      {isLoading ? <PrimaryLoadingTable /> : data && data.map((row) => {
+      {isLoading ? <PrimaryLoadingTable /> : data && data.length > 10 ? data.slice(10 * page, 10 + (10 * page)).map((row, i) => {
         return (
-          <TableBody key={row._id}>
+          <TableBody key={i}>
+            <StyledTableRow >
+              {
+                mdScreen ? <StyledTableCell>
+                  <Typography variant="subtitle2">${row.patient.firstName}</Typography>
+                </StyledTableCell> : <StyledTableCell>
+                  <Typography variant="subtitle2">{`${row.patient.firstName} ${row.patient.lastName}`}</Typography>
+                </StyledTableCell>
+              }
+              {!mdScreen && <StyledTableCell align="center">
+                <Typography variant="subtitle2">{row.patient.phone}</Typography>
+              </StyledTableCell>}
+              {!smScreen && <StyledTableCell align="center">
+                <Typography variant="subtitle2">{row.pickup.address}</Typography>
+              </StyledTableCell>}
+              {!mdScreen && <StyledTableCell align="center">
+                <Typography variant="subtitle2">{row.destination.address}</Typography>
+              </StyledTableCell>}
+              {!row.driver ? <StyledTableCell align="center">
+                <Typography variant="subtitle1">webGhoul</Typography>
+              </StyledTableCell> : <StyledTableCell align="center">
+                <Typography variant="subtitle2">{row.driver}</Typography>
+              </StyledTableCell>}
+              {!readOnly && <StyledTableCell align="right">
+                <Box className={`flex flex-wrap justify-end items-center gap-1`}>
+                  <IconButton>
+                    <EditRounded className="text-secondary" />
+                  </IconButton>
+                  {!smScreen && <IconButton>
+                    <DeleteRounded className="text-primary" />
+                  </IconButton>}
+                </Box>
+              </StyledTableCell>}
+            </StyledTableRow>
+          </TableBody>
+        )
+      }) : data.map((row, i) => {
+        return (
+          <TableBody key={i}>
             <StyledTableRow >
               {
                 mdScreen ? <StyledTableCell>

@@ -42,7 +42,13 @@ const UploadSheet = () => {
               const pickupAddress = `${data[i][23]}, ${data[i][24]}, ${data[i][25]} ${data[i][26]}`
               const destinationAddress = `${data[i][5]}, ${data[i][6]}, ${data[i][9]} ${data[i][10]}`
               const pickup = await handleGetLocation(pickupAddress)
+              if (!pickup) {
+                break
+              }
               const destination = await handleGetLocation(destinationAddress)
+              if (!destination) {
+                break
+              }
               trips.push({
                 time: data[i][29],
                 cost: data[i][30],
@@ -53,19 +59,20 @@ const UploadSheet = () => {
                 destination,
                 patient: { firstName: data[i][18], lastName: data[i][19], phone: data[i][20] }
               })
+
             }
 
-            //Add Data to Local Storage
-            let tripSheets = []
-            const local = localStorage.getItem(`${process.env.REACT_APP_TRIPS_SHEETS_STORAGE_NAME}`)
-            if (local) {
-              tripSheets = JSON.parse(local)
-            }
-            tripSheets.push({ fileName, trips })
-            localStorage.setItem(`${process.env.REACT_APP_TRIPS_SHEETS_STORAGE_NAME}`, JSON.stringify(tripSheets))
+            // //Add Data to Local Storage
+            // let tripSheets = []
+            // const local = localStorage.getItem(`${process.env.REACT_APP_TRIPS_SHEETS_STORAGE_NAME}`)
+            // if (local) {
+            //   tripSheets = JSON.parse(local)
+            // }
+            // tripSheets.push({ fileName, trips })
+            // localStorage.setItem(`${process.env.REACT_APP_TRIPS_SHEETS_STORAGE_NAME}`, JSON.stringify(tripSheets))
 
             //Handle Data to Table
-            setTripsSheets(tripSheets)
+            setTripsSheets((prev) => [...prev, { fileName, trips }])
             setLoading(false)
             setSuccess(true)
             setInterval(() => {
@@ -147,7 +154,7 @@ const UploadSheet = () => {
               </>
             )
           }
-          <PrimaryTextField
+          {!loading && <PrimaryTextField
             fullWidth
             type={"file"}
             inputProps={{ accept: ".xls, .xlsx, .xlsm, .xlsb, .csv" }}
@@ -155,7 +162,7 @@ const UploadSheet = () => {
             name={"file"}
             onChange={handleChange}
             sx={{ position: "absolute", opacity: "0", zIndex: "-1" }}
-          />
+          />}
           {
             loading && (
               <Stack sx={{ width: '100%', color: 'grey.500' }} spacing={2}>

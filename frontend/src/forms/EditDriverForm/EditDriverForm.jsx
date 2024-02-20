@@ -31,10 +31,10 @@ const EditDriverForm = ({ formik, loading }) => {
       address: driver.user.location.address,
       latitude: +driver.user.location.latitude,
       longitude: +driver.user.location.longitude,
-      nationalFront: driver.nationalCard.front,
-      nationalBack: driver.nationalCard.back,
-      licenseFront: driver.driverLicense.back,
-      licenseBack: driver.driverLicense.back
+      nationalFront: driver?.nationalCard?.front,
+      nationalBack: driver?.nationalCard?.back,
+      // licenseFront: driver?.driverLicense?.back,
+      // licenseBack: driver?.driverLicense?.back
     };
     formik.setValues(newValues);
   };
@@ -46,7 +46,7 @@ const EditDriverForm = ({ formik, loading }) => {
   }, [driver, isLoading]);
 
   return (
-    <PrimaryBox className={`w-[500px] grid justify-stretch items-center gap-6 px-8 overflow-auto md:w-[400px] sm:!w-[100vw] relative bg-gray`}>
+    <PrimaryBox className={`w-[600px] grid justify-stretch items-center gap-6 px-8 overflow-auto md:!px-6  md:w-[450px] sm:!w-[100vw] relative bg-gray`}>
       {
         isLoading ? <LoadingDriverInfo /> : (
           <>
@@ -242,14 +242,14 @@ const EditDriverForm = ({ formik, loading }) => {
                 <UploadImage formik={formik} title={"National Id (Back)"} name={"nationalBack"} />
               </Box>
             </Box>
-            <Divider className='!border-2' />
-            <Box className={`grid justify-stretch items-center gap-3`}>
+            {/* <Divider className='!border-2' /> */}
+            {/* <Box className={`grid justify-stretch items-center gap-3`}>
               <Typography variant='h6' className='font-[700] text-primary'>Driver License</Typography>
               <Box className={`flex justify-between items-center gap-6 flex-wrap sm:!justify-center`} >
                 <UploadImage formik={formik} title={"Driver License (Front)"} name={"licenseFront"} />
                 <UploadImage formik={formik} title={"Driver License (Back)"} name={"licenseBack"} />
               </Box>
-            </Box>
+            </Box> */}
             <PrimaryButton loadingPosition={"center"}
               loading={loading} loadingIndicator={
                 <CircularProgress sx={{ color: "#fff" }} />

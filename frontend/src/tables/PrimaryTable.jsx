@@ -15,8 +15,6 @@ const PrimaryTable = ({ setPage, children, data, title, loading, total, name }) 
       dispatch(getPendingDrivers({ page: value - 1 }))
     } else if (name === "trips") {
       dispatch(getPendingDrivers({ page: value - 1 }))
-    } else if (name === "trips_sheet") {
-
     }
   };
 
@@ -26,7 +24,7 @@ const PrimaryTable = ({ setPage, children, data, title, loading, total, name }) 
         {children}
         <TableFooter>
           <TableRow>
-            {((data && data.length > 0) ? (data.length > 0 && (<Stack className="p-4" component={"td"} spacing={2}>
+            {((data && data.length > 0) ? (data.length > 0 && (Math.ceil(total / 10) > 1 && <Stack className="p-4" component={"td"} spacing={2}>
               <Pagination count={Math.ceil(total / 10)} variant="outlined" shape="rounded" onChange={handleChange} />
             </Stack>)) : (!loading && <NoData title={title} />))}
           </TableRow>

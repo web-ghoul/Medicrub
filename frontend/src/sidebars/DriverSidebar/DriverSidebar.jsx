@@ -1,14 +1,13 @@
 import { CalendarMonthRounded, CallRounded, CarCrashRounded, CarRentalRounded, CloseRounded, ColorLensRounded, ContactsRounded, ContentCopyRounded, EditRounded, FmdGoodRounded, MailRounded, MedicalServicesRounded, SdRounded } from '@mui/icons-material';
 import { Box, Chip, Divider, Drawer, IconButton, Typography, useMediaQuery } from '@mui/material';
 import { useContext } from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import AlbumGhoul from '../../components/Album/Album';
 import { AppContext } from '../../context/AppContext';
 import { handleCopyText } from '../../functions/handleCopyText';
 import { handleDateFormate } from '../../functions/handleDateFormate';
 import { PrimaryBox } from '../../mui/PrimaryBox';
 import { PrimaryButton } from '../../mui/PrimaryButton';
-import { getDriver } from '../../store/driverSlice';
 import DataBox from './DataBox';
 import DriverAvatar from './DriverAvatar';
 import LoadingDriverInfo from './LoadingDriverInfo';
@@ -16,12 +15,10 @@ import LoadingDriverInfo from './LoadingDriverInfo';
 const DriverSidebar = () => {
   const { driver, isLoading } = useSelector((state) => state.driver)
   const { openDriverDrawer, handleCloseDriverDrawer, handleOpenEditDriverDrawer } = useContext(AppContext)
-  const dispatch = useDispatch()
   const smSize = useMediaQuery("(max-width:768px)")
 
   const handleEditDriver = () => {
     handleCloseDriverDrawer()
-    dispatch(getDriver({ id: driver._id }))
     handleOpenEditDriverDrawer()
   }
 
@@ -32,7 +29,7 @@ const DriverSidebar = () => {
       onClose={handleCloseDriverDrawer}
       sx={{ zIndex: 2500 }}
     >
-      <PrimaryBox className={`w-[500px] grid justify-stretch items-center gap-6 px-8 overflow-auto md:w-[400px] sm:!w-[100vw] relative`}>
+      <PrimaryBox className={`w-[600px] grid justify-stretch items-center gap-6 px-8 overflow-auto md:!px-6  md:w-[450px] sm:!w-[100vw] relative`}>
         {isLoading ?
           <LoadingDriverInfo /> : (
             <>

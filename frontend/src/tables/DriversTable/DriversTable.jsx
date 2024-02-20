@@ -44,14 +44,21 @@ const DriversTable = () => {
   const smScreen = useMediaQuery("(max-width:768px)")
   const { handleOpenDriverDrawer, handleOpenEditDriverDrawer } = useContext(AppContext)
   const [page, setPage] = useState(0);
+  const { driver } = useSelector((state) => state.driver)
 
   const handleViewDriver = (index) => {
-    dispatch(getDriver({ id: drivers[index]._id }))
+    const driverId = drivers[index]._id
+    if (!driver || driver._id !== driverId) {
+      dispatch(getDriver({ id: driverId }))
+    }
     handleOpenDriverDrawer()
   }
 
   const handleEditDriver = (index) => {
-    dispatch(getDriver({ id: drivers[index]._id }))
+    const driverId = drivers[index]._id
+    if (!driver || driver._id !== driverId) {
+      dispatch(getDriver({ id: driverId }))
+    }
     handleOpenEditDriverDrawer()
   }
 
@@ -88,9 +95,9 @@ const DriversTable = () => {
           <TableBody key={i}>
             <StyledTableRow >
               {mdScreen ? <StyledTableCell>
-                <AvatarTableBox avatar={row.user.profileImage} name={`${row.user.firstName}`} handleViewDriver={handleViewDriver} />
+                <AvatarTableBox avatar={row.user.profileImage} name={`${row.user.firstName}`} handleViewDriver={() => handleViewDriver(i)} />
               </StyledTableCell> : <StyledTableCell>
-                <AvatarTableBox avatar={row.user.profileImage} name={`${row.user.firstName} ${row.user.lastName}`} handleViewDriver={handleViewDriver} />
+                <AvatarTableBox avatar={row.user.profileImage} name={`${row.user.firstName} ${row.user.lastName}`} handleViewDriver={() => handleViewDriver(i)} />
               </StyledTableCell>}
               {!smScreen && <StyledTableCell align="center">
                 <Typography variant="subtitle2">{row.location.address}</Typography>

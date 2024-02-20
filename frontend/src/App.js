@@ -15,8 +15,6 @@ import EditDriverSidebar from "./sidebars/EditDriverSidebar/EditDriverSidebar";
 import Sidebar from "./sidebars/Sidebar/Sidebar";
 import { setAuth } from "./store/authSlice";
 
-
-
 function App() {
   const {pathname} = useLocation()
   const navigate = useNavigate()

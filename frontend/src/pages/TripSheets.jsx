@@ -22,7 +22,7 @@ const TripSheets = () => {
               ))}
             </Box>
           ) : (
-            <NoData img={"/images/folder.png"} title={"No trips yet..."} />
+            <NoData com={"section"} img={"/images/folder.png"} title={"No trips yet..."} />
           )}
         </Box>
       </PrimaryContainer>

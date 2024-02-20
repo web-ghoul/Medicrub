@@ -10,7 +10,7 @@ const PersonalDataForm = ({ formik, loading }) => {
   return (
     <Box className={`grid justify-stretch items-stretch content-stretch self-stretch gap-10 h-[100%]`}>
       <Box className={`flex justify-start items-start`}>
-        <Typography variant={"h3"}>Personal Data</Typography>
+        <Typography variant={"h3"} className='font-[600] text-primary'>Personal Data</Typography>
       </Box>
       <Box className={`grid justify-stretch items-center gap-10`}>
         <UploadImage formik={formik} title={"The Profile photo will make you more reliable to other users of the application"} name={"profile"} />
