@@ -1,11 +1,13 @@
-import { CalendarMonthRounded, CallRounded, CarCrashRounded, CarRentalRounded, CloseRounded, ColorLensRounded, ContactsRounded, ContentCopyRounded, EditRounded, FmdGoodRounded, MailRounded, MedicalServicesRounded, SdRounded } from '@mui/icons-material';
+import { CalendarMonthRounded, CallRounded, CarCrashRounded, CarRentalRounded, CloseRounded, ColorLensRounded, ContactsRounded, ContentCopyRounded, DeleteRounded, EditRounded, FmdGoodRounded, MailRounded, MedicalServicesRounded, SdRounded } from '@mui/icons-material';
 import { Box, Chip, Divider, Drawer, IconButton, Typography, useMediaQuery } from '@mui/material';
 import { useContext } from 'react';
 import { useSelector } from "react-redux";
 import AlbumGhoul from '../../components/Album/Album';
-import { AppContext } from '../../context/AppContext';
+import { DrawersContext } from '../../context/DrawersContext';
+import { handleAlert } from '../../functions/handleAlert';
 import { handleCopyText } from '../../functions/handleCopyText';
 import { handleDateFormate } from '../../functions/handleDateFormate';
+import { DarkButton } from '../../mui/DarkButton';
 import { PrimaryBox } from '../../mui/PrimaryBox';
 import { PrimaryButton } from '../../mui/PrimaryButton';
 import DataBox from './DataBox';
@@ -14,12 +16,16 @@ import LoadingDriverInfo from './LoadingDriverInfo';
 
 const DriverSidebar = () => {
   const { driver, isLoading } = useSelector((state) => state.driver)
-  const { openDriverDrawer, handleCloseDriverDrawer, handleOpenEditDriverDrawer } = useContext(AppContext)
+  const { openDriverDrawer, handleCloseDriverDrawer, handleOpenEditDriverDrawer } = useContext(DrawersContext)
   const smSize = useMediaQuery("(max-width:768px)")
 
   const handleEditDriver = () => {
     handleCloseDriverDrawer()
     handleOpenEditDriverDrawer()
+  }
+
+  const handleDeleteDriver = () => {
+    handleAlert({ msg: "Under Development..." })
   }
 
   return (
@@ -96,10 +102,16 @@ const DriverSidebar = () => {
                   <AlbumGhoul title={"Car Album"} front={driver.car.carAlbum.front} back={driver.car.carAlbum.back} right={driver.car.carAlbum.right} left={driver.car.carAlbum.left} />
                 </>
               )}
-              <PrimaryButton onClick={handleEditDriver}>
-                <EditRounded />
-                <Typography variant='button'>Edit</Typography>
-              </PrimaryButton>
+              <Box className={`grid grid-cols-2 justify-stretch items-center gap-4`}>
+                <DarkButton fullWidth onClick={handleEditDriver}>
+                  <EditRounded />
+                  <Typography variant='button'>Edit</Typography>
+                </DarkButton>
+                <PrimaryButton fullWidth onClick={handleDeleteDriver}>
+                  <DeleteRounded />
+                  <Typography variant='button'>Delete</Typography>
+                </PrimaryButton>
+              </Box>
             </>
           )
         }

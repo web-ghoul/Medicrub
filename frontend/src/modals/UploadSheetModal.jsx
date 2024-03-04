@@ -2,10 +2,10 @@ import { UploadFile } from "@mui/icons-material"
 import { Box, Modal, Typography } from "@mui/material"
 import { useContext } from "react"
 import UploadSheet from "../components/UploadSheet/UploadSheet"
-import { AppContext } from "../context/AppContext"
+import { SheetsContext } from "../context/SheetsContext"
 
 const UploadSheetModal = () => {
-  const { openUploadSheetModal, handleCloseUploadSheetModal } = useContext(AppContext)
+  const { openUploadSheetModal, handleCloseUploadSheetModal } = useContext(SheetsContext)
   return (
     <Modal
       open={openUploadSheetModal}

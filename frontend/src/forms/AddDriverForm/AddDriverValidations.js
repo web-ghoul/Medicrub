@@ -39,9 +39,8 @@ export const licenseInitialValues = {
 }
 
 export const licenseSchema = yup.object({
-  front: yup.mixed("Enter License Image Front").required("License Image Front is Required"),
+  front: yup.mixed("Enter License Image Front"),
   back: yup.mixed("Enter License Image Back")
-    .required("License Image Back is Required")
 })
 
 

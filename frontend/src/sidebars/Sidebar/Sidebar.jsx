@@ -5,13 +5,13 @@ import { useContext } from "react";
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { AppContext } from "../../context/AppContext";
+import { DrawersContext } from "../../context/DrawersContext";
 import { DrawerMenu } from "../../data/sidebar";
 import { PrimaryButton } from "../../mui/PrimaryButton";
 import { logout } from "../../store/authSlice";
 
 const Sidebar = () => {
-  const { openDrawer, drawerWidth, handleDrawerClose } = useContext(AppContext)
+  const { openDrawer, drawerWidth, handleDrawerClose } = useContext(DrawersContext)
   const mdScreen = useMediaQuery("(max-width:992px)")
   const smScreen = useMediaQuery("(max-width:768px)")
 

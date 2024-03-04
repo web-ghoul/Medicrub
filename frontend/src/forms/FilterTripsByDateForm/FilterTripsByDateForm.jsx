@@ -1,20 +1,12 @@
 import { Box, Typography } from '@mui/material'
 import React from 'react'
-import { PrimaryTextField } from '../../mui/PrimaryTextField'
+import PrimaryInput from '../../components/PrimaryInput/PrimaryInput'
 
-const FilterTripsByDateForm = ({ tripsDate, handlFilterTripsByDate }) => {
+const FilterTripsByDateForm = ({ formik }) => {
   return (
     <Box className={`grid justify-stretch items-center gap-2`}>
       <Typography variant='h6'>Filter By Date</Typography>
-      <PrimaryTextField
-        fullWidth
-        variant="outlined"
-        type="date"
-        id="filter_trips_by_date"
-        name="filter_trips_by_date"
-        value={tripsDate}
-        onChange={handlFilterTripsByDate}
-      />
+      <PrimaryInput type={"date"} name={"date"} formik={formik} onChange={true} />
     </Box>
   )
 }

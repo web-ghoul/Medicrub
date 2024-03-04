@@ -5,6 +5,6 @@ export const forgotPasswordInitialValues = {
 }
 
 export const forgotPasswordSchema = yup.object({
-  email: yup.string("Enter your username").email("Email is InValid").required("Username is Required")
+  email: yup.string("Enter your email").email("Email is InValid").required("Email is Required")
 })
 

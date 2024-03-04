@@ -4,7 +4,7 @@ import { Box } from '@mui/system'
 import React, { useContext, useState } from 'react'
 import { ExcelRenderer } from "react-excel-renderer"
 import { LazyLoadImage } from 'react-lazy-load-image-component'
-import { AppContext } from "../../context/AppContext"
+import { SheetsContext } from "../../context/SheetsContext"
 import { handleAlert } from '../../functions/handleAlert'
 import { handleGetLocation } from "../../functions/handleGetLocation"
 import { PrimaryTextField } from '../../mui/PrimaryTextField'
@@ -14,7 +14,7 @@ const UploadSheet = () => {
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
   const [draggingFailed, setDraggingFailed] = useState(false)
-  const { setTripsSheets } = useContext(AppContext)
+  const { setTripsSheets } = useContext(SheetsContext)
 
   const handleChange = (e) => {
     setLoading(true)
@@ -54,6 +54,8 @@ const UploadSheet = () => {
                 cost: data[i][30],
                 number: data[i][32],
                 date: data[i][1],
+                birthDate: data[i][39],
+                type: data[i][35],
                 specialNeeds: data[i][28],
                 pickup,
                 destination,
@@ -61,15 +63,6 @@ const UploadSheet = () => {
               })
 
             }
-
-            // //Add Data to Local Storage
-            // let tripSheets = []
-            // const local = localStorage.getItem(`${process.env.REACT_APP_TRIPS_SHEETS_STORAGE_NAME}`)
-            // if (local) {
-            //   tripSheets = JSON.parse(local)
-            // }
-            // tripSheets.push({ fileName, trips })
-            // localStorage.setItem(`${process.env.REACT_APP_TRIPS_SHEETS_STORAGE_NAME}`, JSON.stringify(tripSheets))
 
             //Handle Data to Table
             setTripsSheets((prev) => [...prev, { fileName, trips }])
@@ -165,8 +158,8 @@ const UploadSheet = () => {
           />}
           {
             loading && (
-              <Stack sx={{ width: '100%', color: 'grey.500' }} spacing={2}>
-                <LinearProgress color="success" />
+              <Stack sx={{ width: '100%', color: 'grey.500' }} spacing={4}>
+                <LinearProgress className="!h-[12px] !rounded-2xl md:!h-[8px] sm:!h-[6px]" color="success" />
               </Stack>
             )
           }

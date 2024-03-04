@@ -9,7 +9,7 @@ import {
 } from "@reach/combobox";
 import "@reach/combobox/styles.css";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
@@ -17,10 +17,14 @@ import usePlacesAutocomplete, {
 import { handleAlert } from "../../functions/handleAlert";
 
 export default function SelectLocation({ formik, label }) {
+  const libraries = useMemo(() => ['places'], []);
+
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API,
-    libraries: ['places'],
+    libraries,
+    loading: "async"
   });
+
   if (!isLoaded) return <Typography variant="h6">Loading...</Typography>;
   return <Map formik={formik} label={label} />;
 }

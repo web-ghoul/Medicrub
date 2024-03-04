@@ -13,7 +13,7 @@ const LoginSection = () => {
           <Box className='absolute top-0 left-0'>
             <LazyLoadImage src={"./images/login_back1.svg"} alt={"login_back1"} />
           </Box>
-          <Box className={`text-white grid justify-center items-center absolute top-[40px] left-[40px]`}>
+          <Box className={`text-white grid justify-center items-center absolute top-[40px] left-[40px]`} data-test={"logo"}>
             <LazyLoadImage src={"./images/logo.png"} alt={"login"} className='z-10 w-[50px]' />
             <Typography variant='h6'>Medicrub</Typography>
           </Box>
@@ -26,7 +26,7 @@ const LoginSection = () => {
 
       <PrimaryContainer className='flex justify-stretch items-stretch'>
         <PrimaryBox className='grid justify-stretch items-center gap-4 h-[100%]'>
-          <Box className={`text-black hidden justify-center items-center top-[40px] left-[40px] sm:grid`}>
+          <Box className={`text-black hidden justify-center items-center top-[40px] left-[40px] sm:grid`} data-test={"logo"}>
             <LazyLoadImage src={"./images/logo.png"} alt={"login"} className='z-10 w-[50px]' />
             <Typography variant='h6'>Medicrub</Typography>
           </Box>

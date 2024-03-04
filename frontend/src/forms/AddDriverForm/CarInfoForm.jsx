@@ -1,9 +1,9 @@
 import { CarCrashRounded, CarRentalRounded, ColorLensRounded, SdRounded } from '@mui/icons-material'
-import { Box, CircularProgress, InputAdornment, Typography } from '@mui/material'
-import React from 'react'
+import { Box, Typography } from '@mui/material'
+import React, { useMemo } from 'react'
+import PrimaryInput from '../../components/PrimaryInput/PrimaryInput'
+import SubmitButton from '../../components/SubmitButton/SubmitButton'
 import UploadImage from '../../components/UploadImage/UploadImage'
-import { PrimaryButton } from '../../mui/PrimaryButton'
-import { PrimaryTextField } from '../../mui/PrimaryTextField'
 
 const CarInfoForm = ({ formik, loading }) => {
   return (
@@ -13,104 +13,50 @@ const CarInfoForm = ({ formik, loading }) => {
       </Box>
       <Box className={`grid justify-stretch items-center gap-10`}>
         <Box className={`flex justify-between items-center gap-6 md:grid md:justify-stretch`} >
-          <PrimaryTextField
-            fullWidth
-            type={"text"}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <CarCrashRounded />
-                </InputAdornment>
-              ),
-            }}
-            variant={"outlined"}
-            id="carType"
+          <PrimaryInput
+            formik={formik}
+            icon={<CarCrashRounded />}
             name="carType"
-            placeholder={"Car Type"}
-            value={formik.values.carType}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.carType && Boolean(formik.errors.carType)}
-            helperText={formik.touched.carType && formik.errors.carType}
+            ph={"Car Type"}
           />
 
-          <PrimaryTextField
-            fullWidth
-            type={"text"}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <CarRentalRounded />
-                </InputAdornment>
-              ),
-            }}
-            variant={"outlined"}
-            id="carModel"
+          <PrimaryInput
+            formik={formik}
+            Icon={<CarRentalRounded />}
             name="carModel"
-            placeholder={"Car Model"}
-            value={formik.values.carModel}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.carModel && Boolean(formik.errors.carModel)}
-            helperText={formik.touched.carModel && formik.errors.carModel}
+            ph={"Car Model"}
           />
         </Box>
 
         <Box className={`flex justify-between items-end gap-6 md:grid md:justify-stretch`} >
           <Box className={`grid justify-stretch items-center gap-1 w-full`}>
             <Typography variant='h6'>Car Color</Typography>
-            <PrimaryTextField
-              fullWidth
+            <PrimaryInput
+              formik={formik}
               type={"color"}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <ColorLensRounded sx={{ color: formik.values.color }} />
-                  </InputAdornment>
-                ),
-              }}
-              variant={"outlined"}
-              id="color"
+              icon={<ColorLensRounded sx={{ color: formik.values.color }} />}
               name="color"
-              placeholder={"Car Color"}
-              value={formik.values.color}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.color && Boolean(formik.errors.color)}
-              helperText={formik.touched.color && formik.errors.color}
+              ph={"Car Color"}
             />
           </Box>
-          <PrimaryTextField
-            fullWidth
-            type={"text"}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SdRounded />
-                </InputAdornment>
-              ),
-            }}
-            variant={"outlined"}
-            id="plateNum"
+          <PrimaryInput
+            formik={formik}
+            icon={<SdRounded />}
             name="plateNum"
-            placeholder={"Plate Number"}
-            value={formik.values.plateNum}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.plateNum && Boolean(formik.errors.plateNum)}
-            helperText={formik.touched.plateNum && formik.errors.plateNum}
+            ph={"Plate Number"}
           />
         </Box>
 
-        <Box className={`flex justify-between items-center gap-6 flex-wrap sm:!justify-center`} >
-          <UploadImage formik={formik} title={"Car License (Front)"} name={"registration"} />
-          <UploadImage formik={formik} title={"Car License (Back)"} name={"insurance"} />
-        </Box>
+        {useMemo(() =>
+          <Box className={`flex justify-between items-center gap-6 flex-wrap sm:!justify-center`} >
+            <UploadImage title={"Car License (Front)"} name={"registration"} />
+            <UploadImage title={"Car License (Back)"} name={"insurance"} />
+          </Box>, []
+        )}
       </Box>
-      <PrimaryButton loadingPosition={"center"}
-        loading={loading} loadingIndicator={
-          <CircularProgress sx={{ color: (theme) => theme.palette.common.white }} />
-        } fullWidth type={"submit"}>Add</PrimaryButton>
+      <SubmitButton variant={"primary"} loading={loading}>
+        Add
+      </SubmitButton>
     </Box>
   )
 }

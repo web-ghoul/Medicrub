@@ -14,6 +14,7 @@ module.exports = {
         secondary:"#0B2533",
         light_red:"#FF00001a",
         green:"#5ecc62",
+        blue:"#0099e5",
         white:"#fff",
         gray:"#F3F3F3",
         outlay:"#0000004d"

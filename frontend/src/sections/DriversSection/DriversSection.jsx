@@ -2,7 +2,7 @@ import { AddRounded } from '@mui/icons-material'
 import { Box, Typography } from '@mui/material'
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { AppContext } from '../../context/AppContext'
+import { TabsContext } from '../../context/TabsContext'
 import Forms from '../../forms/Forms'
 import { PrimaryBox } from '../../mui/PrimaryBox'
 import { PrimaryButton } from '../../mui/PrimaryButton'
@@ -10,7 +10,7 @@ import { PrimaryContainer } from '../../mui/PrimaryContainer'
 import DriversTable from '../../tables/DriversTable/DriversTable'
 
 const DriversSection = () => {
-  const { setAddDriverTab } = useContext(AppContext)
+  const { setAddDriverTab } = useContext(TabsContext)
 
   return (
     <PrimaryBox>

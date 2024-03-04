@@ -1,14 +1,14 @@
 import { AssignmentIndRounded, CloseRounded, ContactsRounded, DateRangeRounded, EmailRounded, MedicalServicesRounded, PasswordRounded, PhoneAndroidRounded } from '@mui/icons-material';
-import { Box, CircularProgress, Divider, IconButton, InputAdornment, Typography, useMediaQuery } from '@mui/material';
-import { useContext, useEffect, useRef } from 'react';
+import { Box, Divider, IconButton, Typography, useMediaQuery } from '@mui/material';
+import { useContext, useEffect, useMemo, useRef } from 'react';
 import { useSelector } from "react-redux";
+import PrimaryInput from '../../components/PrimaryInput/PrimaryInput';
 import SelectLocation from '../../components/SelectLocation/SelectLocation';
+import SubmitButton from '../../components/SubmitButton/SubmitButton';
 import UploadImage from '../../components/UploadImage/UploadImage';
 import { AppContext } from '../../context/AppContext';
 import { handleDateForInput } from '../../functions/handleDateForInput';
 import { PrimaryBox } from '../../mui/PrimaryBox';
-import { PrimaryButton } from '../../mui/PrimaryButton';
-import { PrimaryTextField } from '../../mui/PrimaryTextField';
 import LoadingDriverInfo from '../../sidebars/DriverSidebar/LoadingDriverInfo';
 
 const EditDriverForm = ({ formik, loading }) => {
@@ -33,6 +33,7 @@ const EditDriverForm = ({ formik, loading }) => {
       longitude: +driver.user.location.longitude,
       nationalFront: driver?.nationalCard?.front,
       nationalBack: driver?.nationalCard?.back,
+      password: ""
       // licenseFront: driver?.driverLicense?.back,
       // licenseBack: driver?.driverLicense?.back
     };
@@ -45,6 +46,13 @@ const EditDriverForm = ({ formik, loading }) => {
     }
   }, [driver, isLoading]);
 
+  const nationalIdImages = useMemo(() =>
+    <Box className={`flex justify-between items-center gap-6 flex-wrap sm:!justify-center`} >
+      <UploadImage title={"National Id (Front)"} name={"nationalFront"} value={driver?.nationalCard?.front} />
+      <UploadImage title={"National Id (Back)"} name={"nationalBack"} value={driver?.nationalCard?.back} />
+    </Box>, [driver]
+  )
+
   return (
     <PrimaryBox className={`w-[600px] grid justify-stretch items-center gap-6 px-8 overflow-auto md:!px-6  md:w-[450px] sm:!w-[100vw] relative bg-gray`}>
       {
@@ -56,179 +64,75 @@ const EditDriverForm = ({ formik, loading }) => {
             </IconButton>}
 
             <Box className={`grid justify-stretch items-center gap-4`}>
-              <UploadImage formik={formik} title={"Profile Image"} name={"profile"} />
-              <PrimaryTextField
-                fullWidth
-                type={"text"}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <AssignmentIndRounded />
-                    </InputAdornment>
-                  ),
-                }}
-                variant={"outlined"}
-                id="firstName"
+              <UploadImage formik={formik} title={"Profile Image"} name={"profile"} value={driver.user.profileImage} />
+
+              <PrimaryInput
+                formik={formik}
+                icon={<AssignmentIndRounded />}
                 name="firstName"
-                placeholder={"First Legal Name"}
-                value={formik.values.firstName}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-                helperText={formik.touched.firstName && formik.errors.firstName}
+                ph={"First Legal Name"}
               />
-              <PrimaryTextField
-                fullWidth
-                type={"text"}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <AssignmentIndRounded />
-                    </InputAdornment>
-                  ),
-                }}
-                variant={"outlined"}
-                id="lastName"
+              <PrimaryInput
+                formik={formik}
+                icon={<AssignmentIndRounded />}
                 name="lastName"
-                placeholder={"Last Legal Name"}
-                value={formik.values.lastName}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-                helperText={formik.touched.lastName && formik.errors.lastName}
+                ph={"Last Legal Name"}
               />
             </Box>
             <Divider className='!border-2' />
             <Box className={`grid justify-stretch items-center gap-3`}>
               <Typography variant='h6' className='font-[700] text-primary'>Personal Information</Typography>
               <Box className={`grid justify-stretch items-center gap-4`}>
-                <PrimaryTextField
-                  fullWidth
+                <PrimaryInput
+                  formik={formik}
                   type={"email"}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <EmailRounded />
-                      </InputAdornment>
-                    ),
-                  }}
-                  variant={"outlined"}
-                  id="email"
+                  icon={<EmailRounded />}
                   name="email"
-                  placeholder={"Email"}
-                  value={formik.values.email}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.email && Boolean(formik.errors.email)}
-                  helperText={formik.touched.email && formik.errors.email}
+                  ph={"Email"}
                 />
 
-                <PrimaryTextField
-                  fullWidth
+                <PrimaryInput
+                  formik={formik}
                   type={"tel"}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <PhoneAndroidRounded />
-                      </InputAdornment>
-                    ),
-                  }}
-                  variant={"outlined"}
-                  id="phone"
+                  icon={<PhoneAndroidRounded />}
                   name="phone"
-                  placeholder={"Phone Number"}
-                  value={formik.values.phone}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.phone && Boolean(formik.errors.phone)}
-                  helperText={formik.touched.phone && formik.errors.phone}
+                  ph={"Phone Number"}
                 />
 
-                <PrimaryTextField
-                  fullWidth
-                  type={"text"}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <MedicalServicesRounded />
-                      </InputAdornment>
-                    ),
-                  }}
-                  variant={"outlined"}
-                  id="medicalInsurance"
+                <PrimaryInput
+                  formik={formik}
+                  icon={<MedicalServicesRounded />}
                   name="medicalInsurance"
-                  placeholder={"Enter Your Medicial Insurance"}
-                  value={formik.values.medicalInsurance}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.medicalInsurance && Boolean(formik.errors.medicalInsurance)}
-                  helperText={formik.touched.medicalInsurance && formik.errors.medicalInsurance}
+                  ph={"Enter Your Medicial Insurance"}
+                  ac={""}
                 />
 
-                <PrimaryTextField
-                  fullWidth
+                <PrimaryInput
+                  formik={formik}
                   type={"number"}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <ContactsRounded />
-                      </InputAdornment>
-                    ),
-                  }}
-                  variant={"outlined"}
-                  id="ssn"
+                  icon={<ContactsRounded />}
                   name="ssn"
-                  placeholder={"SSN"}
-                  value={formik.values.ssn}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.ssn && Boolean(formik.errors.ssn)}
-                  helperText={formik.touched.ssn && formik.errors.ssn}
+                  ph={"SSN"}
                 />
 
                 <Box className={`grid justify-stretch items-center gap-1`}>
                   <Typography variant='h6'>Your Brith Date</Typography>
-                  <PrimaryTextField
-                    fullWidth
+                  <PrimaryInput
+                    formik={formik}
                     type={"date"}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <DateRangeRounded />
-                        </InputAdornment>
-                      ),
-                    }}
-                    variant={"outlined"}
-                    id="birthDate"
+                    icon={<DateRangeRounded />}
                     name="birthDate"
-                    placeholder={"Birth Date"}
-                    value={formik.values.birthDate}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.birthDate && Boolean(formik.errors.birthDate)}
-                    helperText={formik.touched.birthDate && formik.errors.birthDate}
+                    ph={"Birth Date"}
                   />
                 </Box>
 
-                <PrimaryTextField
-                  fullWidth
+                <PrimaryInput
+                  formik={formik}
                   type={"password"}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <PasswordRounded />
-                      </InputAdornment>
-                    ),
-                  }}
-                  variant={"outlined"}
-                  id="password"
+                  icon={<PasswordRounded />}
                   name="password"
-                  placeholder={"Enter new password"}
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.password && Boolean(formik.errors.password)}
-                  helperText={formik.touched.password && formik.errors.password}
+                  ph={"Enter new password"}
+                  ac={"current-password"}
                 />
 
                 <SelectLocation formik={formik.values} label={"Enter Driver Location"} />
@@ -237,10 +141,7 @@ const EditDriverForm = ({ formik, loading }) => {
             <Divider className='!border-2' />
             <Box className={`grid justify-stretch items-center gap-3`}>
               <Typography variant='h6' className='font-[700] text-primary'>National ID</Typography>
-              <Box className={`flex justify-between items-center gap-6 flex-wrap sm:!justify-center`} >
-                <UploadImage formik={formik} title={"National Id (Front)"} name={"nationalFront"} />
-                <UploadImage formik={formik} title={"National Id (Back)"} name={"nationalBack"} />
-              </Box>
+              {nationalIdImages}
             </Box>
             {/* <Divider className='!border-2' /> */}
             {/* <Box className={`grid justify-stretch items-center gap-3`}>
@@ -250,10 +151,9 @@ const EditDriverForm = ({ formik, loading }) => {
                 <UploadImage formik={formik} title={"Driver License (Back)"} name={"licenseBack"} />
               </Box>
             </Box> */}
-            <PrimaryButton loadingPosition={"center"}
-              loading={loading} loadingIndicator={
-                <CircularProgress sx={{ color: "#fff" }} />
-              } fullWidth type={"submit"}>Edit</PrimaryButton>
+            <SubmitButton loading={loading}>
+              Edit
+            </SubmitButton>
           </>
         )
       }

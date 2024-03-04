@@ -1,7 +1,7 @@
 import { Tab, Tabs, useMediaQuery } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useContext } from 'react';
-import { AppContext } from '../../context/AppContext';
+import { TabsContext } from '../../context/TabsContext';
 import Forms from '../../forms/Forms';
 import { PrimaryBox } from '../../mui/PrimaryBox';
 
@@ -40,7 +40,7 @@ function a11yProps(index) {
 }
 
 const AddDriverTab = () => {
-  const { addDriverTab, setAddDriverTab } = useContext(AppContext);
+  const { addDriverTab, setAddDriverTab } = useContext(TabsContext);
   const mdScreen = useMediaQuery("(max-width:992px)")
   const smScreen = useMediaQuery("(max-width:768px)")
 
@@ -76,7 +76,7 @@ const AddDriverTab = () => {
         <Forms type={"personal_data"} />
       </TabPanel>
       {/* <TabPanel value={addDriverTab} index={1}>
-        <Forms type={"license"} />
+        <Forms type={"driver_license"} />
       </TabPanel> */}
       <TabPanel value={addDriverTab} index={1}>
         <Forms type={"car_info"} />

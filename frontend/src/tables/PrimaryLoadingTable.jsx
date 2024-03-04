@@ -1,14 +1,16 @@
-import { Skeleton } from '@mui/material'
-import { Box } from '@mui/system'
-import React from 'react'
+import { TableBody } from "@mui/material";
+import { Fragment } from "react";
+import { handleRandomNumber } from "../functions/handleRandomNumber";
 
-const PrimaryLoadingTable = () => {
+const PrimaryLoadingTable = ({ children }) => {
   return (
-    <Box component={"tbody"} className={`p-4 md!p-2 grid justify-stretch items-center`}>
-      {Array(Math.floor(Math.random() * 10)).fill(0).map((_, i) => (
-        <Skeleton component={"tr"} key={i} className={`!h-[100px] md:!h-[80px]`} />
+    <TableBody>
+      {Array(handleRandomNumber()).fill(0).map((_, i) => (
+        <Fragment key={i}>
+          {children}
+        </Fragment>
       ))}
-    </Box>
+    </TableBody>
   )
 }
 

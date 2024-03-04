@@ -1,10 +1,10 @@
 import { Drawer } from '@mui/material';
 import { useContext } from 'react';
-import { AppContext } from '../../context/AppContext';
+import { DrawersContext } from '../../context/DrawersContext';
 import Forms from '../../forms/Forms';
 
 const EditDriverSidebar = () => {
-  const { openEditDriverDrawer, handleCloseEditDriverDrawer } = useContext(AppContext)
+  const { openEditDriverDrawer, handleCloseEditDriverDrawer } = useContext(DrawersContext)
 
   return (
     <Drawer

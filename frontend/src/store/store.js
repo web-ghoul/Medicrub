@@ -3,6 +3,7 @@ import authReducer from "./authSlice"
 import driverCarReducer from "./driverCarSlice"
 import driverReducer from "./driverSlice"
 import driversReducer from "./driversSlice"
+import nearestDriversReducer from "./nearestDriversSlice"
 import pendingDriversReducer from "./pendingDriversSlice"
 import tripsReducer from "./tripsSlice"
 
@@ -13,6 +14,7 @@ export const store = configureStore({
     "driver":driverReducer,
     "driverCar":driverCarReducer,
     "pendingDrivers":pendingDriversReducer,
-    "trips":tripsReducer
+    "trips":tripsReducer,
+    "nearestDrivers":nearestDriversReducer
   },
 })

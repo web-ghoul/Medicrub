@@ -8,8 +8,12 @@ import Theme from "./Theme";
 import Header from "./components/Header/Header";
 import Outlay from "./components/Outlay/Outlay";
 import { AppContext } from "./context/AppContext";
+import AssignDriverModal from "./modals/AssignDriverModal";
+import CreateMultipleTripsModal from "./modals/CreateMultipleTripsModal";
 import ForgotPasswordModal from "./modals/ForgotPasswordModal";
+import NearestDriversModal from "./modals/NearestDriversModal";
 import UploadSheetModal from "./modals/UploadSheetModal";
+import VerifyDriverModal from "./modals/VerifyDriverModal";
 import DriverSidebar from "./sidebars/DriverSidebar/DriverSidebar";
 import EditDriverSidebar from "./sidebars/EditDriverSidebar/EditDriverSidebar";
 import Sidebar from "./sidebars/Sidebar/Sidebar";
@@ -64,6 +68,10 @@ function App() {
           <CssBaseline />
           <ForgotPasswordModal/>
           <UploadSheetModal/>
+          <NearestDriversModal/>
+          <VerifyDriverModal/>
+          <AssignDriverModal/>
+          <CreateMultipleTripsModal/>
         </Box>
         <Toaster/>
     </ThemeProvider>

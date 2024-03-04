@@ -1,9 +1,10 @@
 import { Tab, Tabs, useMediaQuery } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useContext } from 'react';
-import { AppContext } from '../../context/AppContext';
+import { TabsContext } from '../../context/TabsContext';
 import Forms from '../../forms/Forms';
 import { PrimaryBox } from '../../mui/PrimaryBox';
+import NearestDriversTable from '../../tables/NearestDriversTable/NearestDriversTable';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -15,7 +16,7 @@ function TabPanel(props) {
       id={`vertical-tabpanel-${index}`}
       aria-labelledby={`vertical-tab-${index}`}
       {...other}
-      className='w-[100%] bg-gray p-6 rounded-lg md:p-4'
+      className='w-[100%] bg-gray p-6 rounded-lg md:p-4 sm:!p-2'
     >
       {value === index && (
         <>
@@ -40,7 +41,7 @@ function a11yProps(index) {
 }
 
 const AddTripTab = () => {
-  const { addTripTab, setAddTripTab } = useContext(AppContext);
+  const { addTripTab, setAddTripTab } = useContext(TabsContext);
   const mdScreen = useMediaQuery("(max-width:992px)")
 
   const handleChange = (event, newValue) => {
@@ -69,7 +70,7 @@ const AddTripTab = () => {
         <Forms type={"trip_details"} />
       </TabPanel>
       <TabPanel value={addTripTab} index={1}>
-        <Forms type={"assign_driver"} />
+        <NearestDriversTable />
       </TabPanel>
     </PrimaryBox>
   )

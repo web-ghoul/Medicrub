@@ -3,12 +3,12 @@ import { Badge, Box, Breadcrumbs, IconButton, Toolbar, Typography, styled, useMe
 import MuiAppBar from '@mui/material/AppBar';
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { AppContext } from "../../context/AppContext";
+import { DrawersContext } from "../../context/DrawersContext";
 import { headerData } from "../../data/header";
 import { PrimaryContainer } from "../../mui/PrimaryContainer";
 
 const Header = () => {
-  const { handleDrawerOpen, drawerWidth, openDrawer } = useContext(AppContext)
+  const { handleDrawerOpen, drawerWidth, openDrawer } = useContext(DrawersContext)
   const { pathname } = useLocation()
   const [headerUrl, setHeaderUrl] = useState([])
   const mdScreen = useMediaQuery("(max-width:992px)")

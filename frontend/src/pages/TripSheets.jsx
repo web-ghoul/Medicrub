@@ -3,12 +3,12 @@ import { useContext } from "react"
 import TripsSheetsAccordion from "../accordions/TripSheetAccordion"
 import NoData from "../components/NoData/NoData"
 import UploadSheet from "../components/UploadSheet/UploadSheet"
-import { AppContext } from "../context/AppContext"
+import { SheetsContext } from "../context/SheetsContext"
 import { PrimaryBox } from "../mui/PrimaryBox"
 import { PrimaryContainer } from "../mui/PrimaryContainer"
 
 const TripSheets = () => {
-  const { tripsSheets } = useContext(AppContext)
+  const { tripsSheets } = useContext(SheetsContext)
 
   return (
     <PrimaryBox>

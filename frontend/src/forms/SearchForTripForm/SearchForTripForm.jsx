@@ -1,17 +1,14 @@
 import React from 'react'
-import { PrimaryTextField } from '../../mui/PrimaryTextField'
+import PrimaryInput from '../../components/PrimaryInput/PrimaryInput'
 
-const SearchForTripForm = ({ searchForTrip, setSearchForTrip }) => {
+const SearchForTripForm = ({ formik }) => {
   return (
-    <PrimaryTextField
-      fullWidth
-      variant="outlined"
+    <PrimaryInput
+      formik={formik}
       type="search"
-      id="search_for_trip"
       name="search_for_trip"
       label={"Search for a trip..."}
-      value={searchForTrip}
-      onChange={(e) => setSearchForTrip(e.target.value)}
+      onChange={true}
     />
   )
 }
