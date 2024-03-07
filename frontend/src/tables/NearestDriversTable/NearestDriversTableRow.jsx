@@ -1,16 +1,21 @@
 import { AssignmentTurnedInRounded } from "@mui/icons-material";
 import { IconButton, Typography, useMediaQuery } from '@mui/material';
+import AvatarTableBox from "../AvatarTableBox";
 import { StyledTableCell } from "../StyledTableCell";
 import { StyledTableRow } from "./StyledTableRow";
 
-const NearestDriversTableRow = ({ row, handleAssignDriver }) => {
+const NearestDriversTableRow = ({ row, handleAssignDriver, handleViewDriver }) => {
   const mdScreen = useMediaQuery("(max-width:992px)")
+  const smScreen = useMediaQuery("(max-width:768px)")
+  const xsScreen = useMediaQuery("(max-width:540px)")
 
   return (
     <StyledTableRow>
-      <StyledTableCell>
-        <Typography variant="subtitle2">{`${row.driver.user.firstName} ${row.driver.user.lastName}`}</Typography>
-      </StyledTableCell>
+      {smScreen ? <StyledTableCell>
+        <AvatarTableBox avatar={row.driver.user.profileImage} name={xsScreen ? `${row.driver.user.firstName}` : `${row.driver.user.firstName} ${row.driver.user.lastName}`} handleViewDriver={handleViewDriver} />
+      </StyledTableCell> : <StyledTableCell>
+        <AvatarTableBox sm={true} avatar={row.driver.user.profileImage} name={`${row.driver.user.firstName} ${row.driver.user.lastName}`} handleViewDriver={handleViewDriver} />
+      </StyledTableCell>}
       {/* <StyledTableCell align="center">
                 <Typography variant="subtitle2">{row.driver.location?.address}</Typography>
               </StyledTableCell> */}

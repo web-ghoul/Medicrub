@@ -1,11 +1,9 @@
 import * as yup from 'yup';
 
-export const tripDetailsInitialValues = {
+export const editTripInitialValues = {
   firstName: "",
   lastName: "",
-  type:"",
   phone:"",
-  birthDate: "",
   date:"",
   time:"",
   pickup:{
@@ -23,12 +21,10 @@ export const tripDetailsInitialValues = {
   specialNeeds:""
 }
 
-export const tripDetailsSchema = yup.object({
+export const editTripSchema = yup.object({
   firstName: yup.string("Enter your first name").required("First Name is Required"),
   lastName:  yup.string("Enter your last name").required("Last Name is Required"),
   phone: yup.string("Enter your phone number").required("Phone Number is Required"),
-  type: yup.string("Enter the type").required("The Type is Required"),
-  birthDate: yup.string("Enter your birth date").required("Birth Date is Required"),
   date: yup.date("Enter the date").required("The Date is Required"),
   time: yup.string("Enter the time").required("The Time is Required"),
   cost: yup.number("Enter trip cost").required("Trip Cost is Required"),

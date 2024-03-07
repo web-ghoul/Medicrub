@@ -1,5 +1,5 @@
 import { LocationOnRounded } from "@mui/icons-material";
-import { Box, CircularProgress, IconButton, Tooltip, Typography, useMediaQuery } from "@mui/material";
+import { Box, CircularProgress, IconButton, Tooltip, useMediaQuery } from "@mui/material";
 import {
   Combobox,
   ComboboxInput,
@@ -15,6 +15,7 @@ import usePlacesAutocomplete, {
   getLatLng,
 } from "use-places-autocomplete";
 import { handleAlert } from "../../functions/handleAlert";
+import LoadingMap from "../LoadingMap/LoadingMap";
 
 export default function SelectLocation({ formik, label }) {
   const libraries = useMemo(() => ['places'], []);
@@ -25,7 +26,7 @@ export default function SelectLocation({ formik, label }) {
     loading: "async"
   });
 
-  if (!isLoaded) return <Typography variant="h6">Loading...</Typography>;
+  if (!isLoaded) return <LoadingMap />;
   return <Map formik={formik} label={label} />;
 }
 
@@ -35,6 +36,7 @@ function Map({ formik, label }) {
   const [loading, setLoading] = useState(false)
   const mdScreen = useMediaQuery("(max-width:992px)")
   const smScreen = useMediaQuery("(max-width:768px)")
+  const [visible, setVisible] = useState(false)
   const {
     ready,
     value,
@@ -91,11 +93,18 @@ function Map({ formik, label }) {
     }
   }, [formik, setValue])
 
+  useEffect(() => {
+    if (selected) {
+      setVisible(true)
+    } else {
+      setVisible(false)
+    }
+  }, [selected])
+
   return (
     <Box className={`grid justify-stretch items-center gap-4 md:!gap-2`}>
       <Box className="grid justify-stretch items-start gap-2 md:gap-1" sx={{ gridTemplateColumns: "1fr auto" }}>
         <Box className={"grid justify-stretch items-center gap-1"}>
-          {/* <Typography variant="h6">{label}</Typography> */}
           <PlacesAutocomplete ready={ready}
             value={value}
             setValue={setValue}
@@ -117,7 +126,7 @@ function Map({ formik, label }) {
         zoom={selected ? 18 : 2}
         mapContainerStyle={{ width: '100%', height: selected ? mdScreen ? smScreen ? "300px" : "350px" : "400px" : "0px" }}
       >
-        {selected && <Marker position={selected} />}
+        {visible && <Marker position={selected} />}
       </GoogleMap>
     </Box>
   );

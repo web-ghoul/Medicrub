@@ -7,7 +7,9 @@ const LoadingDriverInfo = () => {
   )
   return (
     <>
-      {smSize && <Skeleton variant='circular' />}
+      {smSize && <Box className={"flex justify-end items-center"}>
+        <Skeleton variant='circular' className='w-[40px] !h-[40px]' />
+      </Box>}
       <Box className={`flex justify-start items-center gap-2`}>
         <Skeleton variant='circular' className='!w-[150px] !h-[150px] md:!h-[125px] md:!w-[125px]' />
         {text}

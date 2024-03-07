@@ -10,12 +10,12 @@ export const handleGetLocation = async(address)=>{
         const location = data.data.results[0].geometry.location;
         const latitude = location.lat;
         const longitude = location.lng;
-        return {lat:latitude , lng:longitude , address} 
+        return {latitude:latitude , longitude:longitude , address} 
       } else {
         handleAlert({msg:"Geocoding API request failed",status:"error"})
       }
     })
-    .catch(error => {
+    .catch(() => {
       handleAlert({msg:"Error fetching data",status:"error"})
     });
   return loc

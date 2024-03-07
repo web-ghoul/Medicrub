@@ -3,7 +3,7 @@ import { StyledTableCell } from '../StyledTableCell';
 import { StyledTableRow } from "./StyledTableRow";
 
 const NearestDriversTableHead = () => {
-  const smScreen = useMediaQuery("(max-width:768px)")
+  const mdScreen = useMediaQuery("(max-width:992px)")
   return (
     <TableHead>
       <StyledTableRow>
@@ -16,7 +16,7 @@ const NearestDriversTableHead = () => {
         <StyledTableCell align="center">
           <Typography variant='h6'>Distance</Typography>
         </StyledTableCell>
-        {!smScreen && <StyledTableCell align="center">
+        {!mdScreen && <StyledTableCell align="center">
           <Typography variant='h6'>Phone</Typography>
         </StyledTableCell>}
         <StyledTableCell align="right">

@@ -55,7 +55,7 @@ const CarInfoForm = ({ formik, loading }) => {
         )}
       </Box>
       <SubmitButton variant={"primary"} loading={loading}>
-        Add
+        Next
       </SubmitButton>
     </Box>
   )

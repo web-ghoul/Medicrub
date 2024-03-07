@@ -8,9 +8,15 @@ tasks :
 1- verify driver (Done)
 2- Use PrimaryInput for whole app (Done)
 3- Solve Form Problem (Done)
-4- Edit Trip (Pending)
-5- Drivers Map (Pending)
+4- Edit Trip (Done)
+5- Drivers Map (Done)
 6- Listen with socket.io (Pending)
 7- Create Multi Trips (Done)
 8- handle Edit driver image (Done)
 9- Assign Driver to Trip (Done)
+10- Trip Sidebar (Done)
+
+
+
+Notes :
+1- Validate Patient's Phone at add trip

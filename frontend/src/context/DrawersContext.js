@@ -38,6 +38,30 @@ const DrawersProvider = ({children}) => {
   const handleCloseEditDriverDrawer=()=>{
     setOpenEditDriverDrawer(false)
   }
+
+
+  //Trip Drawer
+  const [openTripDrawer , setOpenTripDrawer] = useState(false)
+
+  const handleOpenTripDrawer=()=>{
+    setOpenTripDrawer(true)
+  }
+
+  const handleCloseTripDrawer=()=>{
+    setOpenTripDrawer(false)
+  }
+  
+  //Edit Trip Drawer
+  const [openEditTripDrawer , setOpenEditTripDrawer] = useState(false)
+
+  const handleOpenEditTripDrawer=()=>{
+    setOpenEditTripDrawer(true)
+  }
+
+  const handleCloseEditTripDrawer=()=>{
+    setOpenEditTripDrawer(false)
+  }
+  
   
 
   const values= {
@@ -51,6 +75,12 @@ const DrawersProvider = ({children}) => {
     openEditDriverDrawer,
     handleOpenEditDriverDrawer,
     handleCloseEditDriverDrawer,
+    openTripDrawer,
+    handleOpenTripDrawer,
+    handleCloseTripDrawer,
+    openEditTripDrawer,
+    handleOpenEditTripDrawer,
+    handleCloseEditTripDrawer
   }
   return (
     <DrawersContext.Provider value={values}>

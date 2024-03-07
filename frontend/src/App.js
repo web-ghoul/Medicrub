@@ -4,6 +4,7 @@ import { useContext, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
+import io from 'socket.io-client';
 import Theme from "./Theme";
 import Header from "./components/Header/Header";
 import Outlay from "./components/Outlay/Outlay";
@@ -16,8 +17,12 @@ import UploadSheetModal from "./modals/UploadSheetModal";
 import VerifyDriverModal from "./modals/VerifyDriverModal";
 import DriverSidebar from "./sidebars/DriverSidebar/DriverSidebar";
 import EditDriverSidebar from "./sidebars/EditDriverSidebar/EditDriverSidebar";
+import EditTripSidebar from "./sidebars/EditTripSidebar/EditTripSidebar";
 import Sidebar from "./sidebars/Sidebar/Sidebar";
+import TripSidebar from "./sidebars/TripSidebar/TripSidebar";
 import { setAuth } from "./store/authSlice";
+
+const socket = io(`${process.env.REACT_APP_SERVER_URL}`);
 
 function App() {
   const {pathname} = useLocation()
@@ -44,6 +49,16 @@ function App() {
     }
   },[pathname ,dispatch, navigate])
 
+  //Handle Socket Event
+  // useEffect(() => {
+  //   socket.on('admin-connected', (message) => {
+  //     console.log('Admin connected:', message);
+  //   });
+  //   return () => {
+  //     socket.off('admin-connected');
+  //   };
+  // }, []);
+
   return (
     <ThemeProvider theme={Theme("light")}>
         <Box className="flex min-h-[100vh] min-w-[100vw] relative">
@@ -54,6 +69,8 @@ function App() {
                   <Sidebar/>
                   <DriverSidebar/>
                   <EditDriverSidebar/>
+                  <TripSidebar/>
+                  <EditTripSidebar/>
                   {mdScreen && <Outlay clicked={handleDrawerClose} toggle={openDrawer}/>}
                   <Box component={"main"} className="pt-[65px] lg:pt-[60px] md:pt-[58px] sm:pt-[55px] w-[100%] min-h-[100vh]">
                     <Outlet/>

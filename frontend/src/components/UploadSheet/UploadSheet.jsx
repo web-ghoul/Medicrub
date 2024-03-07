@@ -50,6 +50,7 @@ const UploadSheet = () => {
                 break
               }
               trips.push({
+                driver: null,
                 time: data[i][29],
                 cost: data[i][30],
                 number: data[i][32],

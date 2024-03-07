@@ -25,6 +25,12 @@ const AppProvider = ({children}) => {
   //Store Chosen Trips Date
   const [chosenDate,setChosenDate] = useState(todayDate)
 
+  //Store Currenct Trip
+  const [currentTrip , setCurrentTrip] = useState(null)
+
+  //Store Sheet Trip Index
+  const [sheetTripIndex , setSheetTripIndex] = useState(null)
+
   const values= {
     todayDate,
     tripId,
@@ -36,7 +42,11 @@ const AppProvider = ({children}) => {
     sheetTrip,
     setSheetTrip,
     chosenDate,
-    setChosenDate
+    setChosenDate,
+    currentTrip ,
+    setCurrentTrip,
+    sheetTripIndex,
+    setSheetTripIndex
   }
   return (
     <AppContext.Provider value={values}>

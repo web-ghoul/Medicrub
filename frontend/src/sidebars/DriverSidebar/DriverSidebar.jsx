@@ -1,12 +1,15 @@
-import { CalendarMonthRounded, CallRounded, CarCrashRounded, CarRentalRounded, CloseRounded, ColorLensRounded, ContactsRounded, ContentCopyRounded, DeleteRounded, EditRounded, FmdGoodRounded, MailRounded, MedicalServicesRounded, SdRounded } from '@mui/icons-material';
+import { CalendarMonthRounded, CallRounded, CarCrashRounded, CarRentalRounded, CloseRounded, ColorLensRounded, ContactsRounded, ContentCopyRounded, DeleteRounded, EditRounded, FmdGoodRounded, MailRounded, MedicalServicesRounded, NoCrashRounded, SdRounded } from '@mui/icons-material';
 import { Box, Chip, Divider, Drawer, IconButton, Typography, useMediaQuery } from '@mui/material';
 import { useContext } from 'react';
 import { useSelector } from "react-redux";
 import AlbumGhoul from '../../components/Album/Album';
+import { AppContext } from '../../context/AppContext';
 import { DrawersContext } from '../../context/DrawersContext';
+import { ModalsContext } from '../../context/ModalsContext';
 import { handleAlert } from '../../functions/handleAlert';
 import { handleCopyText } from '../../functions/handleCopyText';
 import { handleDateFormate } from '../../functions/handleDateFormate';
+import { ConfirmButton } from '../../mui/ConfirmButton';
 import { DarkButton } from '../../mui/DarkButton';
 import { PrimaryBox } from '../../mui/PrimaryBox';
 import { PrimaryButton } from '../../mui/PrimaryButton';
@@ -18,6 +21,14 @@ const DriverSidebar = () => {
   const { driver, isLoading } = useSelector((state) => state.driver)
   const { openDriverDrawer, handleCloseDriverDrawer, handleOpenEditDriverDrawer } = useContext(DrawersContext)
   const smSize = useMediaQuery("(max-width:768px)")
+  const { handleOpenVerifyDriverModal } = useContext(ModalsContext)
+  const { setDriverId } = useContext(AppContext)
+
+  const handleVerifyDriver = () => {
+    handleOpenVerifyDriverModal()
+    handleCloseDriverDrawer()
+    setDriverId(driver._id)
+  }
 
   const handleEditDriver = () => {
     handleCloseDriverDrawer()
@@ -103,6 +114,10 @@ const DriverSidebar = () => {
                 </>
               )}
               <Box className={`grid grid-cols-2 justify-stretch items-center gap-4`}>
+                {!driver.verified && <ConfirmButton fullWidth onClick={handleVerifyDriver}>
+                  <NoCrashRounded />
+                  <Typography variant='button'>Verify</Typography>
+                </ConfirmButton>}
                 <DarkButton fullWidth onClick={handleEditDriver}>
                   <EditRounded />
                   <Typography variant='button'>Edit</Typography>

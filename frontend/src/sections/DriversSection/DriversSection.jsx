@@ -2,6 +2,7 @@ import { AddRounded } from '@mui/icons-material'
 import { Box, Typography } from '@mui/material'
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
+import DriversLocation from '../../components/DriversLocation/DriversLocation'
 import { TabsContext } from '../../context/TabsContext'
 import Forms from '../../forms/Forms'
 import { PrimaryBox } from '../../mui/PrimaryBox'
@@ -11,7 +12,6 @@ import DriversTable from '../../tables/DriversTable/DriversTable'
 
 const DriversSection = () => {
   const { setAddDriverTab } = useContext(TabsContext)
-
   return (
     <PrimaryBox>
       <PrimaryContainer className='!flex flex-col justify-stretch items-stretch gap-6 md:gap-4 sm:gap-2'>
@@ -26,6 +26,7 @@ const DriversSection = () => {
             </Link>
           </Box>
         </Box>
+        <DriversLocation />
         <DriversTable />
       </PrimaryContainer>
     </PrimaryBox>

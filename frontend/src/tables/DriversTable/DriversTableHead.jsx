@@ -11,15 +11,15 @@ const DriversTableHead = () => {
         <StyledTableCell>
           <Typography variant='h6'>Name</Typography>
         </StyledTableCell>
-        {!smScreen && <StyledTableCell align="center">
+        <StyledTableCell align="center">
           <Typography variant='h6'>Address</Typography>
-        </StyledTableCell>}
+        </StyledTableCell>
         {!mdScreen && <StyledTableCell align="center">
           <Typography variant='h6'>Phone</Typography>
         </StyledTableCell>}
-        <StyledTableCell align="center">
+        {!smScreen && <StyledTableCell align="center">
           <Typography variant='h6'>Active</Typography>
-        </StyledTableCell>
+        </StyledTableCell>}
         {!smScreen && <StyledTableCell align="center">
           <Typography variant='h6'>Status</Typography>
         </StyledTableCell>}

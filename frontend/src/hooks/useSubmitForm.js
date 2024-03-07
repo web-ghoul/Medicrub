@@ -6,11 +6,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { AppContext } from "../context/AppContext";
 import { DrawersContext } from "../context/DrawersContext";
 import { ModalsContext } from "../context/ModalsContext";
+import { SheetsContext } from "../context/SheetsContext";
 import { TabsContext } from "../context/TabsContext";
 import { UploadImagesContext } from "../context/UploadImagesContext";
 import { carAlbumInitialValues, carAlbumSchema, carInfoInitialValues, carInfoSchema, licenseInitialValues, licenseSchema, personalDataInitialValues, personalDataSchema } from "../forms/AddDriverForm/AddDriverValidations";
 import { tripDetailsInitialValues, tripDetailsSchema } from "../forms/AddTripForm/AddTripValidations";
 import { editDriverInitialValues, editDriverSchema } from "../forms/EditDriverForm/EditDriverValidations";
+import { editTripInitialValues, editTripSchema } from "../forms/EditTripForm/EditTripValidations";
 import { filterTripsByDateInitialValues } from "../forms/FilterTripsByDateForm/FilterTripsByDateValidations";
 import { forgotPasswordInitialValues, forgotPasswordSchema } from "../forms/ForgotPasswordForm/ForgotPasswordFormValidations";
 import { loginInitialValues, loginSchema } from "../forms/LoginForm/LoginValidations";
@@ -18,7 +20,7 @@ import { handleAlert } from "../functions/handleAlert";
 import { handleCatchError } from "../functions/handleCatchError";
 import { login } from "../store/authSlice";
 import { getDrivers } from "../store/driversSlice";
-import { getNearestDrivers } from "../store/nearestDriversSlice";
+import { getNearestDrivers, searchForNearestDriver } from "../store/nearestDriversSlice";
 import { getPendingDrivers } from "../store/pendingDriversSlice";
 import { getTrips } from "../store/tripsSlice";
 
@@ -30,11 +32,12 @@ const useSubmitForm = (type) => {
   const dispatch = useDispatch()
   const { token } = useSelector((state) => state.auth)
   const { driver } = useSelector((state) => state.driver)
-  const { handleCloseEditDriverDrawer } = useContext(DrawersContext)
+  const {tripsSheets,setTripsSheets} = useContext(SheetsContext)
+  const { handleCloseEditDriverDrawer,handleCloseEditTripDrawer } = useContext(DrawersContext)
   const {profile,nationalFront,nationalBack,registration,insurance,left,front,back,right} = useContext(UploadImagesContext)
-  const { driverId ,setTripId,setSheetTrip , tripId,todayDate,trips,setChosenDate,chosenDate} = useContext(AppContext)
+  const { driverId ,setTripId,setSheetTrip , tripId,todayDate,trips,setChosenDate,chosenDate,currentTrip,sheetTripIndex,sheetTrip} = useContext(AppContext)
   const { setAddDriverTab, setAddTripTab } = useContext(TabsContext)
-  const {handleCloseAssignDriverModal,handleCloseNearestDriversModal,handleCloseCreateMultipleTripsModal} = useContext(ModalsContext)
+  const {handleCloseAssignDriverModal,handleCloseNearestDriversModal,handleCloseCreateMultipleTripsModal,handleCloseVerifyDriverModal} = useContext(ModalsContext)
   const { pathname } = useLocation()
 
   const formikObj =
@@ -317,6 +320,45 @@ const useSubmitForm = (type) => {
               setLoading(false)
             }
           }
+        case "edit_trip":
+          return {
+            initialValues: editTripInitialValues,
+            validationSchema: editTripSchema,
+            onSubmit: async (values, { resetForm }) => {
+              setLoading(true)
+              if(sheetTrip){
+                let trip = tripsSheets[0].trips[sheetTripIndex]
+                trip.patient.firstName = values.firstName
+                trip.patient.lastName = values.lastName
+                trip.driver = values?.driver
+                trip.patient.phone = values.phone
+                trip.date = values.date
+                trip.time = values.time
+                trip.cost = values.cost
+                trip.number = values.number
+                trip.pickup = values.pickup
+                trip.destination = values.destination
+                tripsSheets[0].trips[sheetTripIndex] = trip
+                setTripsSheets(()=>tripsSheets)
+                handleAlert({ msg: "Trip is Updated Successfully", status: "success" })
+                handleCloseEditTripDrawer()
+              }else{
+                await axios.put(`${server_url}/UpdateTrip?id=${currentTrip._id}`, values, {
+                  headers: {
+                    Authorization: `Bearer ${token}`
+                  }
+                }).then(() => {
+                  resetForm()
+                  handleAlert({ msg: "Trip is Updated Successfully", status: "success" })
+                  dispatch(getTrips({page:0,date:chosenDate}))
+                  handleCloseEditTripDrawer()
+                }).catch((err) => {
+                  handleCatchError(err)
+                })
+              }
+              setLoading(false)
+            }
+          }
         case "edit_driver":
           return {
             initialValues: editDriverInitialValues,
@@ -382,6 +424,7 @@ const useSubmitForm = (type) => {
               }).then(() => {
                 handleAlert({ msg: "Driver is Verified Successfully", status: "success" })
                 dispatch(getPendingDrivers({ page: 0 }))
+                handleCloseVerifyDriverModal()
               }).catch((err) => {
                 handleCatchError(err)
               })
@@ -408,13 +451,13 @@ const useSubmitForm = (type) => {
                   number:allTrips[i].number,
                   specialNeeds:allTrips[i].specialNeeds,
                   pickup:{
-                    latitude:allTrips[i].pickup.lat,
-                    longitude:allTrips[i].pickup.lng,
+                    latitude:allTrips[i].pickup.latitude,
+                    longitude:allTrips[i].pickup.longitude,
                     address:allTrips[i].pickup.address
                   },
                   destination:{
-                    latitude:allTrips[i].destination.lat,
-                    longitude:allTrips[i].destination.lng,
+                    latitude:allTrips[i].destination.latitude,
+                    longitude:allTrips[i].destination.longitude,
                     address:allTrips[i].destination.address
                   },
                 }
@@ -446,22 +489,29 @@ const useSubmitForm = (type) => {
           } 
         case "search_for_driver":
           return {
-            initialValues: forgotPasswordInitialValues,
+            initialValues: {search:""},
             onSubmit: async () => {
-              handleAlert({ msg: "Under Development...", status: "error" })
+              handleAlert({ msg: "Under Development..." })
             }
           } 
         case "search_for_trip":
           return {
-            initialValues: forgotPasswordInitialValues,
+            initialValues: {search:""},
             onSubmit: async () => {
-              handleAlert({ msg: "Under Development...", status: "error" })
+              handleAlert({ msg: "Under Development..." })
+            }
+          } 
+        case "search_for_nearest_driver":
+          return {
+            initialValues: {search:""},
+            onSubmit: (values) => {
+              dispatch(searchForNearestDriver({search:values.search}))
             }
           } 
         default:
           return ""
       }
-    },[type, navigate, dispatch, token, setAddDriverTab, setAddTripTab, driver, pathname, handleCloseEditDriverDrawer, driverId,profile,nationalFront,nationalBack,registration,insurance,left,front,back,right,tripId,setTripId,handleCloseAssignDriverModal,todayDate,handleCloseNearestDriversModal,trips,setSheetTrip,setChosenDate,chosenDate,handleCloseCreateMultipleTripsModal])
+    },[type, navigate, dispatch, token, setAddDriverTab, setAddTripTab, driver, pathname, handleCloseEditDriverDrawer, driverId,profile,nationalFront,nationalBack,registration,insurance,left,front,back,right,tripId,setTripId,handleCloseAssignDriverModal,todayDate,handleCloseNearestDriversModal,trips,setSheetTrip,setChosenDate,chosenDate,handleCloseCreateMultipleTripsModal,handleCloseEditTripDrawer,currentTrip,sheetTripIndex,sheetTrip,tripsSheets,setTripsSheets,handleCloseVerifyDriverModal])
   
   const formik = useFormik(formikObj)
 

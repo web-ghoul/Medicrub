@@ -17,6 +17,7 @@ export const getNearestDrivers = createAsyncThunk(
 
 const initialState = {
   nearestDrivers: null,
+  allNearestDrivers:null,
   isLoading:true
 }
 
@@ -24,6 +25,11 @@ export const nearestDriversSlice = createSlice({
   name: 'nearestDrivers',
   initialState,
   reducers: {
+    searchForNearestDriver:(state,{payload})=>{
+      state.isLoading = true
+      state.nearestDrivers = state.allNearestDrivers.filter((e)=> `${e.driver.user.firstName} ${e.driver.user.lastName}`.toLowerCase().includes(payload.search.toLowerCase()))
+      state.isLoading = false
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(getNearestDrivers.pending, (state) => {
@@ -31,6 +37,7 @@ export const nearestDriversSlice = createSlice({
     })
     builder.addCase(getNearestDrivers.fulfilled, (state, { payload }) => {
       state.nearestDrivers = payload
+      state.allNearestDrivers = payload
       state.isLoading = false
     })
     builder.addCase(getNearestDrivers.rejected, (state, action) => {
@@ -45,4 +52,5 @@ export const nearestDriversSlice = createSlice({
 })
 
 
+export const {searchForNearestDriver} = nearestDriversSlice.actions
 export default nearestDriversSlice.reducer

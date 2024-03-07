@@ -16,13 +16,13 @@ const DriversTableRow = ({ row, handleViewDriver, handleEditDriver }) => {
       </StyledTableCell> : <StyledTableCell>
         <AvatarTableBox avatar={row.user.profileImage} name={`${row.user.firstName} ${row.user.lastName}`} handleViewDriver={handleViewDriver} />
       </StyledTableCell>}
-      {!smScreen && <StyledTableCell align="center">
+      {<StyledTableCell align="center">
         <Typography variant="subtitle2">{row.location.address}</Typography>
       </StyledTableCell>}
       {!mdScreen && <StyledTableCell align="center">
         <Typography variant="subtitle2">{row.user.phone}</Typography>
       </StyledTableCell>}
-      <StyledTableCell align="center">
+      {!smScreen && <StyledTableCell align="center">
         {
           row.visible ?
             <Box className={`flex flex-wrap justify-center items-center gap-1`}>
@@ -31,16 +31,16 @@ const DriversTableRow = ({ row, handleViewDriver, handleEditDriver }) => {
             </Box> :
             <Typography variant="subtitle2">Offline</Typography>
         }
-      </StyledTableCell>
+      </StyledTableCell>}
       {!smScreen && <StyledTableCell align="center">
         <Typography variant="subtitle2" >{row.onTrip ? "Unavailable" : "Available"}</Typography>
       </StyledTableCell>}
       <StyledTableCell align="right">
         <Box className={`flex flex-wrap justify-end items-center gap-1`}>
-          {!mdScreen && <ActionIcon title={"View"} clicked={handleViewDriver}>
+          {<ActionIcon title={"View"} clicked={handleViewDriver}>
             <VisibilityRounded className="text-blue" />
           </ActionIcon>}
-          {!mdScreen && <ActionIcon title={"Edit"} clicked={handleEditDriver}>
+          {!smScreen && <ActionIcon title={"Edit"} clicked={handleEditDriver}>
             <EditRounded className="text-secondary" />
           </ActionIcon>}
         </Box>

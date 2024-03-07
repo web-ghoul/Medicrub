@@ -1,4 +1,4 @@
-import { AssignmentTurnedInRounded, DeleteRounded, EditRounded } from "@mui/icons-material";
+import { AssignmentTurnedInRounded, EditRounded, VisibilityRounded } from "@mui/icons-material";
 import { Box, Typography, useMediaQuery } from '@mui/material';
 import { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,7 +8,7 @@ import { getDriver } from "../../store/driverSlice";
 import { StyledTableCell } from "../StyledTableCell";
 import { StyledTableRow } from "./StyledTableRow";
 
-const TripsTableRow = ({ row, handleDeleteTrip, handleAssignDriver, handleEditTrip }) => {
+const TripsTableRow = ({ row, handleViewTrip, handleAssignDriver, handleEditTrip }) => {
   const mdScreen = useMediaQuery("(max-width:992px)")
   const smScreen = useMediaQuery("(max-width:768px)")
   const xsScreen = useMediaQuery("(max-width:540px)")
@@ -50,14 +50,14 @@ const TripsTableRow = ({ row, handleDeleteTrip, handleAssignDriver, handleEditTr
       </StyledTableCell>}
       <StyledTableCell align="right">
         <Box className={`flex justify-end items-center gap-1`}>
+          <ActionIcon title={"View"} clicked={handleViewTrip}>
+            <VisibilityRounded className="text-blue" />
+          </ActionIcon>
           <ActionIcon title={"Assign"} clicked={handleAssignDriver}>
             <AssignmentTurnedInRounded className="text-green" />
           </ActionIcon>
-          <ActionIcon title={"Edit"} clicked={handleEditTrip}>
+          {!mdScreen && <ActionIcon title={"Edit"} clicked={handleEditTrip}>
             <EditRounded className="text-secondary" />
-          </ActionIcon>
-          {!smScreen && <ActionIcon title={"Delete"} clicked={handleDeleteTrip}>
-            <DeleteRounded className="text-primary" />
           </ActionIcon>}
         </Box>
       </StyledTableCell>
