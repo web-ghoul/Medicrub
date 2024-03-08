@@ -3,8 +3,8 @@ import mongoose, { Document, Schema } from 'mongoose';
 interface LocationDoc extends Document {
     latitude: string;
     logitude: string;
-    altitude: string;
     address: string;
+    coordinates: number[];
 
 }
 
@@ -20,7 +20,11 @@ const locationSchema = new Schema(
             type: String,
             required: true,
         },
-  
+
+        coordinates: {
+            type: [Number],
+            index: '2dsphere', // Create a geospatial index
+        },
 
         address: {
             type: String,
@@ -28,10 +32,10 @@ const locationSchema = new Schema(
         },
     },
     {
-        timestamps: true, 
-        toJSON:{
-            transform(doc, ret){
-                delete ret._id; 
+        timestamps: true,
+        toJSON: {
+            transform(doc, ret) {
+                delete ret._id;
                 delete ret.__v;
                 delete ret.createdAt;
                 delete ret.updatedAt;

@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, Length } from 'class-validator';
+import { IsBoolean, IsEmail, IsNotEmpty, Length } from 'class-validator';
 import { LocationInput } from './Location.dto';
 
 export interface DriverPayload {
@@ -67,3 +67,15 @@ export class DriverUpdateInput{
     address!: string;
     
 }
+
+
+
+export class DriverUpdateStatusInput{
+    @IsBoolean()
+    isVisible!: boolean;
+    @IsBoolean()
+    onTrip!: boolean;
+    
+}
+
+

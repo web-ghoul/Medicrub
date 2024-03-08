@@ -1,11 +1,11 @@
 import express from 'express';
-import { Login, DriverRegister } from '../controllers';
+import { DriverLogin, DriverRegister } from '../controllers';
 
 const router = express.Router();
 
 router.post(
-    '/Login',
-    Login
+    '/DriverLogin',
+    DriverLogin
 );
 
 

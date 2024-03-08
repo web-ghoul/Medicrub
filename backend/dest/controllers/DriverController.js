@@ -9,11 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AddDriverLicense = exports.GetDriver = exports.CheckDriver = void 0;
+exports.UpdateDriverStatus = exports.UpdateDriverPosition = exports.AddDriverLicense = exports.GetDriver = exports.CheckDriver = void 0;
+const dto_1 = require("../dto");
 const model_1 = require("../model");
 const config_1 = require("../config");
 const FilesExtractor_1 = require("../middlewares/FilesExtractor");
 const UploadService_1 = require("../services/UploadService");
+const class_transformer_1 = require("class-transformer");
+const class_validator_1 = require("class-validator");
+const SockerIO_1 = require("../services/SockerIO");
 /* -------------------------------------------------------------------------- */
 /*              Check Driver License , Car , Verification Status              */
 /* -------------------------------------------------------------------------- */
@@ -60,7 +64,11 @@ const GetDriver = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         const driverPayload = req.user;
         if (driverPayload) {
             const driver = yield model_1.Driver.findById(driverPayload.driverID)
-                .select('-car -user')
+                .select('-car')
+                .populate({
+                path: 'user',
+                select: 'firstName lastName profileImage phone email',
+            })
                 .populate('location')
                 .populate('driverLicense')
                 .populate('nationalCard');
@@ -117,3 +125,103 @@ const AddDriverLicense = (req, res, next) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.AddDriverLicense = AddDriverLicense;
+/* -------------------------------------------------------------------------- */
+/*                           Update Driver Position                           */
+/* -------------------------------------------------------------------------- */
+const UpdateDriverPosition = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const driverPayload = req.user;
+        if (driverPayload) {
+            const locationInputs = (0, class_transformer_1.plainToClass)(dto_1.LocationInput, req.body);
+            const errors = yield (0, class_validator_1.validate)(locationInputs);
+            if (errors.length > 0) {
+                return res.status(400).json(errors);
+            }
+            /* ------------------------------ Get Driver ----------------------------- */
+            var driver = yield model_1.Driver.findById(driverPayload.driverID)
+                .select('user location visible onTrip')
+                .populate({
+                path: 'user',
+                select: 'firstName lastName profileImage',
+            })
+                .populate('location');
+            /* ------------------------------ Driver Exist ------------------------------ */
+            if (driver) {
+                /* ----------------------------- Update Location ---------------------------- */
+                if (driver.location != null) {
+                    driver.location.latitude = locationInputs.latitude;
+                    driver.location.longitude = locationInputs.longitude;
+                    driver.location.address = locationInputs.address;
+                    driver.location.coordinates = [
+                        parseFloat(locationInputs.longitude),
+                        parseFloat(locationInputs.latitude),
+                    ];
+                    yield driver.location.save();
+                }
+                /* ------------------------- Create New Location Obj ------------------------ */
+                else {
+                    const newLocation = yield model_1.MedicurbLocation.create({
+                        latitude: locationInputs.latitude,
+                        longitude: locationInputs.longitude,
+                        address: locationInputs.address,
+                        coordinates: [
+                            parseFloat(locationInputs.longitude),
+                            parseFloat(locationInputs.latitude),
+                        ],
+                    });
+                    driver.location = newLocation;
+                    driver = yield driver.save();
+                }
+                /* ------------------------------ Notify Admins ----------------------------- */
+                (0, SockerIO_1.getIO)()
+                    .of('/admin').emit(config_1.DRIVERS_SOCKET_CHANNEL, driver);
+            }
+            return res.status(201).json({ data: null });
+        }
+        return res.status(400).json({ message: config_1.NOT_EXIST_ERROR_MSG });
+    }
+    catch (_) {
+        console.log(_);
+        return res.status(400).json({ message: config_1.DEFAULT_ERROR_MSG });
+    }
+});
+exports.UpdateDriverPosition = UpdateDriverPosition;
+/* -------------------------------------------------------------------------- */
+/*                           Update Driver Status                           */
+/* -------------------------------------------------------------------------- */
+const UpdateDriverStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const driverPayload = req.user;
+        if (driverPayload) {
+            const statusInputs = (0, class_transformer_1.plainToClass)(dto_1.DriverUpdateStatusInput, req.body);
+            const errors = yield (0, class_validator_1.validate)(statusInputs);
+            if (errors.length > 0) {
+                return res.status(400).json(errors);
+            }
+            /* ------------------------------ Get Driver ----------------------------- */
+            var driver = yield model_1.Driver.findById(driverPayload.driverID)
+                .select('user location visible onTrip')
+                .populate({
+                path: 'user',
+                select: 'firstName lastName profileImage',
+            })
+                .populate('location');
+            /* ------------------------------ Driver Exist ------------------------------ */
+            if (driver) {
+                driver.visible = statusInputs.isVisible;
+                driver.onTrip = statusInputs.onTrip;
+                driver = yield driver.save();
+                /* ------------------------------ Notify Admins ----------------------------- */
+                (0, SockerIO_1.getIO)()
+                    .of('/admin').emit(config_1.DRIVERS_SOCKET_CHANNEL, driver);
+            }
+            return res.status(201).json({ data: null });
+        }
+        return res.status(400).json({ message: config_1.NOT_EXIST_ERROR_MSG });
+    }
+    catch (_) {
+        console.log(_);
+        return res.status(400).json({ message: config_1.DEFAULT_ERROR_MSG });
+    }
+});
+exports.UpdateDriverStatus = UpdateDriverStatus;

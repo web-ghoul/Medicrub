@@ -3,18 +3,26 @@ import { Authenticate } from '../middlewares/CommontAuth';
 import express from 'express';
 
 
-import {
+import { 
+    
+    GetAllDrivers, 
+    GetAllTrips, 
+    GetPendingDrivers, 
+    CreateAdmin, 
+    AdminLogin,
+    AdminCreateDriver,
     AdminAddDriverLicense,
     AdminCreateCar,
     AdminCreateCarAlbum,
-    AdminCreateDriver,
-    AdminDriverCarDetails,
     AdminGetDriver,
-    AdminLogin,
+    AdminDriverCarDetails,
     AdminUpdateDriver,
-    CreateAdmin,
-    GetAllDrivers,
-} from '../controllers';
+    VerifyDriver,
+    GetNearestDriver,
+    CreateTrip,
+    UpdateTrip,
+    CreateMultiTrip,
+ } from '../controllers';
 
 const router = express.Router();
 
@@ -30,6 +38,20 @@ router.use(Authenticate);
 router.get(
     '/Drivers/:page',
     GetAllDrivers,
+);
+router.get(
+    '/Trips/:page',
+    GetAllTrips,
+);
+
+router.get(
+    '/PendingDrivers/:page',
+    GetPendingDrivers,
+);
+
+router.get(
+    '/NearestDrivers',
+    GetNearestDriver,
 );
 
 
@@ -59,6 +81,12 @@ router.put(
 );
 
 
+router.put(
+    '/VerifyDriver',
+    VerifyDriver,
+);
+
+
 router.post(
     '/CreateCar',
     AdminCreateCar,
@@ -69,6 +97,21 @@ router.post(
 router.post(
     '/CreateCarAlbum',
     AdminCreateCarAlbum,
+);
+
+router.post(
+    '/CreateTrip',
+    CreateTrip,
+);
+
+router.put(
+    '/UpdateTrip',
+    UpdateTrip,
+);
+
+router.post(
+    '/CreateMultiTrip',
+    CreateMultiTrip,
 );
 
 

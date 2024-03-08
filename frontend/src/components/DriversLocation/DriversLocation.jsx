@@ -17,7 +17,7 @@ export default function DriversLocation() {
   });
 
   if (!isLoaded || isLoading) return <LoadingMap />;
-  return <Map locations={drivers.map((driver) => ({ lat: +driver.location.latitude, lng: +driver.location.longitude }))
+  return <Map locations={drivers && drivers.map((driver) => ({ lat: +driver.location.latitude, lng: +driver.location.longitude }))
   } />;
 }
 
@@ -53,8 +53,12 @@ function Map({ locations }) {
   }, [])
 
   useEffect(() => {
-    setVisible(true)
-  }, [visible])
+    if (locations) {
+      setVisible(true)
+    } else {
+      setVisible(false)
+    }
+  }, [visible, locations])
 
   useEffect(() => {
     if (map) {
@@ -62,7 +66,10 @@ function Map({ locations }) {
     }
   }, [onLoad, drivers, map])
 
-  return (
+
+  console.log(locations);
+
+  return locations && (
     <Box className={`grid justify-stretch items-center gap-4 md:!gap-2`}>
       <GoogleMap
         id="map"

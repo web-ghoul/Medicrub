@@ -137,7 +137,7 @@ export const GetMyCar = async (req: Request, res: Response, next: NextFunction) 
         const driverPayload = req.user as DriverPayload;
 
         if (driverPayload) {
-                const car = await Car.findOne({ driver: driverPayload.driverID }).populate('carAlbum').populate('carAlbum');
+                const car = await Car.findOne({ driver: driverPayload.driverID }).populate('carAlbum');
 
 
             if (car) {

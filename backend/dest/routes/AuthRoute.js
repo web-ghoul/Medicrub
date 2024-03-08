@@ -8,5 +8,5 @@ const express_1 = __importDefault(require("express"));
 const controllers_1 = require("../controllers");
 const router = express_1.default.Router();
 exports.AuthRoute = router;
-router.post('/Login', controllers_1.Login);
+router.post('/DriverLogin', controllers_1.DriverLogin);
 router.post('/DriverRegister', controllers_1.DriverRegister);

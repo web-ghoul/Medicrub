@@ -13,3 +13,5 @@ router.use(CommontAuth_1.Authenticate);
 router.get('/Check', controllers_1.CheckDriver);
 router.get('/Driver', controllers_1.GetDriver);
 router.post('/AddLicense', controllers_1.AddDriverLicense);
+router.put('/UpdatePosition', controllers_1.UpdateDriverPosition);
+router.put('/UpdateStatus', controllers_1.UpdateDriverStatus);

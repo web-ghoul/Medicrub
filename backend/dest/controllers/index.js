@@ -19,3 +19,4 @@ __exportStar(require("./AuthController"), exports);
 __exportStar(require("./DriverController"), exports);
 __exportStar(require("./CarController"), exports);
 __exportStar(require("./UserController"), exports);
+__exportStar(require("./TripController"), exports);

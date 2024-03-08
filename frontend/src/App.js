@@ -21,9 +21,10 @@ import EditTripSidebar from "./sidebars/EditTripSidebar/EditTripSidebar";
 import Sidebar from "./sidebars/Sidebar/Sidebar";
 import TripSidebar from "./sidebars/TripSidebar/TripSidebar";
 import { setAuth } from "./store/authSlice";
+import { updateDriver } from "./store/driversSlice";
 
-const socket = io(`${process.env.REACT_APP_SERVER_URL}`);
-
+const SOCKET_SERVER_URL = 'http://localhost:3000/admin'; 
+    
 function App() {
   const {pathname} = useLocation()
   const navigate = useNavigate()
@@ -49,15 +50,30 @@ function App() {
     }
   },[pathname ,dispatch, navigate])
 
-  //Handle Socket Event
-  // useEffect(() => {
-  //   socket.on('admin-connected', (message) => {
-  //     console.log('Admin connected:', message);
-  //   });
-  //   return () => {
-  //     socket.off('admin-connected');
-  //   };
-  // }, []);
+  // Handle Socket Event
+  useEffect(() => {
+    const token = Cookies.get(`${process.env.REACT_APP_TOKEN_NAME}`)
+
+    const headers = {
+      authorization: `Bearer ${token}`,
+    };
+
+    const socket = io(SOCKET_SERVER_URL,{
+      extraHeaders:headers
+    });
+
+    socket.on('admin-connected', (message) => {
+      console.log('Admin connected:', message);
+    });
+
+    socket.on("drivers-positions",(data)=>{
+      dispatch(updateDriver(data))
+    })
+  
+    return () => {
+      socket.disconnect();
+    };
+  }, [dispatch]);
 
   return (
     <ThemeProvider theme={Theme("light")}>

@@ -20,3 +20,5 @@ __exportStar(require("./Driver"), exports);
 __exportStar(require("./Car"), exports);
 __exportStar(require("./License"), exports);
 __exportStar(require("./Location"), exports);
+__exportStar(require("./Trip"), exports);
+__exportStar(require("./Patient"), exports);

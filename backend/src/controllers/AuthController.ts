@@ -6,83 +6,23 @@ import { GeneratePassword, GenerateSalt, ValidatePassword } from '../utility/Pas
 import { AuthPayload, DriverRegisterInput, LoginInput } from '../dto';
 import { GenerateSignature } from '../utility/TokenUtility';
 import { User, MedicurbLocation, Driver, License } from '../model';
-import { NOT_EXIST_ERROR_MSG, DEFAULT_ERROR_MSG, EMAIL_EXIST_ERROR_MSG, LOGIN_FAIL_ERROR_MSG } from '../config';
+import { NOT_EXIST_ERROR_MSG, DEFAULT_ERROR_MSG, EMAIL_EXIST_ERROR_MSG, LOGIN_FAILED_ERROR_MSG, DRIVER } from '../config';
 import { UploadFile } from '../services/UploadService';
 import { ExtractFiles, ExtractForm } from '../middlewares/FilesExtractor';
 import formidable from 'formidable';
 
 
-/* -------------------------------------------------------------------------- */
-/*                                    Login                                   */
-/* -------------------------------------------------------------------------- */
-export const Login = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-
-        const loginInputs = plainToClass(LoginInput, req.body);
-        const errors = await classValidator(loginInputs);
-
-        if (errors.length > 0) {
-            return res.status(200).json(errors);
-        }
-
-        const user = await User
-            .findOne({ "email": loginInputs.username.replace(/ /g, "") })
-            .populate({
-                path: 'driver',
-                select: '-user -car -driverLicense -nationalCard',                
-            })
-            .populate('location');
-
-
-        if (user) {
-
-            /* ---------------------------- Validate Password --------------------------- */
-            const validPassword = await ValidatePassword(loginInputs.password, user.password, user.salt);
-
-            if (validPassword) {
-
-                /* ---------------------------- Generate Token --------------------------- */
-                const token = GenerateSignature({
-                    _id: user._id,
-                    driverID: user.driver._id,
-                    verified: user.driver.verified,
-                    hasCar: user.driver.car != null,
-                    hasDriverLicense: user.driver.driverLicense != null,
-                });
-
-                return res.status(200).json({
-                    data: {
-                        user: user,
-                        token: token,
-                    }
-                });
-            }
-
-        }
-
-        return res.status(400).json({ message: LOGIN_FAIL_ERROR_MSG });
-
-
-    } catch (_) {
-
-        console.log(_);
-        return res.status(400).json({ message: DEFAULT_ERROR_MSG });
-
-    }
-}
 
 
 /* -------------------------------------------------------------------------- */
 /*                               Driver Register                              */
 /* -------------------------------------------------------------------------- */
-
-
 export const DriverRegister = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
-        
+
         const [fields, images] = await ExtractForm(req);
-                
+
         /* ------------------------------ Check Inputs ------------------------------ */
         const driverInputs = plainToClass(DriverRegisterInput, fields);
         const errors = await classValidator(driverInputs);
@@ -91,7 +31,7 @@ export const DriverRegister = async (req: Request, res: Response, next: NextFunc
         if (errors.length > 0) {
             return res.status(400).json(errors);
         }
-    
+
         const profile = images['profile'][0] as formidable.File;
         const nationalFront = images['nationalFront'][0] as formidable.File;
         const nationalBack = images['nationalBack'][0] as formidable.File;
@@ -122,6 +62,10 @@ export const DriverRegister = async (req: Request, res: Response, next: NextFunc
                 latitude: driverInputs.latitude,
                 longitude: driverInputs.longitude,
                 address: driverInputs.address,
+                coordinates: [
+                    parseFloat(driverInputs.longitude),
+                    parseFloat(driverInputs.latitude),
+                ],
             });
 
             /* --------------------------- Create New User --------------------------- */
@@ -129,7 +73,7 @@ export const DriverRegister = async (req: Request, res: Response, next: NextFunc
                 firstName: driverInputs.firstName,
                 lastName: driverInputs.lastName,
                 birthDate: driverInputs.birthDate,
-                type: 'driver',
+                type: DRIVER,
                 profileImage: prifileURL,
 
 
@@ -192,26 +136,48 @@ export const DriverRegister = async (req: Request, res: Response, next: NextFunc
 }
 
 
-
 /* -------------------------------------------------------------------------- */
-/*                                 Get Profile                                */
+/*                                Driver Login                                */
 /* -------------------------------------------------------------------------- */
-
-
-export const GetProfile = async (req: Request, res: Response, next: NextFunction) => {
+export const DriverLogin = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userPayload = req.user as AuthPayload;
-
-        if (userPayload) {
-            const user = await User.findById(userPayload._id).populate('location');
-
-            if (user) {
-                return res.status(400).json({ data: user });
-            }
+        /* ------------------------------ Check Inputs ------------------------------ */
+        const loginInputs = plainToClass(LoginInput, req.body);
+        const errors = await classValidator(loginInputs);
+        if (errors.length > 0) {
+            return res.status(400).json(errors);
         }
 
-        return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
+        /* ----------------------- Check If User Already Exist ---------------------- */
+        const existUser = await User
+        .findOne({ "email": loginInputs.username.replace(/ /g, "") }).populate('location');
 
+        if (existUser) {
+
+            /* ---------------------------- Validate Password --------------------------- */
+            const validPassword = await ValidatePassword(loginInputs.password, existUser.password, existUser.salt);
+
+            if (validPassword) {
+
+                /* ---------------------------- Generate Token --------------------------- */
+                const token = GenerateSignature({
+                    _id: existUser._id,
+                    driverID: existUser.driver,
+                    verified: existUser.driver.verified,
+                    hasCar: existUser.driver.car != null,
+                    hasDriverLicense: existUser.driver.driverLicense != null,
+                });
+
+        
+                
+                 return res.status(200).json({ data: { token: token, user: existUser } });
+                
+            }
+
+
+
+        }
+        return res.status(400).json({ message: LOGIN_FAILED_ERROR_MSG });
 
     } catch (_) {
 

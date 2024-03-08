@@ -43,6 +43,7 @@ const driverSchema = new mongoose_1.Schema({
     location: {
         type: mongoose_1.default.SchemaTypes.ObjectId,
         ref: 'Location',
+        // index: '2dsphere',
         required: true,
     },
     car: {
@@ -50,6 +51,10 @@ const driverSchema = new mongoose_1.Schema({
         ref: 'Car',
     },
     verifiedBy: {
+        type: mongoose_1.default.SchemaTypes.ObjectId,
+        ref: 'Admin',
+    },
+    updatedBy: {
         type: mongoose_1.default.SchemaTypes.ObjectId,
         ref: 'Admin',
     },
@@ -63,6 +68,8 @@ const driverSchema = new mongoose_1.Schema({
             delete ret.__v;
             delete ret.createdAt;
             delete ret.updatedAt;
+            delete ret.verifiedBy;
+            delete ret.updatedBy;
         }
     }
 });

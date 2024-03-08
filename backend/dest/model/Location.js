@@ -34,6 +34,10 @@ const locationSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
+    coordinates: {
+        type: [Number],
+        index: '2dsphere', // Create a geospatial index
+    },
     address: {
         type: String,
         required: true,

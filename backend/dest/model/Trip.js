@@ -23,35 +23,56 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
+exports.Trip = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const userSchema = new mongoose_1.Schema({
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
-    birthDate: { type: String, required: true },
-    profileImage: { type: String },
-    type: { type: String, required: true }, // driver / patient
-    phone: { type: String, required: true },
-    email: { type: String },
-    ssn: { type: String },
-    medicalInsurance: { type: String },
-    phoneVerified: { type: Boolean },
-    emailVerified: { type: Boolean },
-    salt: { type: String, required: true },
-    password: { type: String, required: true },
-    location: {
-        type: mongoose_1.default.SchemaTypes.ObjectId,
-        ref: 'Location',
-        required: true,
-    },
+const tripSchema = new mongoose_1.Schema({
     driver: {
         type: mongoose_1.default.SchemaTypes.ObjectId,
         ref: 'Driver',
     },
     patient: {
         type: mongoose_1.default.SchemaTypes.ObjectId,
-        ref: 'Patient',
+        required: true,
+        ref: 'User',
     },
+    pickup: {
+        type: mongoose_1.default.SchemaTypes.ObjectId,
+        required: true,
+        ref: 'Location',
+    },
+    destination: {
+        type: mongoose_1.default.SchemaTypes.ObjectId,
+        required: true,
+        ref: 'Location',
+    },
+    addedBy: {
+        type: mongoose_1.default.SchemaTypes.ObjectId,
+        required: true,
+        ref: 'Admin',
+    },
+    updatedBy: {
+        type: mongoose_1.default.SchemaTypes.ObjectId,
+        ref: 'Admin',
+    },
+    date: {
+        type: String,
+        required: true,
+    },
+    time: {
+        type: String,
+        required: true,
+    },
+    cost: {
+        type: Number,
+        required: true,
+    },
+    number: { type: String },
+    startedAt: { type: String },
+    arrivedAt: { type: String },
+    finishedAt: { type: String },
+    signature: { type: String },
+    specialNeeds: { type: String },
+    mileage: { type: Number },
 }, {
     timestamps: true,
     toJSON: {
@@ -59,13 +80,10 @@ const userSchema = new mongoose_1.Schema({
             delete ret.__v;
             delete ret.createdAt;
             delete ret.updatedAt;
-            delete ret.password;
-            delete ret.salt;
-            delete ret._id;
-            delete ret.driver;
-            delete ret.patient;
+            delete ret.addedBy;
+            delete ret.updatedBy;
         }
     }
 });
-const User = mongoose_1.default.model('User', userSchema);
-exports.User = User;
+const Trip = mongoose_1.default.model('Trip', tripSchema);
+exports.Trip = Trip;

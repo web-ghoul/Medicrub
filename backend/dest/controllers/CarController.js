@@ -109,7 +109,7 @@ const GetMyCar = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
     try {
         const driverPayload = req.user;
         if (driverPayload) {
-            const car = yield model_1.Car.findOne({ driver: driverPayload.driverID }).populate('carAlbum').populate('carAlbum');
+            const car = yield model_1.Car.findOne({ driver: driverPayload.driverID }).populate('carAlbum');
             if (car) {
                 return res.status(200).json({ data: car });
             }

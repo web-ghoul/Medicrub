@@ -19,3 +19,4 @@ __exportStar(require("./Admin.dto"), exports);
 __exportStar(require("./Driver.dto"), exports);
 __exportStar(require("./Car.dto"), exports);
 __exportStar(require("./Location.dto"), exports);
+__exportStar(require("./Trip.dto"), exports);

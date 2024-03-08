@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetAllCars = exports.GetAllDrivers = exports.AdminDriverCarDetails = exports.AdminCreateCarAlbum = exports.AdminCreateCar = exports.AdminUpdateDriver = exports.AdminGetDriver = exports.AdminAddDriverLicense = exports.AdminCreateDriver = exports.AdminLogin = exports.CreateAdmin = void 0;
+exports.VerifyDriver = exports.GetAllCars = exports.GetNearestDriver = exports.GetPendingDrivers = exports.GetAllDrivers = exports.AdminDriverCarDetails = exports.AdminCreateCarAlbum = exports.AdminCreateCar = exports.AdminUpdateDriver = exports.AdminGetDriver = exports.AdminAddDriverLicense = exports.AdminCreateDriver = exports.AdminLogin = exports.CreateAdmin = void 0;
 const model_1 = require("../model");
 const config_1 = require("../config");
 const dto_1 = require("../dto");
@@ -130,6 +130,10 @@ const AdminCreateDriver = (req, res, next) => __awaiter(void 0, void 0, void 0, 
                         latitude: driverInputs.latitude,
                         longitude: driverInputs.longitude,
                         address: driverInputs.address,
+                        coordinates: [
+                            parseFloat(driverInputs.longitude),
+                            parseFloat(driverInputs.latitude),
+                        ],
                     });
                     /* --------------------------- Create New User --------------------------- */
                     const user = yield model_1.User.create({
@@ -287,7 +291,7 @@ const AdminUpdateDriver = (req, res, next) => __awaiter(void 0, void 0, void 0, 
                     .populate('nationalCard');
                 if (driver) {
                     let profile, nationalFront, nationalBack;
-                    let licenseFront, licenseBack;
+                    // let licenseFront, licenseBack;
                     /* ------------------------------ Profile Image ----------------------------- */
                     if (images['profile']) {
                         const file = images['profile'][0];
@@ -303,14 +307,14 @@ const AdminUpdateDriver = (req, res, next) => __awaiter(void 0, void 0, void 0, 
                         nationalBack = yield (0, UploadService_1.UploadFile)(file);
                     }
                     /* ----------------------------- Driver License ----------------------------- */
-                    if (images['licenseFront']) {
-                        const file = images['licenseFront'][0];
-                        licenseFront = yield (0, UploadService_1.UploadFile)(file);
-                    }
-                    if (images['licenseBack']) {
-                        const file = images['licenseBack'][0];
-                        licenseBack = yield (0, UploadService_1.UploadFile)(file);
-                    }
+                    // if (images['licenseFront']) {
+                    //     const file = images['licenseFront'][0] as formidable.File;
+                    //     licenseFront = await UploadFile(file);
+                    // }
+                    // if (images['licenseBack']) {
+                    //     const file = images['licenseBack'][0] as formidable.File;
+                    //     licenseBack = await UploadFile(file);
+                    // }
                     /* ------------------------------ Update Driver Details ----------------------------- */
                     driver.user.profileImage = profile !== null && profile !== void 0 ? profile : driver.user.profileImage;
                     driver.user.firstName = updateInputs.firstName;
@@ -324,16 +328,17 @@ const AdminUpdateDriver = (req, res, next) => __awaiter(void 0, void 0, void 0, 
                     driver.user.location.longitude = updateInputs.longitude;
                     driver.user.location.address = updateInputs.address;
                     /* -------------------------- Update Driver License ------------------------- */
-                    driver.driverLicense.front = licenseFront !== null && licenseFront !== void 0 ? licenseFront : driver.driverLicense.front;
-                    driver.driverLicense.back = licenseBack !== null && licenseBack !== void 0 ? licenseBack : driver.driverLicense.back;
+                    // driver.driverLicense.front = licenseFront ?? driver.driverLicense.front;
+                    // driver.driverLicense.back = licenseBack ?? driver.driverLicense.back;
                     /* ----------------------- Update Driver National Card ---------------------- */
                     driver.nationalCard.front = nationalFront !== null && nationalFront !== void 0 ? nationalFront : driver.nationalCard.front;
                     driver.nationalCard.back = nationalBack !== null && nationalBack !== void 0 ? nationalBack : driver.nationalCard.back;
                     /* ------------------------------ Save Updates ------------------------------ */
+                    driver.updatedBy = admin;
                     yield driver.user.save();
                     yield driver.user.location.save();
                     yield driver.nationalCard.save();
-                    yield driver.driverLicense.save();
+                    // await driver.driverLicense.save();
                     yield driver.save();
                     return res.status(201).json({ data: driver });
                 }
@@ -484,15 +489,15 @@ const GetAllDrivers = (req, res, next) => __awaiter(void 0, void 0, void 0, func
             const admin = yield model_1.Admin.findById(adminPayload._id);
             if (admin) {
                 const page = (_a = Number.parseInt(req.params.page)) !== null && _a !== void 0 ? _a : 0;
-                const driver = yield model_1.Driver.find()
+                const driver = yield model_1.Driver.find({ verified: true })
                     .skip(config_1.PAGINATION_PAGE * page)
                     .limit(config_1.PAGINATION_PAGE)
+                    .select('-car -nationalCard -driverLicense')
                     .populate({
                     path: 'user',
                     select: 'firstName lastName profileImage phone email',
                 })
                     .populate('location')
-                    .populate('nationalCard')
                     .sort('-createdAt');
                 if (driver) {
                     return res.status(200).json({ data: driver });
@@ -507,6 +512,97 @@ const GetAllDrivers = (req, res, next) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.GetAllDrivers = GetAllDrivers;
+/* -------------------------------------------------------------------------- */
+/*                             Get Pending Drivers                            */
+/* -------------------------------------------------------------------------- */
+const GetPendingDrivers = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _b;
+    try {
+        const adminPayload = req.user;
+        if (adminPayload) {
+            const admin = yield model_1.Admin.findById(adminPayload._id);
+            if (admin) {
+                const page = (_b = Number.parseInt(req.params.page)) !== null && _b !== void 0 ? _b : 0;
+                const drivers = yield model_1.Driver.find({ verified: false })
+                    .skip(config_1.PAGINATION_PAGE * page)
+                    .limit(config_1.PAGINATION_PAGE)
+                    .select('-car -nationalCard -driverLicense')
+                    .populate({
+                    path: 'user',
+                    select: 'firstName lastName profileImage phone email',
+                })
+                    .populate('location')
+                    .sort('-createdAt');
+                return res.status(200).json({ data: drivers });
+            }
+        }
+        return res.status(400).json({ message: config_1.NOT_EXIST_ERROR_MSG });
+    }
+    catch (_) {
+        console.log(_);
+        return res.status(400).json({ message: config_1.DEFAULT_ERROR_MSG });
+    }
+});
+exports.GetPendingDrivers = GetPendingDrivers;
+/* -------------------------------------------------------------------------- */
+/*                             Get Nearest Drivers                            */
+/* -------------------------------------------------------------------------- */
+const GetNearestDriver = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const adminPayload = req.user;
+        if (adminPayload) {
+            const admin = yield model_1.Admin.findById(adminPayload._id);
+            if (admin) {
+                /* ----------------------------- Validate Inupts ---------------------------- */
+                const latitude = parseFloat(String(req.query.latitude));
+                const longitude = parseFloat(String(req.query.longitude));
+                if (!longitude || !latitude) {
+                    return res.status(400).json(null);
+                }
+                /* --------------------------- Get Nearest Drivers -------------------------- */
+                const drivers = yield model_1.Driver.find({ verified: true })
+                    .select('_id user location visible onTrip')
+                    .populate({
+                    path: 'user',
+                    select: 'firstName lastName profileImage phone email',
+                })
+                    .populate('location');
+                let response = [];
+                for (const driver of drivers) {
+                    const distance = calculateDistanceInMiles(driver.location.coordinates[1], driver.location.coordinates[0], latitude, longitude);
+                    response.push({
+                        driver: driver,
+                        distance: distance,
+                    });
+                }
+                // Calculate distance and sort drivers based on the distance
+                response.sort((a, b) => a.distance - b.distance);
+                return res.status(200).json({ data: response });
+            }
+            return res.status(400).json({ message: config_1.NOT_EXIST_ERROR_MSG });
+        }
+        return res.status(400).json({ message: config_1.UNAUTHOREOZED_ERROR_MSG });
+    }
+    catch (_) {
+        console.log(_);
+        return res.status(400).json({ message: config_1.DEFAULT_ERROR_MSG });
+    }
+});
+exports.GetNearestDriver = GetNearestDriver;
+function calculateDistanceInMiles(lat1, lon1, lat2, lon2) {
+    const R = 3958.8; // Earth's radius in miles
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    return distance;
+}
+function toRad(degrees) {
+    return degrees * Math.PI / 180;
+}
 /* -------------------------------------------------------------------------- */
 /*                                Get All Cars                                */
 /* -------------------------------------------------------------------------- */
@@ -531,8 +627,9 @@ const GetAllCars = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
                     return res.status(200).json({ data: driver });
                 }
             }
+            return res.status(400).json({ message: config_1.NOT_EXIST_ERROR_MSG });
         }
-        return res.status(400).json({ message: config_1.NOT_EXIST_ERROR_MSG });
+        return res.status(400).json({ message: config_1.UNAUTHOREOZED_ERROR_MSG });
     }
     catch (_) {
         console.log(_);
@@ -540,6 +637,43 @@ const GetAllCars = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.GetAllCars = GetAllCars;
-function classValidator(driverInputs) {
-    throw new Error('Function not implemented.');
-}
+/* -------------------------------------------------------------------------- */
+/*                                Verify Driver                               */
+/* -------------------------------------------------------------------------- */
+const VerifyDriver = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c;
+    try {
+        const adminPayload = req.user;
+        if (adminPayload) {
+            const admin = yield model_1.Admin.findById(adminPayload._id);
+            if (admin) {
+                const driverID = req.query.id;
+                var driver = yield model_1.Driver.findById(driverID).populate('car');
+                /* -------------------------------------------------------------------------- */
+                /*                          Check All Inputs Are Done                         */
+                /* -------------------------------------------------------------------------- */
+                /* ------------------------------ Car Validator ----------------------------- */
+                if ((driver === null || driver === void 0 ? void 0 : driver.car) == null) {
+                    return res.status(400).json({ message: config_1.NOT_COMPLETED_DATA_ERROR_MSG });
+                }
+                /* ------------------------------ Car Album Validator ----------------------------- */
+                if (((_c = driver === null || driver === void 0 ? void 0 : driver.car) === null || _c === void 0 ? void 0 : _c.carAlbum) == null) {
+                    return res.status(400).json({ message: config_1.NOT_COMPLETED_DATA_ERROR_MSG });
+                }
+                {
+                    driver.verified = true;
+                    driver.verifiedBy = admin;
+                    yield driver.save();
+                    return res.status(201).json({ data: null });
+                }
+            }
+            return res.status(400).json({ message: config_1.NOT_EXIST_ERROR_MSG });
+        }
+        return res.status(400).json({ message: config_1.UNAUTHOREOZED_ERROR_MSG });
+    }
+    catch (_) {
+        console.log(_);
+        return res.status(400).json({ message: config_1.DEFAULT_ERROR_MSG });
+    }
+});
+exports.VerifyDriver = VerifyDriver;

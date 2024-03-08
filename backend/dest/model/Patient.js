@@ -23,34 +23,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
+exports.Patient = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const userSchema = new mongoose_1.Schema({
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
-    birthDate: { type: String, required: true },
-    profileImage: { type: String },
-    type: { type: String, required: true }, // driver / patient
-    phone: { type: String, required: true },
-    email: { type: String },
-    ssn: { type: String },
-    medicalInsurance: { type: String },
-    phoneVerified: { type: Boolean },
-    emailVerified: { type: Boolean },
-    salt: { type: String, required: true },
-    password: { type: String, required: true },
+const patientSchema = new mongoose_1.Schema({
     location: {
         type: mongoose_1.default.SchemaTypes.ObjectId,
         ref: 'Location',
         required: true,
-    },
-    driver: {
-        type: mongoose_1.default.SchemaTypes.ObjectId,
-        ref: 'Driver',
-    },
-    patient: {
-        type: mongoose_1.default.SchemaTypes.ObjectId,
-        ref: 'Patient',
     },
 }, {
     timestamps: true,
@@ -59,13 +38,8 @@ const userSchema = new mongoose_1.Schema({
             delete ret.__v;
             delete ret.createdAt;
             delete ret.updatedAt;
-            delete ret.password;
-            delete ret.salt;
-            delete ret._id;
-            delete ret.driver;
-            delete ret.patient;
         }
     }
 });
-const User = mongoose_1.default.model('User', userSchema);
-exports.User = User;
+const Patient = mongoose_1.default.model('Patient', patientSchema);
+exports.Patient = Patient;

@@ -4,11 +4,14 @@ interface DriverDoc extends Document {
     user: any;
     driverLicense: any;
     nationalCard: any;
-    currentLocation: any;
+    location: any;
     car: any;
+    verifiedBy: any;
+    updatedBy: any;
     verified: boolean;
     visible: boolean;
     onTrip: boolean;
+
 
 }
 
@@ -38,6 +41,7 @@ const driverSchema = new Schema(
         location: {
             type: mongoose.SchemaTypes.ObjectId,
             ref: 'Location',
+            // index: '2dsphere',
             required: true,
         },
 
@@ -49,6 +53,11 @@ const driverSchema = new Schema(
 
 
         verifiedBy: {
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: 'Admin',
+        },
+
+        updatedBy: {
             type: mongoose.SchemaTypes.ObjectId,
             ref: 'Admin',
         },
@@ -65,6 +74,8 @@ const driverSchema = new Schema(
                 delete ret.__v;
                 delete ret.createdAt;
                 delete ret.updatedAt;
+                delete ret.verifiedBy;
+                delete ret.updatedBy;
             }
         }
     }
@@ -74,3 +85,5 @@ const driverSchema = new Schema(
 const Driver = mongoose.model<DriverDoc>('Driver', driverSchema);
 
 export { Driver };
+
+

@@ -1,712 +1,888 @@
-import { Request, Response, NextFunction } from 'express';
-import { Admin, Car, CarAlbum, Driver, License, MedicurbLocation, User } from '../model';
-import { DEFAULT_ERROR_MSG, EMAIL_EXIST_ERROR_MSG, NOT_EXIST_ERROR_MSG, PAGINATION_PAGE, REQUIREMENTS_ERROR_MSG, USERNAME_EXIST_ERROR_MSG } from '../config';
-import { AdminPayload, CreateAdminInput, CreateCarInput, DriverRegisterInput, DriverUpdateInput, LoginInput } from '../dto';
-import { plainToClass } from 'class-transformer';
-import { validate } from 'class-validator';
-import { GeneratePassword, GenerateSalt, ValidatePassword } from '../utility/PasswordUtiility';
-import { GenerateSignature } from '../utility/TokenUtility';
-import formidable from 'formidable';
-import { ExtractFiles, ExtractForm } from '../middlewares/FilesExtractor';
-import { UploadFile } from '../services/UploadService';
-
-
+import { plainToClass } from "class-transformer";
+import { validate } from "class-validator";
+import { NextFunction, Request, Response } from "express";
+import formidable from "formidable";
+import {
+  DEFAULT_ERROR_MSG,
+  EMAIL_EXIST_ERROR_MSG,
+  NOT_COMPLETED_DATA_ERROR_MSG,
+  NOT_EXIST_ERROR_MSG,
+  PAGINATION_PAGE,
+  REQUIREMENTS_ERROR_MSG,
+  UNAUTHOREOZED_ERROR_MSG,
+  USERNAME_EXIST_ERROR_MSG,
+} from "../config";
+import {
+  AdminPayload,
+  CreateAdminInput,
+  CreateCarInput,
+  DriverRegisterInput,
+  DriverUpdateInput,
+  LoginInput,
+} from "../dto";
+import { ExtractFiles, ExtractForm } from "../middlewares/FilesExtractor";
+import {
+  Admin,
+  Car,
+  CarAlbum,
+  Driver,
+  License,
+  MedicurbLocation,
+  User,
+} from "../model";
+import { UploadFile } from "../services/UploadService";
+import {
+  GeneratePassword,
+  GenerateSalt,
+  ValidatePassword,
+} from "../utility/PasswordUtiility";
+import { GenerateSignature } from "../utility/TokenUtility";
 
 /* -------------------------------------------------------------------------- */
 /*                              Create New Admin                              */
 /* -------------------------------------------------------------------------- */
 
-export const CreateAdmin = async (req: Request, res: Response, next: NextFunction) => {
-    try {
+export const CreateAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const adminPayload = req.user as AdminPayload;
 
-        const adminPayload = req.user as AdminPayload;
-
-        if (adminPayload) {
-            const admin = await Admin.findById(adminPayload._id);
-            if (admin) {
-
-                /* ----------------------------- Validate Inputs ---------------------------- */
-                const adminInputs = plainToClass(CreateAdminInput, req.body);
-                const errors = await validate(adminInputs);
-                if (errors.length > 0) {
-                    return res.status(400).json(errors);
-                }
-
-                const existAdmin = await Admin.findOne({ username: adminInputs.username });
-                if (existAdmin) {
-                    return res.status(400).json({ message: USERNAME_EXIST_ERROR_MSG });
-                }
-
-
-                /* ------------------------------ Hash Password ----------------------------- */
-                const salt = await GenerateSalt();
-                const hashedPassword = await GeneratePassword(adminInputs.password, salt);
-
-                /* ---------------------------- Create New Admin ---------------------------- */
-                const newAdmin = await Admin.create({
-                    name: adminInputs.name,
-                    username: adminInputs.username,
-                    salt: salt,
-                    password: hashedPassword,
-                });
-
-                if (newAdmin) {
-                    return res.status(201).json({ data: newAdmin });
-                }
-            }
+    if (adminPayload) {
+      const admin = await Admin.findById(adminPayload._id);
+      if (admin) {
+        /* ----------------------------- Validate Inputs ---------------------------- */
+        const adminInputs = plainToClass(CreateAdminInput, req.body);
+        const errors = await validate(adminInputs);
+        if (errors.length > 0) {
+          return res.status(400).json(errors);
         }
 
+        const existAdmin = await Admin.findOne({
+          username: adminInputs.username,
+        });
+        if (existAdmin) {
+          return res.status(400).json({ message: USERNAME_EXIST_ERROR_MSG });
+        }
 
-    }
-    catch (_) {
-        console.log(_);
-        return res.status(400).json({ message: DEFAULT_ERROR_MSG });
+        /* ------------------------------ Hash Password ----------------------------- */
+        const salt = await GenerateSalt();
+        const hashedPassword = await GeneratePassword(
+          adminInputs.password,
+          salt
+        );
 
+        /* ---------------------------- Create New Admin ---------------------------- */
+        const newAdmin = await Admin.create({
+          name: adminInputs.name,
+          username: adminInputs.username,
+          salt: salt,
+          password: hashedPassword,
+        });
+
+        if (newAdmin) {
+          return res.status(201).json({ data: newAdmin });
+        }
+      }
     }
-}
+  } catch (_) {
+    console.log(_);
+    return res.status(400).json({ message: DEFAULT_ERROR_MSG });
+  }
+};
 
 /* -------------------------------------------------------------------------- */
 /*                                 Admin Login                                */
 /* -------------------------------------------------------------------------- */
-export const AdminLogin = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-
-        /* ----------------------------- Validate Inputs ---------------------------- */
-        const adminInputs = plainToClass(LoginInput, req.body);
-        const errors = await validate(adminInputs);
-        if (errors.length > 0) {
-            return res.status(400).json(errors);
-        }
-
-        const admin = await Admin.findOne({ username: adminInputs.username });
-
-        if (admin) {
-            const validPassword = await ValidatePassword(adminInputs.password, admin.password, admin.salt);
-            if (validPassword) {
-                const token = GenerateSignature({
-                    _id: admin._id,
-                    username: admin.username,
-                });
-
-                return res.status(201).json({ token: token });
-            }
-        }
-
-        return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
+export const AdminLogin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    /* ----------------------------- Validate Inputs ---------------------------- */
+    const adminInputs = plainToClass(LoginInput, req.body);
+    const errors = await validate(adminInputs);
+    if (errors.length > 0) {
+      return res.status(400).json(errors);
     }
-    catch (_) {
-        console.log(_);
-        return res.status(400).json({ message: DEFAULT_ERROR_MSG });
 
+    const admin = await Admin.findOne({ username: adminInputs.username });
+
+    if (admin) {
+      const validPassword = await ValidatePassword(
+        adminInputs.password,
+        admin.password,
+        admin.salt
+      );
+      if (validPassword) {
+        const token = GenerateSignature({
+          _id: admin._id,
+          username: admin.username,
+        });
+
+        return res.status(201).json({ token: token });
+      }
     }
-}
 
+    return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
+  } catch (_) {
+    console.log(_);
+    return res.status(400).json({ message: DEFAULT_ERROR_MSG });
+  }
+};
 
 /* -------------------------------------------------------------------------- */
 /*                              Create New Driver                             */
 /* -------------------------------------------------------------------------- */
 
-export const AdminCreateDriver = async (req: Request, res: Response, next: NextFunction) => {
-    try {
+export const AdminCreateDriver = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const adminPayload = req.user as AdminPayload;
 
-        const adminPayload = req.user as AdminPayload;
+    if (adminPayload) {
+      const admin = await Admin.findById(adminPayload._id);
+      if (admin) {
+        const [fields, images] = await ExtractForm(req);
 
-        if (adminPayload) {
+        /* ------------------------------ Check Inputs ------------------------------ */
+        const driverInputs = plainToClass(DriverRegisterInput, fields);
+        const errors = await validate(driverInputs);
 
-            const admin = await Admin.findById(adminPayload._id);
-            if (admin) {
-
-                const [fields, images] = await ExtractForm(req);
-
-                /* ------------------------------ Check Inputs ------------------------------ */
-                const driverInputs = plainToClass(DriverRegisterInput, fields);
-                const errors = await validate(driverInputs);
-
-                if (errors.length > 0) {
-                    return res.status(400).json(errors);
-                }
-
-                if (!images['profile'] || !images['nationalFront'] || !images['nationalBack']) {
-                    return res.status(400).json({ message: REQUIREMENTS_ERROR_MSG });
-                }
-
-                const profile = images['profile'][0] as formidable.File;
-                const nationalFront = images['nationalFront'][0] as formidable.File;
-                const nationalBack = images['nationalBack'][0] as formidable.File;
-
-                if (profile && nationalFront && nationalBack) {
-
-
-                    /* ----------------------- Check If User Already Exist ---------------------- */
-                    const existUser = await User.findOne({ "email": driverInputs.email.replace(/ /g, "") });
-                    if (existUser) {
-                        return res.status(400).json({ message: EMAIL_EXIST_ERROR_MSG });
-                    }
-
-                    /* ------------------------------ Upload Media ------------------------------ */
-
-                    const prifileURL = await UploadFile(profile);
-                    const nationalFrontURL = await UploadFile(nationalFront);
-                    const nationalBackURL = await UploadFile(nationalBack);
-
-
-
-                    /* ------------------------------ Hash Password ----------------------------- */
-                    const salt = await GenerateSalt();
-                    const hashedPassword = await GeneratePassword(driverInputs.password, salt);
-
-                    /* --------------------------- Create New Location -------------------------- */
-                    const userLocation = await MedicurbLocation.create({
-                        latitude: driverInputs.latitude,
-                        longitude: driverInputs.longitude,
-                        address: driverInputs.address,
-                    });
-
-                    /* --------------------------- Create New User --------------------------- */
-                    const user = await User.create({
-                        firstName: driverInputs.firstName,
-                        lastName: driverInputs.lastName,
-                        birthDate: driverInputs.birthDate,
-                        type: 'driver',
-                        profileImage: prifileURL,
-
-
-                        phone: driverInputs.phone.replace(/ /g, ""),
-                        email: driverInputs.email.replace(/ /g, ""),
-                        ssn: driverInputs.ssn,
-                        medicalInsurance: driverInputs.medicalInsurance,
-
-                        phoneVerified: false,
-                        emailVerified: false,
-
-                        salt: salt,
-                        password: hashedPassword,
-                        location: userLocation,
-                    });
-
-                    /* ------------------------ Create New National Cart ------------------------ */
-                    const nationalCard = await License.create({
-                        type: 'national_card',
-                        front: nationalFrontURL,
-                        back: nationalBackURL,
-                    });
-
-                    /* ---------------------------- Create New Driver --------------------------- */
-                    const driver = await Driver.create({
-                        user: user,
-                        verified: false,
-                        visible: false,
-                        onTrip: false,
-                        location: userLocation,
-                        nationalCard: nationalCard,
-                    });
-
-
-                    /* ---------------------------- Assign The Driver To The User --------------------------- */
-                    user.driver = driver;
-                    await user.save();
-
-                    return res.status(201).json({ data: driver });
-                }
-            }
+        if (errors.length > 0) {
+          return res.status(400).json(errors);
         }
 
-        return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
+        if (
+          !images["profile"] ||
+          !images["nationalFront"] ||
+          !images["nationalBack"]
+        ) {
+          return res.status(400).json({ message: REQUIREMENTS_ERROR_MSG });
+        }
 
+        const profile = images["profile"][0] as formidable.File;
+        const nationalFront = images["nationalFront"][0] as formidable.File;
+        const nationalBack = images["nationalBack"][0] as formidable.File;
 
-    } catch (_) {
+        if (profile && nationalFront && nationalBack) {
+          /* ----------------------- Check If User Already Exist ---------------------- */
+          const existUser = await User.findOne({
+            email: driverInputs.email.replace(/ /g, ""),
+          });
+          if (existUser) {
+            return res.status(400).json({ message: EMAIL_EXIST_ERROR_MSG });
+          }
 
-        console.log(_);
-        return res.status(400).json({ message: DEFAULT_ERROR_MSG });
+          /* ------------------------------ Upload Media ------------------------------ */
 
+          const prifileURL = await UploadFile(profile);
+          const nationalFrontURL = await UploadFile(nationalFront);
+          const nationalBackURL = await UploadFile(nationalBack);
+
+          /* ------------------------------ Hash Password ----------------------------- */
+          const salt = await GenerateSalt();
+          const hashedPassword = await GeneratePassword(
+            driverInputs.password,
+            salt
+          );
+
+          /* --------------------------- Create New Location -------------------------- */
+          const userLocation = await MedicurbLocation.create({
+            latitude: driverInputs.latitude,
+            longitude: driverInputs.longitude,
+            address: driverInputs.address,
+            coordinates: [
+              parseFloat(driverInputs.longitude),
+              parseFloat(driverInputs.latitude),
+            ],
+          });
+
+          /* --------------------------- Create New User --------------------------- */
+          const user = await User.create({
+            firstName: driverInputs.firstName,
+            lastName: driverInputs.lastName,
+            birthDate: driverInputs.birthDate,
+            type: "driver",
+            profileImage: prifileURL,
+
+            phone: driverInputs.phone.replace(/ /g, ""),
+            email: driverInputs.email.replace(/ /g, ""),
+            ssn: driverInputs.ssn,
+            medicalInsurance: driverInputs.medicalInsurance,
+
+            phoneVerified: false,
+            emailVerified: false,
+
+            salt: salt,
+            password: hashedPassword,
+            location: userLocation,
+          });
+
+          /* ------------------------ Create New National Cart ------------------------ */
+          const nationalCard = await License.create({
+            type: "national_card",
+            front: nationalFrontURL,
+            back: nationalBackURL,
+          });
+
+          /* ---------------------------- Create New Driver --------------------------- */
+          const driver = await Driver.create({
+            user: user,
+            verified: false,
+            visible: false,
+            onTrip: false,
+            location: userLocation,
+            nationalCard: nationalCard,
+          });
+
+          /* ---------------------------- Assign The Driver To The User --------------------------- */
+          user.driver = driver;
+          await user.save();
+
+          return res.status(201).json({ data: driver });
+        }
+      }
     }
-}
 
+    return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
+  } catch (_) {
+    console.log(_);
+    return res.status(400).json({ message: DEFAULT_ERROR_MSG });
+  }
+};
 
 /* -------------------------------------------------------------------------- */
 /*                              Add Driver License                            */
 /* -------------------------------------------------------------------------- */
 
+export const AdminAddDriverLicense = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const adminPayload = req.user as AdminPayload;
 
-export const AdminAddDriverLicense = async (req: Request, res: Response, next: NextFunction) => {
-    try {
+    if (adminPayload) {
+      const admin = await Admin.findById(adminPayload._id);
+      if (admin) {
+        const driverID = req.query.id;
+        const driver = await Driver.findById(driverID)
+          .select("driverLicense")
+          .populate("driverLicense");
 
-        const adminPayload = req.user as AdminPayload;
+        if (driver) {
+          /* -------------------------- Extract License Data -------------------------- */
+          const images = await ExtractFiles(req);
 
-        if (adminPayload) {
-            const admin = await Admin.findById(adminPayload._id);
-            if (admin) {
+          if (!images["front"] || !images["back"]) {
+            return res.status(400).json({ message: REQUIREMENTS_ERROR_MSG });
+          }
 
-                const driverID = req.query.id;
-                const driver = await Driver.findById(driverID)
-                    .select('driverLicense')
-                    .populate('driverLicense');
+          const front = images["front"][0] as formidable.File;
+          const back = images["back"][0] as formidable.File;
 
-                if (driver) {
+          /* -------------------------- Upload Files -------------------------- */
+          const frontURL = await UploadFile(front);
+          const backURL = await UploadFile(back);
 
-                    /* -------------------------- Extract License Data -------------------------- */
-                    const images = await ExtractFiles(req);
+          /* -------------------------- Create License -------------------------- */
+          const license = await License.create({
+            front: frontURL,
+            back: backURL,
+            type: "driver_license",
+          });
 
-                    if (!images['front'] || !images['back']) {
-                        return res.status(400).json({ message: REQUIREMENTS_ERROR_MSG });
-                    }
+          if (license) {
+            driver.driverLicense = license;
+            await driver.save();
 
-                    const front = images['front'][0] as formidable.File;
-                    const back = images['back'][0] as formidable.File;
-
-                    /* -------------------------- Upload Files -------------------------- */
-                    const frontURL = await UploadFile(front);
-                    const backURL = await UploadFile(back);
-
-                    /* -------------------------- Create License -------------------------- */
-                    const license = await License.create({
-                        front: frontURL,
-                        back: backURL,
-                        type: 'driver_license',
-                    });
-
-                    if (license) {
-                        driver.driverLicense = license;
-                        await driver.save();
-
-                        return res.status(201).json({ data: license });
-                    }
-
-
-                }
-
-            }
+            return res.status(201).json({ data: license });
+          }
         }
-
-        return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
-
-
-    } catch (_) {
-
-        console.log(_);
-        return res.status(400).json({ message: DEFAULT_ERROR_MSG });
-
+      }
     }
-}
+
+    return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
+  } catch (_) {
+    console.log(_);
+    return res.status(400).json({ message: DEFAULT_ERROR_MSG });
+  }
+};
 
 /* -------------------------------------------------------------------------- */
 /*                             Get Driver Details                             */
 /* -------------------------------------------------------------------------- */
 
-export const AdminGetDriver = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const adminPayload = req.user as AdminPayload;
+export const AdminGetDriver = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const adminPayload = req.user as AdminPayload;
 
-        if (adminPayload) {
+    if (adminPayload) {
+      const admin = await Admin.findById(adminPayload._id);
 
-            const admin = await Admin.findById(adminPayload._id);
+      if (admin) {
+        const driverID = req.query.id;
+        const driver = await Driver.findById(driverID)
+          .populate({
+            path: "user",
+            populate: "location",
+          })
+          .populate({
+            path: "car",
+            populate: "carAlbum",
+          })
+          .populate("location")
+          .populate("driverLicense")
+          .populate("nationalCard");
 
-            if (admin) {
-                const driverID = req.query.id;
-                const driver = await Driver.findById(driverID)
-                    .populate({
-                        path: 'user',
-                        populate: 'location'
-                    })
-                    .populate({
-                        path: 'car',
-                        populate: 'carAlbum'
-                    })
-                    .populate('location')
-                    .populate('driverLicense')
-                    .populate('nationalCard');
-
-                if (driver) {
-                    return res.status(200).json({ data: driver });
-                }
-
-            }
+        if (driver) {
+          return res.status(200).json({ data: driver });
         }
-
-        return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
-
-
-    } catch (_) {
-
-        console.log(_);
-        return res.status(400).json({ message: DEFAULT_ERROR_MSG });
-
+      }
     }
-}
 
+    return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
+  } catch (_) {
+    console.log(_);
+    return res.status(400).json({ message: DEFAULT_ERROR_MSG });
+  }
+};
 
 /* -------------------------------------------------------------------------- */
 /*                                Update Driver                               */
 /* -------------------------------------------------------------------------- */
 
+export const AdminUpdateDriver = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const adminPayload = req.user as AdminPayload;
 
-export const AdminUpdateDriver = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const adminPayload = req.user as AdminPayload;
+    if (adminPayload) {
+      const admin = await Admin.findById(adminPayload._id);
 
-        if (adminPayload) {
+      if (admin) {
+        const driverID = req.query.id;
+        const [fields, images] = await ExtractForm(req);
+        /* ----------------------------- Validate Inputs ---------------------------- */
+        const updateInputs = plainToClass(DriverUpdateInput, fields);
+        const errors = await validate(updateInputs);
 
-            const admin = await Admin.findById(adminPayload._id);
-
-            if (admin) {
-                const driverID = req.query.id;
-                const [fields, images] = await ExtractForm(req);
-                /* ----------------------------- Validate Inputs ---------------------------- */
-                const updateInputs = plainToClass(DriverUpdateInput, fields);                                
-                const errors = await validate(updateInputs);
-
-                if (errors.length > 0) {
-                    return res.status(400).json(errors);
-                }
-
-                /* ------------------------------- Get Driver ------------------------------- */
-                const driver = await Driver.findById(driverID)
-                    .select('-location')
-                    .populate({
-                        path: 'user',
-                        populate: 'location'
-                    })                    
-                    .populate('driverLicense')
-                    .populate('nationalCard');
-
-                if (driver) {                    
-                    let profile, nationalFront, nationalBack;
-                    let licenseFront, licenseBack;
-
-                    /* ------------------------------ Profile Image ----------------------------- */
-                    if (images['profile']) {
-                        const file = images['profile'][0] as formidable.File;
-                        profile = await UploadFile(file);
-                    }
-
-                    /* ------------------------------ National Card ----------------------------- */
-                    if (images['nationalFront']) {
-                        const file = images['nationalFront'][0] as formidable.File;
-                        nationalFront = await UploadFile(file);
-                    }
-                    if (images['nationalBack']) {
-                        const file = images['nationalBack'][0] as formidable.File;
-                        nationalBack = await UploadFile(file);
-                    }
-
-                    /* ----------------------------- Driver License ----------------------------- */
-                    if (images['licenseFront']) {
-                        const file = images['licenseFront'][0] as formidable.File;
-                        licenseFront = await UploadFile(file);
-                    }
-                    if (images['licenseBack']) {
-                        const file = images['licenseBack'][0] as formidable.File;
-                        licenseBack = await UploadFile(file);
-                    }                    
-
-                    /* ------------------------------ Update Driver Details ----------------------------- */
-                    driver.user.profileImage = profile ?? driver.user.profileImage;
-                    driver.user.firstName = updateInputs.firstName;
-                    driver.user.lastName = updateInputs.lastName;
-                    driver.user.birthDate = updateInputs.birthDate;
-                    driver.user.email = updateInputs.email;
-                    driver.user.phone = updateInputs.phone;
-                    driver.user.ssn = updateInputs.ssn;
-                    driver.user.medicalInsurance = updateInputs.medicalInsurance;
-                    driver.user.location.latitude = updateInputs.latitude;
-                    driver.user.location.longitude = updateInputs.longitude;
-                    driver.user.location.address = updateInputs.address;
-
-                    /* -------------------------- Update Driver License ------------------------- */
-                    driver.driverLicense.front = licenseFront ?? driver.driverLicense.front;
-                    driver.driverLicense.back = licenseBack ?? driver.driverLicense.back;
-
-                    /* ----------------------- Update Driver National Card ---------------------- */
-                    driver.nationalCard.front = nationalFront ?? driver.nationalCard.front;
-                    driver.nationalCard.back = nationalBack ?? driver.nationalCard.back;
-
-                    /* ------------------------------ Save Updates ------------------------------ */                    
-                    await driver.user.save();
-                    await driver.user.location.save();
-                    await driver.nationalCard.save();
-                    await driver.driverLicense.save();
-                    await driver.save();
-
-                    return res.status(201).json({ data: driver });
-
-                }
-            }
+        if (errors.length > 0) {
+          return res.status(400).json(errors);
         }
 
-        return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
+        /* ------------------------------- Get Driver ------------------------------- */
+        const driver = await Driver.findById(driverID)
+          .select("-location")
+          .populate({
+            path: "user",
+            populate: "location",
+          })
+          .populate("driverLicense")
+          .populate("nationalCard");
 
-    } catch (_) {
+        if (driver) {
+          let profile, nationalFront, nationalBack;
+          // let licenseFront, licenseBack;
 
-        console.log(_);
-        return res.status(400).json({ message: DEFAULT_ERROR_MSG });
+          /* ------------------------------ Profile Image ----------------------------- */
+          if (images["profile"]) {
+            const file = images["profile"][0] as formidable.File;
+            profile = await UploadFile(file);
+          }
 
+          /* ------------------------------ National Card ----------------------------- */
+          if (images["nationalFront"]) {
+            const file = images["nationalFront"][0] as formidable.File;
+            nationalFront = await UploadFile(file);
+          }
+          if (images["nationalBack"]) {
+            const file = images["nationalBack"][0] as formidable.File;
+            nationalBack = await UploadFile(file);
+          }
+
+          /* ----------------------------- Driver License ----------------------------- */
+          // if (images['licenseFront']) {
+          //     const file = images['licenseFront'][0] as formidable.File;
+          //     licenseFront = await UploadFile(file);
+          // }
+          // if (images['licenseBack']) {
+          //     const file = images['licenseBack'][0] as formidable.File;
+          //     licenseBack = await UploadFile(file);
+          // }
+
+          /* ------------------------------ Update Driver Details ----------------------------- */
+          driver.user.profileImage = profile ?? driver.user.profileImage;
+          driver.user.firstName = updateInputs.firstName;
+          driver.user.lastName = updateInputs.lastName;
+          driver.user.birthDate = updateInputs.birthDate;
+          driver.user.email = updateInputs.email;
+          driver.user.phone = updateInputs.phone;
+          driver.user.ssn = updateInputs.ssn;
+          driver.user.medicalInsurance = updateInputs.medicalInsurance;
+          driver.user.location.latitude = updateInputs.latitude;
+          driver.user.location.longitude = updateInputs.longitude;
+          driver.user.location.address = updateInputs.address;
+
+          /* -------------------------- Update Driver License ------------------------- */
+          // driver.driverLicense.front = licenseFront ?? driver.driverLicense.front;
+          // driver.driverLicense.back = licenseBack ?? driver.driverLicense.back;
+
+          /* ----------------------- Update Driver National Card ---------------------- */
+          driver.nationalCard.front =
+            nationalFront ?? driver.nationalCard.front;
+          driver.nationalCard.back = nationalBack ?? driver.nationalCard.back;
+
+          /* ------------------------------ Save Updates ------------------------------ */
+          driver.updatedBy = admin;
+          await driver.user.save();
+          await driver.user.location.save();
+          await driver.nationalCard.save();
+          // await driver.driverLicense.save();
+          await driver.save();
+
+          return res.status(201).json({ data: driver });
+        }
+      }
     }
-}
+
+    return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
+  } catch (_) {
+    console.log(_);
+    return res.status(400).json({ message: DEFAULT_ERROR_MSG });
+  }
+};
 
 /* -------------------------------------------------------------------------- */
 /*                               Create New Car                               */
 /* -------------------------------------------------------------------------- */
 
-export const AdminCreateCar = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const adminPayload = req.user as AdminPayload;
+export const AdminCreateCar = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const adminPayload = req.user as AdminPayload;
 
-        if (adminPayload) {
+    if (adminPayload) {
+      const admin = await Admin.findById(adminPayload._id);
 
-            const admin = await Admin.findById(adminPayload._id);
+      if (admin) {
+        /* ----------------------------- Validate Inputs ---------------------------- */
+        const driverID = req.query.id;
+        const [fields, images] = await ExtractForm(req);
 
-            if (admin) {
-                /* ----------------------------- Validate Inputs ---------------------------- */
-                const driverID = req.query.id;
-                const [fields, images] = await ExtractForm(req);
+        const carInputs = plainToClass(CreateCarInput, fields);
+        const errors = await validate(carInputs);
 
-                const carInputs = plainToClass(CreateCarInput, fields);
-                const errors = await validate(carInputs);
-
-                if (errors.length > 0 || !driverID) {
-                    return res.status(400).json(errors);
-                }
-
-                if (!images['registration'] || !images['insurance']) {
-                    return res.status(400).json({ message: REQUIREMENTS_ERROR_MSG });
-                }
-
-                const registration = images['registration'][0] as formidable.File;
-                const insurance = images['insurance'][0] as formidable.File;
-
-
-
-                const driver = await Driver.findById(driverID).select('car');
-                if (driver) {
-                    const registrationURL = await UploadFile(registration);
-                    const insuranceURL = await UploadFile(insurance);
-
-                    const car = await Car.create({
-                        driver: driver._id,
-                        registration: registrationURL,
-                        insurance: insuranceURL,
-
-                        carType: carInputs.carType,
-                        carModel: carInputs.carModel,
-                        plateNum: carInputs.plateNum,
-                        color: carInputs.color,
-                    });
-
-
-                    if (car) {
-                        driver.car = car;
-                        await driver.save();
-                        return res.status(201).json({ data: car });
-                    }
-
-                }
-            }
+        if (errors.length > 0 || !driverID) {
+          return res.status(400).json(errors);
         }
 
-        return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
+        if (!images["registration"] || !images["insurance"]) {
+          return res.status(400).json({ message: REQUIREMENTS_ERROR_MSG });
+        }
 
-    } catch (_) {
+        const registration = images["registration"][0] as formidable.File;
+        const insurance = images["insurance"][0] as formidable.File;
 
-        console.log(_);
-        return res.status(400).json({ message: DEFAULT_ERROR_MSG });
+        const driver = await Driver.findById(driverID).select("car");
+        if (driver) {
+          const registrationURL = await UploadFile(registration);
+          const insuranceURL = await UploadFile(insurance);
 
+          const car = await Car.create({
+            driver: driver._id,
+            registration: registrationURL,
+            insurance: insuranceURL,
+
+            carType: carInputs.carType,
+            carModel: carInputs.carModel,
+            plateNum: carInputs.plateNum,
+            color: carInputs.color,
+          });
+
+          if (car) {
+            driver.car = car;
+            await driver.save();
+            return res.status(201).json({ data: car });
+          }
+        }
+      }
     }
-}
 
-
+    return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
+  } catch (_) {
+    console.log(_);
+    return res.status(400).json({ message: DEFAULT_ERROR_MSG });
+  }
+};
 
 /* -------------------------------------------------------------------------- */
 /*                              Create Car Album                              */
 /* -------------------------------------------------------------------------- */
 
-export const AdminCreateCarAlbum = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const adminPayload = req.user as AdminPayload;
+export const AdminCreateCarAlbum = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const adminPayload = req.user as AdminPayload;
 
-        if (adminPayload) {
+    if (adminPayload) {
+      const admin = await Admin.findById(adminPayload._id);
 
-            const admin = await Admin.findById(adminPayload._id);
+      if (admin) {
+        /* ----------------------------- Validate Inputs ---------------------------- */
+        const driverID = req.query.id;
+        const images = await ExtractFiles(req);
 
-            if (admin) {
-                /* ----------------------------- Validate Inputs ---------------------------- */
-                const driverID = req.query.id;
-                const images = await ExtractFiles(req);
-
-                if (
-                    !images['front'] ||
-                    !images['back'] ||
-                    !images['right'] ||
-                    !images['left']) {
-                    return res.status(400).json({ message: REQUIREMENTS_ERROR_MSG });
-                }
-
-
-                const front = images['front'][0] as formidable.File;
-                const back = images['back'][0] as formidable.File;
-                const right = images['right'][0] as formidable.File;
-                const left = images['left'][0] as formidable.File;
-
-                const car = await Car.findOne({ driver: driverID });
-
-
-                if (car) {
-                    const frontURL = await UploadFile(front);
-                    const backURL = await UploadFile(back);
-                    const rightURL = await UploadFile(right);
-                    const leftURL = await UploadFile(left);
-
-                    const carAlbum = await CarAlbum.create({
-                        car: car,
-                        front: frontURL,
-                        back: backURL,
-                        right: rightURL,
-                        left: leftURL,
-                    });
-
-                    if (carAlbum) {
-                        car.carAlbum = carAlbum;
-                        await car.save();
-                        return res.status(201).json({ data: carAlbum });
-                    }
-
-
-
-                }
-            }
+        if (
+          !images["front"] ||
+          !images["back"] ||
+          !images["right"] ||
+          !images["left"]
+        ) {
+          return res.status(400).json({ message: REQUIREMENTS_ERROR_MSG });
         }
 
-        return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
+        const front = images["front"][0] as formidable.File;
+        const back = images["back"][0] as formidable.File;
+        const right = images["right"][0] as formidable.File;
+        const left = images["left"][0] as formidable.File;
 
-    } catch (_) {
+        const car = await Car.findOne({ driver: driverID });
 
-        console.log(_);
-        return res.status(400).json({ message: DEFAULT_ERROR_MSG });
+        if (car) {
+          const frontURL = await UploadFile(front);
+          const backURL = await UploadFile(back);
+          const rightURL = await UploadFile(right);
+          const leftURL = await UploadFile(left);
 
+          const carAlbum = await CarAlbum.create({
+            car: car,
+            front: frontURL,
+            back: backURL,
+            right: rightURL,
+            left: leftURL,
+          });
+
+          if (carAlbum) {
+            car.carAlbum = carAlbum;
+            await car.save();
+            return res.status(201).json({ data: carAlbum });
+          }
+        }
+      }
     }
-}
+
+    return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
+  } catch (_) {
+    console.log(_);
+    return res.status(400).json({ message: DEFAULT_ERROR_MSG });
+  }
+};
 
 /* -------------------------------------------------------------------------- */
 /*                               Get Car Details                              */
 /* -------------------------------------------------------------------------- */
 
+export const AdminDriverCarDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const adminPayload = req.user as AdminPayload;
 
-export const AdminDriverCarDetails = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const adminPayload = req.user as AdminPayload;
+    if (adminPayload) {
+      const admin = await Admin.findById(adminPayload._id);
 
-        if (adminPayload) {
+      if (admin) {
+        const driverID = req.query.id;
+        const car = await Car.findOne({ driver: driverID })
+          .populate("carAlbum")
+          .populate("carAlbum");
 
-            const admin = await Admin.findById(adminPayload._id);
-
-            if (admin) {
-                const driverID = req.query.id;
-                const car = await Car.findOne({ driver: driverID }).populate('carAlbum').populate('carAlbum');
-
-                if (car) {
-                    return res.status(200).json({ data: car });
-                }
-            }
+        if (car) {
+          return res.status(200).json({ data: car });
         }
-
-        return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
-
-    } catch (_) {
-
-        console.log(_);
-        return res.status(400).json({ message: DEFAULT_ERROR_MSG });
-
+      }
     }
-}
 
+    return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
+  } catch (_) {
+    console.log(_);
+    return res.status(400).json({ message: DEFAULT_ERROR_MSG });
+  }
+};
 
 /* -------------------------------------------------------------------------- */
 /*                               Get All Drivers                              */
 /* -------------------------------------------------------------------------- */
-export const GetAllDrivers = async (req: Request, res: Response, next: NextFunction) => {
-    try {
+export const GetAllDrivers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const adminPayload = req.user as AdminPayload;
 
-        const adminPayload = req.user as AdminPayload;
+    if (adminPayload) {
+      const admin = await Admin.findById(adminPayload._id);
+      if (admin) {
+        const page = Number.parseInt(req.params.page) ?? 0;
 
-        if (adminPayload) {
-            const admin = await Admin.findById(adminPayload._id);
-            if (admin) {
+        const driver = await Driver.find({ verified: true })
+          .skip(PAGINATION_PAGE * page)
+          .limit(PAGINATION_PAGE)
+          .select("-car -nationalCard -driverLicense")
+          .populate({
+            path: "user",
+            select: "firstName lastName profileImage phone email",
+          })
+          .populate("location")
+          .sort("-createdAt");
 
+        if (driver) {
+          return res.status(200).json({ data: driver });
+        }
+      }
+    }
 
-                const page = Number.parseInt(req.params.page) ?? 0;
+    return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
+  } catch (_) {
+    console.log(_);
+    return res.status(400).json({ message: DEFAULT_ERROR_MSG });
+  }
+};
 
-                const driver = await Driver.find()
-                    .skip(PAGINATION_PAGE * page)
-                    .limit(PAGINATION_PAGE)
-                    .populate({
-                        path: 'user',
-                        select: 'firstName lastName profileImage phone email',
-                    })
-                    .populate('location')
-                    .populate('nationalCard')
-                    .sort('-createdAt');
+/* -------------------------------------------------------------------------- */
+/*                             Get Pending Drivers                            */
+/* -------------------------------------------------------------------------- */
 
-                if (driver) {
-                    return res.status(200).json({ data: driver });
-                }
-            }
+export const GetPendingDrivers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const adminPayload = req.user as AdminPayload;
 
+    if (adminPayload) {
+      const admin = await Admin.findById(adminPayload._id);
+      if (admin) {
+        const page = Number.parseInt(req.params.page) ?? 0;
+
+        const drivers = await Driver.find({ verified: false })
+          .skip(PAGINATION_PAGE * page)
+          .limit(PAGINATION_PAGE)
+          .select("-car -nationalCard -driverLicense")
+          .populate({
+            path: "user",
+            select: "firstName lastName profileImage phone email",
+          })
+          .populate("location")
+          .sort("-createdAt");
+
+        return res.status(200).json({ data: drivers });
+      }
+    }
+
+    return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
+  } catch (_) {
+    console.log(_);
+    return res.status(400).json({ message: DEFAULT_ERROR_MSG });
+  }
+};
+
+/* -------------------------------------------------------------------------- */
+/*                             Get Nearest Drivers                            */
+/* -------------------------------------------------------------------------- */
+export const GetNearestDriver = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const adminPayload = req.user as AdminPayload;
+
+    if (adminPayload) {
+      const admin = await Admin.findById(adminPayload._id);
+      if (admin) {
+        /* ----------------------------- Validate Inupts ---------------------------- */
+        const latitude = parseFloat(String(req.query.latitude));
+        const longitude = parseFloat(String(req.query.longitude));
+        if (!longitude || !latitude) {
+          return res.status(400).json(null);
         }
 
-        return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
+        /* --------------------------- Get Nearest Drivers -------------------------- */
+        const drivers = await Driver.find({ verified: true })
+          .select("_id user location visible onTrip")
+          .populate({
+            path: "user",
+            select: "firstName lastName profileImage phone email",
+          })
+          .populate("location");
 
+        let response: any[] = [];
 
-    } catch (_) {
+        for (const driver of drivers) {
+          const distance = calculateDistanceInMiles(
+            driver.location.coordinates[1],
+            driver.location.coordinates[0],
+            latitude,
+            longitude
+          );
 
-        console.log(_);
-        return res.status(400).json({ message: DEFAULT_ERROR_MSG });
+          response.push({
+            driver: driver,
+            distance: distance,
+          });
+        }
 
+        // Calculate distance and sort drivers based on the distance
+        response.sort((a: any, b: any) => a.distance - b.distance);
+
+        return res.status(200).json({ data: response });
+      }
+
+      return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
     }
+    return res.status(400).json({ message: UNAUTHOREOZED_ERROR_MSG });
+  } catch (_) {
+    console.log(_);
+    return res.status(400).json({ message: DEFAULT_ERROR_MSG });
+  }
+};
+
+function calculateDistanceInMiles(
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number {
+  const R = 3958.8; // Earth's radius in miles
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c;
+  return distance;
+}
+
+function toRad(degrees: number) {
+  return (degrees * Math.PI) / 180;
 }
 
 /* -------------------------------------------------------------------------- */
 /*                                Get All Cars                                */
 /* -------------------------------------------------------------------------- */
 
-export const GetAllCars = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const adminPayload = req.user as AdminPayload;
+export const GetAllCars = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const adminPayload = req.user as AdminPayload;
 
-        if (adminPayload) {
-            const admin = await Admin.findById(adminPayload._id);
-            if (admin) {
+    if (adminPayload) {
+      const admin = await Admin.findById(adminPayload._id);
+      if (admin) {
+        const page = Number.parseInt(req.params.page);
 
+        const driver = await Driver.find()
+          .skip(PAGINATION_PAGE * page)
+          .limit(PAGINATION_PAGE)
+          .populate({
+            path: "user",
+            select: "firstName lastName profileImage phone email",
+          })
+          .populate("location")
+          .populate("nationalCard")
+          .sort("-createdAt");
 
-                const page = Number.parseInt(req.params.page);
+        if (driver) {
+          return res.status(200).json({ data: driver });
+        }
+      }
+      return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
+    }
+    return res.status(400).json({ message: UNAUTHOREOZED_ERROR_MSG });
+  } catch (_) {
+    console.log(_);
+    return res.status(400).json({ message: DEFAULT_ERROR_MSG });
+  }
+};
 
-                const driver = await Driver.find()
-                    .skip(PAGINATION_PAGE * page)
-                    .limit(PAGINATION_PAGE)
-                    .populate({
-                        path: 'user',
-                        select: 'firstName lastName profileImage phone email',
-                    })
-                    .populate('location')
-                    .populate('nationalCard')
-                    .sort('-createdAt');
+/* -------------------------------------------------------------------------- */
+/*                                Verify Driver                               */
+/* -------------------------------------------------------------------------- */
+export const VerifyDriver = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const adminPayload = req.user as AdminPayload;
 
-                if (driver) {
-                    return res.status(200).json({ data: driver });
-                }
-
-            }
+    if (adminPayload) {
+      const admin = await Admin.findById(adminPayload._id);
+      if (admin) {
+        const driverID = req.query.id;
+        var driver = await Driver.findById(driverID).populate("car");
+        /* -------------------------------------------------------------------------- */
+        /*                          Check All Inputs Are Done                         */
+        /* -------------------------------------------------------------------------- */
+        /* ------------------------------ Car Validator ----------------------------- */
+        if (driver?.car == null) {
+          return res
+            .status(400)
+            .json({ message: NOT_COMPLETED_DATA_ERROR_MSG });
+        }
+        /* ------------------------------ Car Album Validator ----------------------------- */
+        if (driver?.car?.carAlbum == null) {
+          return res
+            .status(400)
+            .json({ message: NOT_COMPLETED_DATA_ERROR_MSG });
         }
 
-        return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
-
-
-    } catch (_) {
-
-        console.log(_);
-        return res.status(400).json({ message: DEFAULT_ERROR_MSG });
-
+        {
+          driver.verified = true;
+          driver.verifiedBy = admin;
+          await driver.save();
+          return res.status(201).json({ data: null });
+        }
+      }
+      return res.status(400).json({ message: NOT_EXIST_ERROR_MSG });
     }
-}
-function classValidator(driverInputs: DriverRegisterInput) {
-    throw new Error('Function not implemented.');
-}
-
+    return res.status(400).json({ message: UNAUTHOREOZED_ERROR_MSG });
+  } catch (_) {
+    console.log(_);
+    return res.status(400).json({ message: DEFAULT_ERROR_MSG });
+  }
+};

@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DriverUpdateInput = exports.DriverRegisterInput = void 0;
+exports.DriverUpdateStatusInput = exports.DriverUpdateInput = exports.DriverRegisterInput = void 0;
 const class_validator_1 = require("class-validator");
 class DriverRegisterInput {
 }
@@ -101,3 +101,14 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], DriverUpdateInput.prototype, "address", void 0);
+class DriverUpdateStatusInput {
+}
+exports.DriverUpdateStatusInput = DriverUpdateStatusInput;
+__decorate([
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], DriverUpdateStatusInput.prototype, "isVisible", void 0);
+__decorate([
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], DriverUpdateStatusInput.prototype, "onTrip", void 0);

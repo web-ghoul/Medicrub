@@ -21,6 +21,7 @@ interface UserDoc extends Document {
 
     location: any;
     driver: any;
+    patient: any;
 
 
 }
@@ -31,16 +32,16 @@ const userSchema = new Schema(
         firstName: { type: String, required: true },
         lastName: { type: String, required: true },
         birthDate: { type: String, required: true },
-        profileImage: { type: String, required: true },        
+        profileImage: { type: String },        
         type: { type: String, required: true }, // driver / patient
 
         phone: { type: String, required: true },
-        email: { type: String, required: true, unique: true },
-        ssn: { type: String, required: true },
-        medicalInsurance: { type: String, required: true },
+        email: { type: String },
+        ssn: { type: String },
+        medicalInsurance: { type: String },
 
-        phoneVerified: { type: Boolean, required: true },
-        emailVerified: { type: Boolean, required: true },
+        phoneVerified: { type: Boolean },
+        emailVerified: { type: Boolean },
 
         salt: { type: String, required: true },
         password: { type: String, required: true },
@@ -56,6 +57,11 @@ const userSchema = new Schema(
             ref: 'Driver',
         },
 
+        patient: {
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: 'Patient',
+        },
+
 
     },
     {
@@ -69,6 +75,7 @@ const userSchema = new Schema(
                 delete ret.salt;
                 delete ret._id;
                 delete ret.driver;
+                delete ret.patient;
             }
         }
     }

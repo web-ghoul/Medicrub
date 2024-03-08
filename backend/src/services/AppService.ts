@@ -4,6 +4,7 @@ import { AuthPayload } from '../dto';
 import cors from 'cors';
 import morgan from 'morgan';
 import { AdminRoute, AuthRoute, DriverRoute, UserRoute, CarRoute } from '../routes';
+import { CORS_OPTIONS } from '../config';
 
 
 declare global {
@@ -20,8 +21,9 @@ export default async (app: Application) => {
     
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
-    app.use(cors());    
+    // app.use(cors(CORS_OPTIONS));
     app.use(morgan('combined'));
+    
      
     app.use('/api/Admin', AdminRoute);
     app.use('/api/Auth', AuthRoute);

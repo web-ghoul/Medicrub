@@ -13,13 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const cors_1 = __importDefault(require("cors"));
 const morgan_1 = __importDefault(require("morgan"));
 const routes_1 = require("../routes");
 exports.default = (app) => __awaiter(void 0, void 0, void 0, function* () {
     app.use(express_1.default.json());
     app.use(express_1.default.urlencoded({ extended: true }));
-    app.use((0, cors_1.default)());
+    // app.use(cors(CORS_OPTIONS));
     app.use((0, morgan_1.default)('combined'));
     app.use('/api/Admin', routes_1.AdminRoute);
     app.use('/api/Auth', routes_1.AuthRoute);
