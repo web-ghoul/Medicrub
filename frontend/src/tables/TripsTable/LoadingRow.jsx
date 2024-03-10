@@ -16,6 +16,9 @@ const LoadingRow = () => {
       {!mdScreen && <StyledTableCell align="center">
         <PrimarySkeleton />
       </StyledTableCell>}
+      {!mdScreen && <StyledTableCell align="center">
+        <PrimarySkeleton />
+      </StyledTableCell>}
       {!xsScreen && <StyledTableCell align="center">
         <PrimarySkeleton />
       </StyledTableCell>}
