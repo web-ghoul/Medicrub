@@ -1,3 +1,6 @@
 export const handleDateForInput=(date)=>{
-  return new Date(date).toISOString().split("T")[0]
+  if(date && date instanceof Date){
+    return new Date(date).toISOString().split("T")[0]
+  }
+  return ""
 }

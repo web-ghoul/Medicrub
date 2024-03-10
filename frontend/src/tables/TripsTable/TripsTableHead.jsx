@@ -17,6 +17,9 @@ const TripsTableHead = () => {
         {!mdScreen && <StyledTableCell align="center">
           <Typography variant='h6'>Phone</Typography>
         </StyledTableCell>}
+        {!mdScreen && <StyledTableCell align="center">
+          <Typography variant='h6'>Time</Typography>
+        </StyledTableCell>}
         {!xsScreen && <StyledTableCell align="center">
           <Typography variant='h6'>Address</Typography>
         </StyledTableCell>}

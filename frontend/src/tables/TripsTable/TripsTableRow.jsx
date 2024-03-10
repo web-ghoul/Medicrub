@@ -35,6 +35,9 @@ const TripsTableRow = ({ row, handleViewTrip, handleAssignDriver, handleEditTrip
       {!mdScreen && <StyledTableCell align="center">
         <Typography variant="subtitle2">{row.patient.phone}</Typography>
       </StyledTableCell>}
+      {!mdScreen && <StyledTableCell align="center">
+        <Typography variant="subtitle2">{row.time}</Typography>
+      </StyledTableCell>}
       {!xsScreen && <StyledTableCell align="center">
         <Typography variant="subtitle2">{row.pickup.address}</Typography>
       </StyledTableCell>}

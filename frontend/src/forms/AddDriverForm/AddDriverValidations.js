@@ -48,7 +48,7 @@ export const carInfoInitialValues = {
   carType: "",
   carModel: "",
   plateNum: "",
-  color: "",
+  color: "#000000",
   registration: "",
   insurance: "",
 }

@@ -1,4 +1,4 @@
-import { AccountCircleRounded, AssignmentTurnedInRounded, CallRounded, CloseRounded, DeleteRounded, DirectionsCarRounded, EditRounded, FmdGoodRounded } from '@mui/icons-material';
+import { AccessTimeFilledRounded, AccountCircleRounded, AssignmentTurnedInRounded, CalendarMonthRounded, CallRounded, CloseRounded, DeleteRounded, DirectionsCarFilledRounded, EditRounded, FmdGoodRounded } from '@mui/icons-material';
 import { Box, Drawer, IconButton, Typography, useMediaQuery } from '@mui/material';
 import { useContext } from 'react';
 import { useDispatch, useSelector } from "react-redux";
@@ -7,12 +7,14 @@ import { AppContext } from '../../context/AppContext';
 import { DrawersContext } from '../../context/DrawersContext';
 import { ModalsContext } from '../../context/ModalsContext';
 import { handleAlert } from '../../functions/handleAlert';
+import { handleDateFormate } from '../../functions/handleDateFormate';
 import { ConfirmButton } from '../../mui/ConfirmButton';
 import { DarkButton } from '../../mui/DarkButton';
 import { PrimaryBox } from '../../mui/PrimaryBox';
 import { PrimaryButton } from '../../mui/PrimaryButton';
 import { getDriver } from '../../store/driverSlice';
 import { getNearestDrivers } from '../../store/nearestDriversSlice';
+import AvatarTableBox from '../../tables/AvatarTableBox';
 import DataBox from './DataBox';
 
 const TripSidebar = () => {
@@ -68,15 +70,20 @@ const TripSidebar = () => {
 
             <DataBox val={currentTrip.patient.phone} icon={<CallRounded className={iconStyle} />} title={"Patient Phone :"} />
 
+            <DataBox val={handleDateFormate(currentTrip.date)} icon={<CalendarMonthRounded className={iconStyle} />} title={"Trip Date :"} />
+
+            <DataBox val={currentTrip.time} icon={<AccessTimeFilledRounded className={iconStyle} />} title={"Trip Time :"} />
+
+            {
+              currentTrip.driver &&
+              <DataBox val={<AvatarTableBox name={`${currentTrip.driver.user.firstName} ${currentTrip.driver.user.lastName}`} title={"Driver:"} avatar={currentTrip.driver.user.profileImage} handleViewDriver={handleViewDriver} />} icon={<DirectionsCarFilledRounded className={iconStyle} />} title={"Driver :"} />
+            }
+
             <DataBox val={currentTrip.pickup.address} icon={<FmdGoodRounded className={iconStyle} />} title={"Address :"} />
             <Location lat={+currentTrip.pickup.latitude} lng={+currentTrip.pickup.longitude} />
 
             <DataBox val={currentTrip.destination.address} icon={<FmdGoodRounded className={iconStyle} />} title={"Destination :"} />
             <Location lat={+currentTrip.destination.latitude} lng={+currentTrip.destination.longitude} />
-
-            {
-              currentTrip.driver && <DataBox val={`${currentTrip.driver.user.firstName} ${currentTrip.driver.user.lastName}`} icon={<DirectionsCarRounded className={iconStyle} />} title={"Driver:"} clicked={handleViewDriver} />
-            }
           </Box>
         </Box>
         <Box className={`grid grid-cols-2 justify-stretch items-center gap-4`}>
