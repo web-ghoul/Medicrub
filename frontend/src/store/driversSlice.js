@@ -25,11 +25,9 @@ export const driversSlice = createSlice({
   initialState,
   reducers: {
     updateDriver:(state,{payload})=>{
-      console.log(state.drivers,payload);
       state.isLoading = true
       if(payload && payload._id){
-        let drivers = state.drivers
-        drivers.map((driver)=>{
+        let drivers = state.drivers.map((driver)=>{
           if(driver._id === payload._id){
             return payload
           }
@@ -38,7 +36,6 @@ export const driversSlice = createSlice({
         state.drivers = drivers
       }
       state.isLoading = false
-      console.log(state.drivers);
     }
   },
   extraReducers: (builder) => {

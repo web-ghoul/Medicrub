@@ -23,7 +23,7 @@ import TripSidebar from "./sidebars/TripSidebar/TripSidebar";
 import { setAuth } from "./store/authSlice";
 import { updateDriver } from "./store/driversSlice";
 
-const SOCKET_SERVER_URL = 'http://localhost:3000/admin'; 
+const SOCKET_SERVER_URL = 'http://localhost:3000/admin'
     
 function App() {
   const {pathname} = useLocation()
@@ -67,6 +67,7 @@ function App() {
     });
 
     socket.on("drivers-positions",(data)=>{
+      console.log("Admin Position Change : ",data);
       dispatch(updateDriver(data))
     })
   

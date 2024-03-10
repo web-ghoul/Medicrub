@@ -66,9 +66,6 @@ function Map({ locations }) {
     }
   }, [onLoad, drivers, map])
 
-
-  console.log(locations);
-
   return locations && (
     <Box className={`grid justify-stretch items-center gap-4 md:!gap-2`}>
       <GoogleMap
