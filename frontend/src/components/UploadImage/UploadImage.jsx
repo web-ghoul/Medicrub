@@ -1,9 +1,10 @@
 import { Box, Typography } from '@mui/material'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { LazyLoadImage } from "react-lazy-load-image-component"
 import { UploadImagesContext } from '../../context/UploadImagesContext'
 import { PrimaryTextField } from '../../mui/PrimaryTextField'
 
-const UploadImage = ({ title, name, value }) => {
+const UploadImage = ({ title, name, value, defaultImage }) => {
   const [file, setFile] = useState("")
   const {
     setProfile,
@@ -54,7 +55,8 @@ const UploadImage = ({ title, name, value }) => {
     <Box className={`grid justify-center items-center gap-4 md:gap-3 sm:gap-2`}>
       {title && <Typography variant={'subtitle1'} className='text-[#666] text-center'>{title}</Typography>}
       <Box className={`flex justify-center items-center`}>
-        <Box component={"label"} htmlFor={name} className={`relative bg-white flex justify-center items-center rounded-full w-[200px] h-[200px] cursor-pointer overflow-hidden lg:w-[175px] lg:h-[175px] md:!h-[150px] md:!w-[150px] transition-all hover:cursor-pointer border-2 border-white hover:border-primary bg-cover bg-no-repeat bg-center`} sx={{ backgroundImage: `url('${file ? file instanceof File ? URL.createObjectURL(file) : file : '/images/image_upload.png'}')` }}>
+        <Box component={"label"} htmlFor={name} className={`relative bg-white flex justify-center items-center rounded-full w-[200px] h-[200px] cursor-pointer overflow-hidden lg:w-[175px] lg:h-[175px] md:!h-[150px] md:!w-[150px] transition-all hover:cursor-pointer border-2 border-white hover:border-primary bg-cover bg-no-repeat bg-center`} sx={{ backgroundImage: `url('${file ? file instanceof File ? URL.createObjectURL(file) : file : (defaultImage ? "" : '/images/image_upload.png')}')` }}>
+          {!file && defaultImage && <LazyLoadImage alt={"profile"} src={defaultImage} width={100} />}
           <PrimaryTextField
             fullWidth
             type={"file"}

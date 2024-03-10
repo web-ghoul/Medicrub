@@ -22,7 +22,7 @@ const TripsTable = ({ data, isLoading, sheet, name }) => {
   const handleDeleteTrip = (index) => {
     if (sheet) {
       index = index + page * 10
-      setTrips(trips.filter((_, i) => i !== index))
+      setTrips(() => trips.filter((_, i) => i !== index))
     }
   }
 
@@ -55,7 +55,7 @@ const TripsTable = ({ data, isLoading, sheet, name }) => {
     if (data) {
       setTrips(data)
     }
-  }, [data, trips])
+  }, [data])
 
   return (
     <PrimaryTable page={page} setPage={setPage} data={trips} loading={isLoading} title={"No Trips Yet..."} total={trips && trips?.length} name={name || "trips"}>
@@ -66,9 +66,9 @@ const TripsTable = ({ data, isLoading, sheet, name }) => {
         <TableBody>
           {
             (trips && trips.length > 0) && sheet ? trips.slice(10 * page, 10 + (10 * page)).map((row, i) =>
-              <TripsTableRow key={i} row={row} handleDeleteTrip={() => handleDeleteTrip(i)} handleAssignDriver={() => handleAssignDriver(i)} handleEditTrip={() => handleEditTrip(row, i + page * 10)} handleViewTrip={() => handleViewTrip(row)} />
+              <TripsTableRow key={i} row={row} handleDeleteTrip={() => handleDeleteTrip(i)} handleAssignDriver={() => handleAssignDriver(i)} handleEditTrip={() => handleEditTrip(row, i + page * 10)} handleViewTrip={() => handleViewTrip(row)} sheet={sheet} />
             ) : trips && trips.map((row, i) =>
-              <TripsTableRow key={i} row={row} handleDeleteTrip={() => handleDeleteTrip(i)} handleAssignDriver={() => handleAssignDriver(i)} handleEditTrip={() => handleEditTrip(row, i)} handleViewTrip={() => handleViewTrip(row)} />
+              <TripsTableRow key={i} row={row} handleDeleteTrip={() => handleDeleteTrip(i)} handleAssignDriver={() => handleAssignDriver(i)} handleEditTrip={() => handleEditTrip(row, i)} handleViewTrip={() => handleViewTrip(row)} sheet={sheet} />
             )
           }
         </TableBody>

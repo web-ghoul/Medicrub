@@ -49,8 +49,8 @@ const CarInfoForm = ({ formik, loading }) => {
 
         {useMemo(() =>
           <Box className={`flex justify-between items-center gap-6 flex-wrap sm:!justify-center`} >
-            <UploadImage title={"Car License (Front)"} name={"registration"} />
-            <UploadImage title={"Car License (Back)"} name={"insurance"} />
+            <UploadImage title={"Car License (Front)"} name={"registration"} defaultImage={"/images/license.png"} />
+            <UploadImage title={"Car License (Back)"} name={"insurance"} defaultImage={"/images/license.png"} />
           </Box>, []
         )}
       </Box>

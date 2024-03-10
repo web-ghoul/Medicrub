@@ -12,10 +12,10 @@ const CarAlbumForm = ({ loading }) => {
 
       {useMemo(() =>
         <Box className={`grid justify-stretch items-center gap-6 grid-cols-[1fr,1fr] md:!grid-cols-[1fr]`} >
-          <UploadImage title={"Car (Front)"} name={"front"} />
-          <UploadImage title={"Car (Back)"} name={"back"} />
-          <UploadImage title={"Car (Right)"} name={"right"} />
-          <UploadImage title={"Car (Left)"} name={"left"} />
+          <UploadImage title={"Car (Front)"} name={"front"} defaultImage={"/images/license.png"} />
+          <UploadImage title={"Car (Back)"} name={"back"} defaultImage={"/images/license.png"} />
+          <UploadImage title={"Car (Right)"} name={"right"} defaultImage={"/images/license.png"} />
+          <UploadImage title={"Car (Left)"} name={"left"} defaultImage={"/images/license.png"} />
         </Box>, []
       )}
 

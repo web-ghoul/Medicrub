@@ -15,7 +15,7 @@ const PersonalDataForm = ({ formik, loading }) => {
 
       <Box className={`grid justify-stretch items-center gap-10`}>
         {useMemo(() =>
-          <UploadImage title={"The Profile photo will make you more reliable to other users of the application"} name={"profile"} />
+          <UploadImage title={"The Profile photo will make you more reliable to other users of the application"} name={"profile"} defaultImage={"/images/profile.png"} />
           , []
         )}
 
@@ -81,8 +81,8 @@ const PersonalDataForm = ({ formik, loading }) => {
 
         {useMemo(() =>
           <Box className={`flex justify-between items-center gap-6 flex-wrap sm:!justify-center`} >
-            <UploadImage title={"National Id (Front)"} name={"nationalFront"} />
-            <UploadImage title={"National Id (Back)"} name={"nationalBack"} />
+            <UploadImage title={"National Id (Front)"} name={"nationalFront"} defaultImage={"/images/national_id_front.png"} />
+            <UploadImage title={"National Id (Back)"} name={"nationalBack"} defaultImage={"/images/national_id_back.png"} />
           </Box>
           , []
         )}

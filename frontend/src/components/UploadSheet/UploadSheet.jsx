@@ -49,6 +49,7 @@ const UploadSheet = () => {
               if (!destination) {
                 break
               }
+              data[i][1] = data[i][1].replaceAll("/", "-")
               trips.push({
                 driver: null,
                 time: data[i][29],
@@ -62,7 +63,6 @@ const UploadSheet = () => {
                 destination,
                 patient: { firstName: data[i][18], lastName: data[i][19], phone: data[i][20] }
               })
-
             }
 
             //Handle Data to Table
