@@ -3,21 +3,23 @@ import { useContext } from 'react';
 import { useDispatch } from "react-redux";
 import NoData from "../components/NoData/NoData";
 import { AppContext } from '../context/AppContext';
+import { getDrivers } from '../store/driversSlice';
 import { getPendingDrivers } from '../store/pendingDriversSlice';
 import { getTrips } from '../store/tripsSlice';
 
 const PrimaryTable = ({ setPage, children, data, title, loading, total, name }) => {
 
   const dispatch = useDispatch()
-  const { chosenDate } = useContext(AppContext)
+  const { chosenDate, setChosenPage } = useContext(AppContext)
 
   const handleChange = (event, value) => {
     setPage(value);
     if (name === "pending-drivers") {
       dispatch(getPendingDrivers({ page: value - 1 }))
     } else if (name === "drivers") {
-      dispatch(getPendingDrivers({ page: value - 1 }))
+      dispatch(getDrivers({ page: value - 1 }))
     } else if (name === "trips") {
+      setChosenPage(value - 1)
       dispatch(getTrips({ page: value - 1, date: chosenDate }))
     }
   };

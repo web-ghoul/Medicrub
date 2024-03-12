@@ -58,7 +58,7 @@ const TripsTable = ({ data, count, isLoading, sheet, name }) => {
   }, [data])
 
   return (
-    <PrimaryTable page={page} setPage={setPage} data={trips} loading={isLoading} title={"No Trips Yet..."} total={sheet ? trips?.length : count} name={name || "trips"}>
+    <PrimaryTable page={page} setPage={setPage} data={trips} loading={isLoading} title={"No Trips Yet..."} total={sheet ? trips?.length : count * 10} name={name || "trips"}>
       <TripsTableHead />
       {isLoading ? <PrimaryLoadingTable>
         <LoadingRow />

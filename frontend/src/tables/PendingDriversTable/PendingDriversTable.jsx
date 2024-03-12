@@ -48,7 +48,7 @@ const PendingDriversTable = () => {
   }, [dispatch])
 
   return (
-    <PrimaryTable page={page} setPage={setPage} data={pendingDrivers} loading={isLoading} title={"No Drivers Yet..."} name={"pending-drivers"} total={count}>
+    <PrimaryTable page={page} setPage={setPage} data={pendingDrivers} loading={isLoading} title={"No Drivers Yet..."} name={"pending-drivers"} total={count * 10}>
       <PendingDriversTableHead />
       {isLoading ? <PrimaryLoadingTable>
         <LoadingRow />

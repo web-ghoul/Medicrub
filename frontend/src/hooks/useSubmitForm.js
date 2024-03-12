@@ -35,7 +35,7 @@ const useSubmitForm = (type) => {
   const {tripsSheets,setTripsSheets} = useContext(SheetsContext)
   const { handleCloseEditDriverDrawer,handleCloseEditTripDrawer } = useContext(DrawersContext)
   const {profile,nationalFront,nationalBack,registration,insurance,left,front,back,right} = useContext(UploadImagesContext)
-  const { driverId ,setTripId,setSheetTrip , tripId,todayDate,trips,setChosenDate,chosenDate,currentTrip,sheetTripIndex,sheetTrip} = useContext(AppContext)
+  const { driverId ,setTripId,setSheetTrip , tripId,todayDate,trips,setChosenDate,chosenDate,currentTrip,sheetTripIndex,sheetTrip,chosenPage} = useContext(AppContext)
   const { setAddDriverTab, setAddTripTab } = useContext(TabsContext)
   const {handleCloseAssignDriverModal,handleCloseNearestDriversModal,handleCloseCreateMultipleTripsModal,handleCloseVerifyDriverModal} = useContext(ModalsContext)
   const { pathname } = useLocation()
@@ -310,7 +310,7 @@ const useSubmitForm = (type) => {
               }).then(() => {
                 resetForm()
                 handleAlert({ msg: "Driver is Assigned Successfully", status: "success" })
-                dispatch(getTrips({page:0,date:chosenDate}))
+                dispatch(getTrips({page:chosenPage,date:chosenDate}))
                 navigate(`${process.env.REACT_APP_TRIPS_ROUTE}`)
                 handleCloseAssignDriverModal()
                 handleCloseNearestDriversModal()
@@ -511,7 +511,7 @@ const useSubmitForm = (type) => {
         default:
           return ""
       }
-    },[type, navigate, dispatch, token, setAddDriverTab, setAddTripTab, driver, pathname, handleCloseEditDriverDrawer, driverId,profile,nationalFront,nationalBack,registration,insurance,left,front,back,right,tripId,setTripId,handleCloseAssignDriverModal,todayDate,handleCloseNearestDriversModal,trips,setSheetTrip,setChosenDate,chosenDate,handleCloseCreateMultipleTripsModal,handleCloseEditTripDrawer,currentTrip,sheetTripIndex,sheetTrip,tripsSheets,setTripsSheets,handleCloseVerifyDriverModal])
+    },[type, navigate,chosenPage, dispatch, token, setAddDriverTab, setAddTripTab, driver, pathname, handleCloseEditDriverDrawer, driverId,profile,nationalFront,nationalBack,registration,insurance,left,front,back,right,tripId,setTripId,handleCloseAssignDriverModal,todayDate,handleCloseNearestDriversModal,trips,setSheetTrip,setChosenDate,chosenDate,handleCloseCreateMultipleTripsModal,handleCloseEditTripDrawer,currentTrip,sheetTripIndex,sheetTrip,tripsSheets,setTripsSheets,handleCloseVerifyDriverModal])
   
   const formik = useFormik(formikObj)
 
