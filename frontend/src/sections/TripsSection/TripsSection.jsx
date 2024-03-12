@@ -18,7 +18,7 @@ const TripsSection = () => {
   const smScreen = useMediaQuery("(max-width:768px)")
   const dispatch = useDispatch()
   const { todayDate } = useContext(AppContext)
-  const { trips, isLoading } = useSelector((state) => state.trips)
+  const { trips, count, isLoading } = useSelector((state) => state.trips)
 
   useEffect(() => {
     dispatch(getTrips({ page: 0, date: todayDate }))
@@ -45,7 +45,7 @@ const TripsSection = () => {
           </Box>
         </Box>
         <Forms type={"filter_trips_by_date"} />
-        <TripsTable data={trips} isLoading={isLoading} />
+        <TripsTable data={trips} count={count} isLoading={isLoading} />
       </PrimaryContainer>
     </PrimaryBox>
   )

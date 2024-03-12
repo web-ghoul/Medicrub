@@ -11,12 +11,18 @@ export const getTrips = createAsyncThunk(
         Authorization:`Bearer ${token}`
       }
     })
-    return res.data.data
+    const resCount = await axios.get(`${process.env.REACT_APP_SERVER_URL}/Trips/PagesCount?date=${args.date}`,{
+      headers:{
+        Authorization:`Bearer ${token}`
+      }
+    })
+    return {data:res.data.data,count:resCount.data.data}
   },
 )
 
 const initialState = {
   trips: null,
+  count: 0,
   isLoading:true
 }
 
@@ -30,7 +36,8 @@ export const tripsSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(getTrips.fulfilled, (state, { payload }) => {
-      state.trips = payload
+      state.trips = payload.data
+      state.count = payload.count
       state.isLoading = false
     })
     builder.addCase(getTrips.rejected, (state, action) => {

@@ -11,12 +11,18 @@ export const getDrivers = createAsyncThunk(
         Authorization:`Bearer ${token}`
       }
     })
-    return res.data.data
+    const resCount = await axios.get(`${process.env.REACT_APP_SERVER_URL}/Drivers/PagesCount`,{
+      headers:{
+        Authorization:`Bearer ${token}`
+      }
+    })
+    return {data:res.data.data,count:resCount.data.data}
   },
 )
 
 const initialState = {
   drivers: null,
+  count: 0,
   isLoading:true
 }
 
@@ -40,7 +46,8 @@ export const driversSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(getDrivers.fulfilled, (state, { payload }) => {
-      state.drivers = payload
+      state.count = payload.count
+      state.drivers = payload.data
       state.isLoading = false
     })
     builder.addCase(getDrivers.rejected, (state, action) => {

@@ -14,7 +14,7 @@ import PendingDriversTableRow from "./PendingDriversTableRow";
 
 const PendingDriversTable = () => {
   const [page, setPage] = useState(1);
-  const { pendingDrivers, isLoading } = useSelector((state) => state.pendingDrivers)
+  const { pendingDrivers, count, isLoading } = useSelector((state) => state.pendingDrivers)
   const { driver } = useSelector((state) => state.driver)
   const { handleOpenDriverDrawer, handleOpenEditDriverDrawer } = useContext(DrawersContext)
   const { handleOpenVerifyDriverModal } = useContext(ModalsContext)
@@ -48,7 +48,7 @@ const PendingDriversTable = () => {
   }, [dispatch])
 
   return (
-    <PrimaryTable page={page} setPage={setPage} data={pendingDrivers} loading={isLoading} title={"No Drivers Yet..."} name={"pending-drivers"} total={pendingDrivers && pendingDrivers.length}>
+    <PrimaryTable page={page} setPage={setPage} data={pendingDrivers} loading={isLoading} title={"No Drivers Yet..."} name={"pending-drivers"} total={count}>
       <PendingDriversTableHead />
       {isLoading ? <PrimaryLoadingTable>
         <LoadingRow />

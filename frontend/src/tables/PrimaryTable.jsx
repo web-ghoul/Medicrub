@@ -1,11 +1,15 @@
 import { Pagination, Paper, Stack, Table, TableContainer, TableFooter, TableRow } from '@mui/material';
+import { useContext } from 'react';
 import { useDispatch } from "react-redux";
 import NoData from "../components/NoData/NoData";
+import { AppContext } from '../context/AppContext';
 import { getPendingDrivers } from '../store/pendingDriversSlice';
+import { getTrips } from '../store/tripsSlice';
 
 const PrimaryTable = ({ setPage, children, data, title, loading, total, name }) => {
 
   const dispatch = useDispatch()
+  const { chosenDate } = useContext(AppContext)
 
   const handleChange = (event, value) => {
     setPage(value);
@@ -14,7 +18,7 @@ const PrimaryTable = ({ setPage, children, data, title, loading, total, name }) 
     } else if (name === "drivers") {
       dispatch(getPendingDrivers({ page: value - 1 }))
     } else if (name === "trips") {
-      dispatch(getPendingDrivers({ page: value - 1 }))
+      dispatch(getTrips({ page: value - 1, date: chosenDate }))
     }
   };
 
@@ -25,7 +29,7 @@ const PrimaryTable = ({ setPage, children, data, title, loading, total, name }) 
         <TableFooter>
           <TableRow>
             {((data && data.length > 0) ? (data.length > 0 && (Math.ceil(total / 10) > 1 && <Stack className="p-4" component={"td"} spacing={2}>
-              <Pagination count={Math.ceil(total / 10) - 1} variant="outlined" shape="rounded" onChange={handleChange} />
+              <Pagination count={Math.ceil(total / 10)} variant="outlined" shape="rounded" onChange={handleChange} />
             </Stack>)) : (!loading && <NoData title={title} />))}
           </TableRow>
         </TableFooter>

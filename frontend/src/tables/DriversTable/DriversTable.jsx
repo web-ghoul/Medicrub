@@ -11,7 +11,7 @@ import DriversTableRow from './DriversTableRow';
 import LoadingRow from './LoadingRow';
 
 const DriversTable = () => {
-  const { drivers, isLoading } = useSelector((state) => state.drivers)
+  const { drivers, count, isLoading } = useSelector((state) => state.drivers)
   const dispatch = useDispatch()
   const { handleOpenDriverDrawer, handleOpenEditDriverDrawer } = useContext(DrawersContext)
   const [page, setPage] = useState(0);
@@ -38,7 +38,7 @@ const DriversTable = () => {
   }, [dispatch])
 
   return (
-    <PrimaryTable page={page} setPage={setPage} loading={isLoading} data={drivers} title={"No Drivers Yet..."} name={"drivers"}>
+    <PrimaryTable page={page} setPage={setPage} loading={isLoading} data={drivers} title={"No Drivers Yet..."} name={"drivers"} total={count}>
       <DriversTableHead />
       {isLoading ? <PrimaryLoadingTable>
         <LoadingRow />

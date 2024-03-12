@@ -11,7 +11,7 @@ import LoadingRow from "./LoadingRow";
 import TripsTableHead from "./TripsTableHead";
 import TripsTableRow from "./TripsTableRow";
 
-const TripsTable = ({ data, isLoading, sheet, name }) => {
+const TripsTable = ({ data, count, isLoading, sheet, name }) => {
   const dispatch = useDispatch()
   const [trips, setTrips] = useState()
   const [page, setPage] = useState(0);
@@ -58,7 +58,7 @@ const TripsTable = ({ data, isLoading, sheet, name }) => {
   }, [data])
 
   return (
-    <PrimaryTable page={page} setPage={setPage} data={trips} loading={isLoading} title={"No Trips Yet..."} total={trips && trips?.length} name={name || "trips"}>
+    <PrimaryTable page={page} setPage={setPage} data={trips} loading={isLoading} title={"No Trips Yet..."} total={sheet ? trips?.length : count} name={name || "trips"}>
       <TripsTableHead />
       {isLoading ? <PrimaryLoadingTable>
         <LoadingRow />
