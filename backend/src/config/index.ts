@@ -16,7 +16,7 @@ export const USERNAME_EXIST_ERROR_MSG = "Username already used";
 export const REQUIREMENTS_ERROR_MSG =
   "Missing requirements, maybe some uploads";
 export const CORS_OPTIONS = {
-  origin: "http://localhost:5001",
+  origin: ["http://localhost:5001", "https://medicrub-webghoul.vercel.app"],
   methods: ["GET", "POST", "PUT"],
   credentials: true,
 };
