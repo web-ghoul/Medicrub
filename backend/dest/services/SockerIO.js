@@ -13,13 +13,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.connectAdmin = exports.getIO = exports.initIO = void 0;
-const socket_io_1 = require("socket.io");
-const model_1 = require("../model");
-const config_1 = require("../config");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const socket_io_1 = require("socket.io");
+const config_1 = require("../config");
+const model_1 = require("../model");
 let io;
 const initIO = (server) => {
-    io = new socket_io_1.Server(server);
+    io = new socket_io_1.Server(server, {
+        cors: {
+            origin: config_1.CORS_OPTIONS.origin,
+            methods: ["GET", "POST"],
+            credentials: true,
+        },
+    });
 };
 exports.initIO = initIO;
 const getIO = () => {
@@ -34,27 +40,30 @@ const firstConnectionMap = new Map();
 const driverSockets = new Map();
 const connectAdmin = (jwtKey) => {
     // Create a namespace for admin
-    const adminNamespace = io.of('/admin');
+    const adminNamespace = io.of("/admin");
     // Event handler when a client (admin) connects to the admin namespace
-    adminNamespace.on('connection', (socket) => __awaiter(void 0, void 0, void 0, function* () {
+    adminNamespace.on("connection", (socket) => __awaiter(void 0, void 0, void 0, function* () {
         const adminId = socket.id;
         // Retrieve the token from the query parameters
         const token = socket.handshake.headers.authorization;
         try {
             if (token) {
-                const payload = jsonwebtoken_1.default.verify(token.split(' ')[1], jwtKey);
+                const payload = jsonwebtoken_1.default.verify(token.split(" ")[1], jwtKey);
                 if (payload) {
                     if (!firstConnectionMap.has(adminId)) {
                         // Emit the drivers-positions event
-                        (0, exports.getIO)().of('/admin').to(adminId).emit(config_1.DRIVERS_SOCKET_CHANNEL, yield getDrivers());
+                        (0, exports.getIO)()
+                            .of("/admin")
+                            .to(adminId)
+                            .emit(config_1.DRIVERS_SOCKET_CHANNEL, yield getDrivers());
                         // Mark the first connection as completed for this admin client
                         firstConnectionMap.set(adminId, true);
                     }
                     // Emit an event to the admin to acknowledge the connection
-                    socket.emit('admin-connected', "Admin Connected");
+                    socket.emit("admin-connected", "Admin Connected");
                     // Event handler when the admin joins the drivers-positions room
-                    socket.on('join-drivers-positions', (data) => __awaiter(void 0, void 0, void 0, function* () {
-                        console.log('Admin joined drivers-positions room');
+                    socket.on("join-drivers-positions", (data) => __awaiter(void 0, void 0, void 0, function* () {
+                        console.log("Admin joined drivers-positions room");
                         // Join the drivers-positions room
                         socket.join(config_1.DRIVERS_SOCKET_CHANNEL);
                     }));
@@ -70,8 +79,8 @@ const connectAdmin = (jwtKey) => {
             socket.disconnect();
         }
         // Event handler when the admin disconnects
-        socket.on('disconnect', () => {
-            console.log('Admin disconnected');
+        socket.on("disconnect", () => {
+            console.log("Admin disconnected");
             // Leave the drivers-positions room upon disconnection
             socket.leave(config_1.DRIVERS_SOCKET_CHANNEL);
         });
@@ -79,10 +88,13 @@ const connectAdmin = (jwtKey) => {
     // Function to emit drivers' positions to the drivers-positions room
     function getDrivers() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield model_1.Driver.find({ verified: true }).select('user location visible onTrip').populate({
-                path: 'user',
-                select: 'firstName lastName profileImage',
-            }).populate('location');
+            return yield model_1.Driver.find({ verified: true })
+                .select("user location visible onTrip")
+                .populate({
+                path: "user",
+                select: "firstName lastName profileImage",
+            })
+                .populate("location");
         });
     }
 };

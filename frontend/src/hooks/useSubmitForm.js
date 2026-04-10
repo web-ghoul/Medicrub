@@ -23,8 +23,7 @@ import { getDrivers } from "../store/driversSlice";
 import { getNearestDrivers, searchForNearestDriver } from "../store/nearestDriversSlice";
 import { getPendingDrivers } from "../store/pendingDriversSlice";
 import { getTrips } from "../store/tripsSlice";
-
-const server_url = process.env.REACT_APP_SERVER_URL
+import { getApiUrl } from "../functions/getApiUrl";
 
 const useSubmitForm = (type) => {
   const [loading, setLoading] = useState(false);
@@ -50,7 +49,9 @@ const useSubmitForm = (type) => {
             onSubmit: async (values, { resetForm }) => {
               setLoading(true);
               try {
-                const res = await axios.post(`${server_url}/Login`, values);
+                const endpoint = getApiUrl('/Login');
+                console.log("Attempting login at:", endpoint);
+                const res = await axios.post(endpoint, values);
                 navigate(`${process.env.REACT_APP_DASHBOARD_ROUTE}`);
                 dispatch(login({ token: res.data.token }));
                 resetForm();
@@ -109,7 +110,7 @@ const useSubmitForm = (type) => {
               formData.append("nationalFront", values.nationalFront)
               formData.append("nationalBack", values.nationalBack)
               formData.append("password", values.password)
-              await axios.post(`${server_url}/CreateDriver`, formData, {
+              await axios.post(getApiUrl('/CreateDriver'), formData, {
                 headers: {
                   Authorization: `Bearer ${token}`
                 }
@@ -141,7 +142,7 @@ const useSubmitForm = (type) => {
               const formData = new FormData()
               formData.append("front", values.front)
               formData.append("back", values.back)
-              await axios.post(`${server_url}/AddDriverLicense?id=${localStorage.getItem(`${process.env.REACT_APP_CURRENT_DRIVER_ID}`)}`, formData, {
+              await axios.post(`${getApiUrl('/AddDriverLicense')}?id=${localStorage.getItem(`${process.env.REACT_APP_CURRENT_DRIVER_ID}`)}`, formData, {
                 headers: {
                   Authorization: `Bearer ${token}`
                 }
@@ -186,7 +187,7 @@ const useSubmitForm = (type) => {
               formData.append("color", values.color)
               formData.append("registration", values.registration)
               formData.append("insurance", values.insurance)
-              await axios.post(`${server_url}/CreateCar?id=${localStorage.getItem(`${process.env.REACT_APP_CURRENT_DRIVER_ID}`)}`, formData, {
+              await axios.post(`${getApiUrl('/CreateCar')}?id=${localStorage.getItem(`${process.env.REACT_APP_CURRENT_DRIVER_ID}`)}`, formData, {
                 headers: {
                   Authorization: `Bearer ${token}`
                 }
@@ -238,7 +239,7 @@ const useSubmitForm = (type) => {
               formData.append("back", values.back)
               formData.append("right", values.right)
               formData.append("left", values.left)
-              await axios.post(`${server_url}/CreateCarAlbum?id=${localStorage.getItem(`${process.env.REACT_APP_CURRENT_DRIVER_ID}`)}`, formData, {
+              await axios.post(`${getApiUrl('/CreateCarAlbum')}?id=${localStorage.getItem(`${process.env.REACT_APP_CURRENT_DRIVER_ID}`)}`, formData, {
                 headers: {
                   Authorization: `Bearer ${token}`
                 }
@@ -281,7 +282,7 @@ const useSubmitForm = (type) => {
               }
               setLoading(true)
               values.driver=null
-              await axios.post(`${server_url}/CreateTrip`, values, {
+              await axios.post(getApiUrl('/CreateTrip'), values, {
                 headers: {
                   Authorization: `Bearer ${token}`
                 }
@@ -303,7 +304,7 @@ const useSubmitForm = (type) => {
             onSubmit: async (values, { resetForm }) => {
               setLoading(true)
               values.driver = driverId
-              await axios.put(`${server_url}/UpdateTrip?id=${tripId}`, values, {
+              await axios.put(`${getApiUrl('/UpdateTrip')}?id=${tripId}`, values, {
                 headers: {
                   Authorization: `Bearer ${token}`
                 }
@@ -343,7 +344,7 @@ const useSubmitForm = (type) => {
                 handleAlert({ msg: "Trip is Updated Successfully", status: "success" })
                 handleCloseEditTripDrawer()
               }else{
-                await axios.put(`${server_url}/UpdateTrip?id=${currentTrip._id}`, values, {
+                await axios.put(`${getApiUrl('/UpdateTrip')}?id=${currentTrip._id}`, values, {
                   headers: {
                     Authorization: `Bearer ${token}`
                   }
@@ -394,7 +395,7 @@ const useSubmitForm = (type) => {
               formDate.append("nationalBack", nationalBack)
               // formDate.append("licenseFront", values.licenseFront)
               // formDate.append("licenseBack", values.licenseBack)
-              await axios.put(`${server_url}/UpdateDriver?id=${driver._id}`, formDate, {
+              await axios.put(`${getApiUrl('/UpdateDriver')}?id=${driver._id}`, formDate, {
                 headers: {
                   Authorization: `Bearer ${token}`
                 }
@@ -417,7 +418,7 @@ const useSubmitForm = (type) => {
             initialValues: {anything:""},
             onSubmit: async () => {
               setLoading(true)
-              await axios.put(`${server_url}/VerifyDriver?id=${driverId}`,{}, {
+              await axios.put(`${getApiUrl('/VerifyDriver')}?id=${driverId}`,{}, {
                 headers: {
                   Authorization: `Bearer ${token}`
                 }
@@ -463,7 +464,7 @@ const useSubmitForm = (type) => {
                 }
                 values.trips.push(t)
               }
-              await axios.post(`${server_url}/CreateMultiTrip`,values.trips, {
+              await axios.post(getApiUrl('/CreateMultiTrip'),values.trips, {
                 headers: {
                   Authorization: `Bearer ${token}`
                 }

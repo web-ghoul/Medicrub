@@ -26,11 +26,7 @@ export const DrawerMenu=[
     icon:<RecentActorsRounded />,
     url:`${process.env.REACT_APP_PENDING_DRIVERS_ROUTE}`
   },
-  {
-    text:"Reports",
-    icon:<AssessmentRounded />,
-    url:`${process.env.REACT_APP_REPORTS_ROUTE}`
-  },
+
   // {
   //   text:"Components",
   //   icon:<GridViewRounded />,

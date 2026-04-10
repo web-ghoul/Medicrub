@@ -14,9 +14,9 @@ exports.EMAIL_EXIST_ERROR_MSG = "Email address already used";
 exports.USERNAME_EXIST_ERROR_MSG = "Username already used";
 exports.REQUIREMENTS_ERROR_MSG = "Missing requirements, maybe some uploads";
 exports.CORS_OPTIONS = {
-    origin: '*',
+    origin: "http://localhost:5001",
+    methods: ["GET", "POST", "PUT"],
     credentials: true,
-    exposedHeaders: ["set-cookie"],
 };
 exports.DRIVERS_SOCKET_CHANNEL = "drivers-positions";
 // Yo6dhmOhidgYp5ve - 000

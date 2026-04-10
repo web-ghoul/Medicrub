@@ -11,6 +11,6 @@ export const headerData ={
     "add-trip":[{title:"Trips",icon:<CommuteRounded sx={mainColor}/>,url:`${process.env.REACT_APP_TRIPS_ROUTE}`},{title:"Add Trip",icon:<AddRounded sx={mainColor}/>,url:`${process.env.REACT_APP_ADD_TRIP_ROUTE}`}],
     "sheets":[{title:"Trips",icon:<CommuteRounded sx={mainColor}/>,url:`${process.env.REACT_APP_TRIPS_ROUTE}`},{title:"Sheets",icon:<UploadFileRounded sx={mainColor}/>,url:`${process.env.REACT_APP_TRIP_SHEET_ROUTE}`}],
     "pending-drivers":[{title:"Pending Drivers",icon:<RecentActorsRounded sx={mainColor}/>,url:`${process.env.REACT_APP_PENDING_DRIVERS_ROUTE}`}],
-    "reports":[{title:"Reports",icon:<AssessmentRounded sx={mainColor}/>,url:`${process.env.REACT_APP_REPORTS_ROUTE}`}],
+
     "components":[{title:"Components",icon:<GridViewRounded sx={mainColor}/>,url:`${process.env.REACT_APP_COMPONENTS_ROUTE}`}],
 }

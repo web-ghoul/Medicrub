@@ -1,12 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from "axios";
+import { getApiUrl } from '../functions/getApiUrl';
 import Cookies from 'js-cookie';
 
 export const getNearestDrivers = createAsyncThunk(
   'nearestDrivers/getNearestDrivers',
   async (args) => {
     const token = Cookies.get(`${process.env.REACT_APP_TOKEN_NAME}`)
-    const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/NearestDrivers?latitude=${args.lat}&longitude=${args.lng}`,{
+    const res = await axios.get(getApiUrl(`/NearestDrivers?latitude=${args.lat}&longitude=${args.lng}`), {
       headers:{
         Authorization:`Bearer ${token}`
       }

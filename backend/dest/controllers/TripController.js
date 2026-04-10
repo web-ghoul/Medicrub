@@ -247,6 +247,7 @@ const GetAllTrips = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
                 const page = Number.parseInt(req.params.page);
                 const date = (0, DateUtility_1.RemoveDateTime)(new Date(String((_4 = req.query.date) !== null && _4 !== void 0 ? _4 : '')));
                 console.log(date);
+                const total = yield model_1.Trip.countDocuments({ date: date });
                 const trips = yield model_1.Trip.find({ date: date })
                     .skip(config_1.PAGINATION_PAGE * page)
                     .limit(config_1.PAGINATION_PAGE)
@@ -265,7 +266,7 @@ const GetAllTrips = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
                     }
                 })
                     .sort('-createdAt');
-                return res.status(200).json({ data: trips });
+                return res.status(200).json({ data: trips, count: Math.ceil(total / config_1.PAGINATION_PAGE) });
             }
         }
         return res.status(400).json({ message: config_1.UNAUTHOREOZED_ERROR_MSG });

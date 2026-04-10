@@ -648,10 +648,10 @@ export const GetAllDrivers = async (
     if (adminPayload) {
       const admin = await Admin.findById(adminPayload._id);
       if (admin) {
-        const page = Number.parseInt(req.params.page) ?? 0;
-
-        const driver = await Driver.find({ verified: true })
-          .skip(PAGINATION_PAGE * page)
+        const pageNum = parseInt(req.params.page) || 0;
+        const total = await Driver.countDocuments({ verified: true });
+        const drivers = await Driver.find({ verified: true })
+          .skip(PAGINATION_PAGE * pageNum)
           .limit(PAGINATION_PAGE)
           .select("-car -nationalCard -driverLicense")
           .populate({
@@ -661,8 +661,11 @@ export const GetAllDrivers = async (
           .populate("location")
           .sort("-createdAt");
 
-        if (driver) {
-          return res.status(200).json({ data: driver });
+        if (drivers) {
+          return res.status(200).json({ 
+            data: drivers, 
+            count: Math.ceil(total / PAGINATION_PAGE) 
+          });
         }
       }
     }
@@ -689,10 +692,10 @@ export const GetPendingDrivers = async (
     if (adminPayload) {
       const admin = await Admin.findById(adminPayload._id);
       if (admin) {
-        const page = Number.parseInt(req.params.page) ?? 0;
-
+        const pageNum = parseInt(req.params.page) || 0;
+        const total = await Driver.countDocuments({ verified: false });
         const drivers = await Driver.find({ verified: false })
-          .skip(PAGINATION_PAGE * page)
+          .skip(PAGINATION_PAGE * pageNum)
           .limit(PAGINATION_PAGE)
           .select("-car -nationalCard -driverLicense")
           .populate({
@@ -702,7 +705,10 @@ export const GetPendingDrivers = async (
           .populate("location")
           .sort("-createdAt");
 
-        return res.status(200).json({ data: drivers });
+        return res.status(200).json({ 
+          data: drivers, 
+          count: Math.ceil(total / PAGINATION_PAGE) 
+        });
       }
     }
 

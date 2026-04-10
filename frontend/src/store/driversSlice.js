@@ -1,22 +1,18 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from "axios";
 import Cookies from 'js-cookie';
+import { getApiUrl } from '../functions/getApiUrl';
 
 export const getDrivers = createAsyncThunk(
   'drivers/getDrivers',
   async (args) => {
     const token = Cookies.get(`${process.env.REACT_APP_TOKEN_NAME}`)
-    const res = await axios.get(`${process.env.REACT_APP_SERVER_URL}/Drivers/${args.page}`,{
+    const res = await axios.get(getApiUrl(`/Drivers/${args.page}`), {
       headers:{
         Authorization:`Bearer ${token}`
       }
     })
-    const resCount = await axios.get(`${process.env.REACT_APP_SERVER_URL}/Drivers/PagesCount`,{
-      headers:{
-        Authorization:`Bearer ${token}`
-      }
-    })
-    return {data:res.data.data,count:resCount.data.data}
+    return {data:res.data.data, count:res.data.count}
   },
 )
 

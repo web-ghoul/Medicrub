@@ -74,11 +74,7 @@ const Header = () => {
                 )
               }
             </Breadcrumbs>
-            <IconButton>
-              <Badge badgeContent={4} color="primary">
-                <NotificationsRounded />
-              </Badge>
-            </IconButton>
+
           </PrimaryContainer>
         </Box>
       </Toolbar>

@@ -276,6 +276,7 @@ export const GetAllTrips = async (req: Request, res: Response, next: NextFunctio
                 const date = RemoveDateTime(new Date(String(req.query.date ?? '')));
                 console.log(date);
 
+                const total = await Trip.countDocuments({ date: date });
                 const trips = await Trip.find({ date: date })
                     .skip(PAGINATION_PAGE * page)
                     .limit(PAGINATION_PAGE)
@@ -295,7 +296,7 @@ export const GetAllTrips = async (req: Request, res: Response, next: NextFunctio
                     })
                     .sort('-createdAt');
 
-                return res.status(200).json({ data: trips });
+                return res.status(200).json({ data: trips, count: Math.ceil(total / PAGINATION_PAGE) });
             }
         }
         return res.status(400).json({ message: UNAUTHOREOZED_ERROR_MSG });

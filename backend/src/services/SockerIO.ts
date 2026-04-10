@@ -1,7 +1,7 @@
 import { Server as HttpServer } from "http";
 import jwt from "jsonwebtoken";
 import { Server, Socket } from "socket.io";
-import { DRIVERS_SOCKET_CHANNEL } from "../config";
+import { DRIVERS_SOCKET_CHANNEL, CORS_OPTIONS } from "../config";
 import { Driver } from "../model";
 
 let io: Server;
@@ -9,7 +9,7 @@ let io: Server;
 export const initIO = (server: HttpServer) => {
   io = new Server(server, {
     cors: {
-      origin: "*",
+      origin: CORS_OPTIONS.origin,
       methods: ["GET", "POST"],
       credentials: true,
     },

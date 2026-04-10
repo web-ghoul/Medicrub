@@ -23,7 +23,7 @@ import TripSidebar from "./sidebars/TripSidebar/TripSidebar";
 import { setAuth } from "./store/authSlice";
 import { updateDriver } from "./store/driversSlice";
 
-const SOCKET_SERVER_URL = 'https://medicurb.onrender.com/admin'
+const SOCKET_SERVER_URL = process.env.REACT_APP_SOCKET_URL;
     
 function App() {
   const {pathname} = useLocation()

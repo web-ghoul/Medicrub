@@ -7,22 +7,28 @@ import dbConnection from "./services/DBService";
 import { connectAdmin, initIO } from "./services/SockerIO";
 config();
 
-const startServer = async () => {
-  const app = express();
+const app = express();
 
+const startServer = async () => {
   app.use(cors(CORS_OPTIONS));
   /* ----------------------------- Initialize App ----------------------------- */
   await App(app);
   /* ---------------------------- Connect To MogoDB --------------------------- */
   await dbConnection(process.env.MONGO_URL!);
   /* --------------------- Create App Server -------------------- */
-  const server = app.listen(process.env.PORT ?? 3000, () => {
-    console.log("App Is Running on PORT: " + process.env.PORT);
-  });
-  /* --------------------- Initialize WebSocket.IO Service -------------------- */
-  initIO(server);
+  if (process.env.NODE_ENV !== 'production') {
+    const server = app.listen(process.env.PORT ?? 3000, () => {
+      console.log("App Is Running on PORT: " + (process.env.PORT ?? 3000));
+    });
+    /* --------------------- Initialize WebSocket.IO Service -------------------- */
+    initIO(server);
+  }
   /* ------------------------------ Connect Admin ----------------------------- */
   connectAdmin(process.env.JWT_KEY!);
 };
 
-startServer();
+if (process.env.NODE_ENV !== 'production') {
+  startServer();
+}
+
+export default app;

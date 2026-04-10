@@ -11,13 +11,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateDriverStatus = exports.UpdateDriverPosition = exports.AddDriverLicense = exports.GetDriver = exports.CheckDriver = void 0;
 const dto_1 = require("../dto");
-const model_1 = require("../model");
-const config_1 = require("../config");
-const FilesExtractor_1 = require("../middlewares/FilesExtractor");
-const UploadService_1 = require("../services/UploadService");
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
+const config_1 = require("../config");
+const FilesExtractor_1 = require("../middlewares/FilesExtractor");
+const model_1 = require("../model");
 const SockerIO_1 = require("../services/SockerIO");
+const UploadService_1 = require("../services/UploadService");
 /* -------------------------------------------------------------------------- */
 /*              Check Driver License , Car , Verification Status              */
 /* -------------------------------------------------------------------------- */
@@ -28,14 +28,14 @@ const CheckDriver = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         if (driverPayload) {
             const driver = yield model_1.Driver.findById(driverPayload.driverID)
                 .populate({
-                path: 'car',
-                model: 'Car',
+                path: "car",
+                model: "Car",
                 populate: {
-                    path: 'carAlbum',
-                    model: 'CarAlbum',
+                    path: "carAlbum",
+                    model: "CarAlbum",
                 },
             })
-                .populate('driverLicense');
+                .populate("driverLicense");
             if (driver) {
                 const result = {
                     _id: driverPayload._id,
@@ -64,14 +64,14 @@ const GetDriver = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         const driverPayload = req.user;
         if (driverPayload) {
             const driver = yield model_1.Driver.findById(driverPayload.driverID)
-                .select('-car')
+                .select("-car")
                 .populate({
-                path: 'user',
-                select: 'firstName lastName profileImage phone email',
+                path: "user",
+                select: "firstName lastName profileImage phone email",
             })
-                .populate('location')
-                .populate('driverLicense')
-                .populate('nationalCard');
+                .populate("location")
+                .populate("driverLicense")
+                .populate("nationalCard");
             if (driver) {
                 return res.status(200).json({ data: driver });
             }
@@ -92,13 +92,13 @@ const AddDriverLicense = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         const driverPayload = req.user;
         if (driverPayload) {
             const driver = yield model_1.Driver.findById(driverPayload.driverID)
-                .select('driverLicense')
-                .populate('driverLicense');
+                .select("driverLicense")
+                .populate("driverLicense");
             if (driver) {
                 /* -------------------------- Extract License Data -------------------------- */
                 const images = yield (0, FilesExtractor_1.ExtractFiles)(req);
-                const front = images['front'][0];
-                const back = images['back'][0];
+                const front = images["front"][0];
+                const back = images["back"][0];
                 if (front && back) {
                     /* -------------------------- Upload Files -------------------------- */
                     const frontURL = yield (0, UploadService_1.UploadFile)(front);
@@ -107,7 +107,7 @@ const AddDriverLicense = (req, res, next) => __awaiter(void 0, void 0, void 0, f
                     const license = yield model_1.License.create({
                         front: frontURL,
                         back: backURL,
-                        type: 'driver_license',
+                        type: "driver_license",
                     });
                     if (license) {
                         driver.driverLicense = license;
@@ -138,14 +138,15 @@ const UpdateDriverPosition = (req, res, next) => __awaiter(void 0, void 0, void 
                 return res.status(400).json(errors);
             }
             /* ------------------------------ Get Driver ----------------------------- */
-            var driver = yield model_1.Driver.findById(driverPayload.driverID)
-                .select('user location visible onTrip')
+            var driver = yield model_1.Driver.findById("65e867ce229ba794e7f3d558")
+                .select("user location visible onTrip")
                 .populate({
-                path: 'user',
-                select: 'firstName lastName profileImage',
+                path: "user",
+                select: "firstName lastName profileImage",
             })
-                .populate('location');
+                .populate("location");
             /* ------------------------------ Driver Exist ------------------------------ */
+            console.log(driver);
             if (driver) {
                 /* ----------------------------- Update Location ---------------------------- */
                 if (driver.location != null) {
@@ -158,8 +159,8 @@ const UpdateDriverPosition = (req, res, next) => __awaiter(void 0, void 0, void 
                     ];
                     yield driver.location.save();
                 }
-                /* ------------------------- Create New Location Obj ------------------------ */
                 else {
+                    /* ------------------------- Create New Location Obj ------------------------ */
                     const newLocation = yield model_1.MedicurbLocation.create({
                         latitude: locationInputs.latitude,
                         longitude: locationInputs.longitude,
@@ -173,10 +174,11 @@ const UpdateDriverPosition = (req, res, next) => __awaiter(void 0, void 0, void 
                     driver = yield driver.save();
                 }
                 /* ------------------------------ Notify Admins ----------------------------- */
-                (0, SockerIO_1.getIO)()
-                    .of('/admin').emit(config_1.DRIVERS_SOCKET_CHANNEL, driver);
+                console.log(driver);
+                (0, SockerIO_1.getIO)().of("/admin").emit(config_1.DRIVERS_SOCKET_CHANNEL, driver);
+                console.log(driver);
             }
-            return res.status(201).json({ data: null });
+            return res.status(201).json({ data: driver });
         }
         return res.status(400).json({ message: config_1.NOT_EXIST_ERROR_MSG });
     }
@@ -200,20 +202,19 @@ const UpdateDriverStatus = (req, res, next) => __awaiter(void 0, void 0, void 0,
             }
             /* ------------------------------ Get Driver ----------------------------- */
             var driver = yield model_1.Driver.findById(driverPayload.driverID)
-                .select('user location visible onTrip')
+                .select("user location visible onTrip")
                 .populate({
-                path: 'user',
-                select: 'firstName lastName profileImage',
+                path: "user",
+                select: "firstName lastName profileImage",
             })
-                .populate('location');
+                .populate("location");
             /* ------------------------------ Driver Exist ------------------------------ */
             if (driver) {
                 driver.visible = statusInputs.isVisible;
                 driver.onTrip = statusInputs.onTrip;
                 driver = yield driver.save();
                 /* ------------------------------ Notify Admins ----------------------------- */
-                (0, SockerIO_1.getIO)()
-                    .of('/admin').emit(config_1.DRIVERS_SOCKET_CHANNEL, driver);
+                (0, SockerIO_1.getIO)().of("/admin").emit(config_1.DRIVERS_SOCKET_CHANNEL, driver);
             }
             return res.status(201).json({ data: null });
         }
