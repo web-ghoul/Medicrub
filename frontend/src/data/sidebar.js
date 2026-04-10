@@ -1,4 +1,4 @@
-import { AssessmentRounded, CommuteRounded, Home, PeopleAltRounded, RecentActorsRounded } from "@mui/icons-material";
+import { CommuteRounded, Home, PeopleAltRounded, RecentActorsRounded } from "@mui/icons-material";
 
 export const DrawerMenu=[
   {

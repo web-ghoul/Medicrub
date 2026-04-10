@@ -1,5 +1,5 @@
-import { MenuRounded, NotificationsRounded } from "@mui/icons-material";
-import { Badge, Box, Breadcrumbs, IconButton, Toolbar, Typography, styled, useMediaQuery } from '@mui/material';
+import { MenuRounded } from "@mui/icons-material";
+import { Box, Breadcrumbs, IconButton, Toolbar, Typography, styled, useMediaQuery } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';

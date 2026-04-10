@@ -1,4 +1,4 @@
-import { AddRounded, AssessmentRounded, CommuteRounded, GridViewRounded, Home, PeopleAltRounded, PersonPinCircleRounded, RecentActorsRounded, UploadFileRounded } from "@mui/icons-material"
+import { AddRounded, CommuteRounded, GridViewRounded, Home, PeopleAltRounded, PersonPinCircleRounded, RecentActorsRounded, UploadFileRounded } from "@mui/icons-material"
 
 const mainColor = {color:(theme)=>theme.palette.primary.main}
 

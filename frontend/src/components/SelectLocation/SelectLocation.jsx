@@ -11,7 +11,7 @@ import "@reach/combobox/styles.css";
 import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { handleAlert } from "../../functions/handleAlert";
 import LoadingMap from "../LoadingMap/LoadingMap";
 import icon from "leaflet/dist/images/marker-icon.png";
@@ -48,7 +48,7 @@ function MapEvents({ onMapClick }) {
 }
 
 export default function SelectLocation({ formik, label }) {
-  const [isLoaded, setIsLoaded] = useState(true); // Leaflet doesn't need a loader like Google Maps
+  const [isLoaded] = useState(true); // Leaflet doesn't need a loader like Google Maps
 
   if (!isLoaded) return <LoadingMap />;
   return <Map formik={formik} label={label} />;
@@ -56,7 +56,7 @@ export default function SelectLocation({ formik, label }) {
 
 function Map({ formik, label }) {
   const [selected, setSelected] = useState(() => formik.address ? { lat: formik.latitude, lng: formik.longitude } : null);
-  const [address, setAddress] = useState(null);
+  const [, setAddress] = useState(null);
   const [loading, setLoading] = useState(false)
   const mdScreen = useMediaQuery("(max-width:992px)")
   const smScreen = useMediaQuery("(max-width:768px)")

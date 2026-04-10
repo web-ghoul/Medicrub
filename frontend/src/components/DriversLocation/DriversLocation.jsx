@@ -3,7 +3,7 @@ import "@reach/combobox/styles.css";
 import { MapContainer, Marker, TileLayer, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import carImage from "../../assets/images/car.png";
 import LoadingMap from "../LoadingMap/LoadingMap";
