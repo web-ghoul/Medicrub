@@ -9,25 +9,29 @@ config();
 
 const app = express();
 
-const startServer = async () => {
-  app.use(cors(CORS_OPTIONS));
+app.use(cors(CORS_OPTIONS));
+
+const initApp = async () => {
   /* ----------------------------- Initialize App ----------------------------- */
   await App(app);
   /* ---------------------------- Connect To MogoDB --------------------------- */
   await dbConnection(process.env.MONGO_URL!);
-  /* --------------------- Create App Server -------------------- */
-  if (process.env.NODE_ENV !== 'production') {
+  /* ------------------------------ Connect Admin ----------------------------- */
+  connectAdmin(process.env.JWT_KEY!);
+};
+
+// Top-level initialization for serverless
+initApp().catch(console.error);
+
+if (process.env.NODE_ENV !== 'production') {
+  const startServer = async () => {
+    /* --------------------- Create App Server -------------------- */
     const server = app.listen(process.env.PORT ?? 3000, () => {
       console.log("App Is Running on PORT: " + (process.env.PORT ?? 3000));
     });
     /* --------------------- Initialize WebSocket.IO Service -------------------- */
     initIO(server);
-  }
-  /* ------------------------------ Connect Admin ----------------------------- */
-  connectAdmin(process.env.JWT_KEY!);
-};
-
-if (process.env.NODE_ENV !== 'production') {
+  };
   startServer();
 }
 
